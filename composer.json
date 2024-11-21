@@ -1,0 +1,6 @@
+{
+    "name": "your-vendor/your-project",
+    "description": "A simple project without dependencies.",
+    "type": "project",
+    "require": {}
+}
