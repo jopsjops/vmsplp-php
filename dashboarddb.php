@@ -8,19 +8,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-// Database connection
-$servername = "tj5iv8piornf713y.cbetxkdyhwsb.us-east-1.rds.amazonaws.com";
-$username = "vl9ieik1ttwerlmd"; // Your DB username
-$password = "dxn55zzkhyp5ek1e";     // Your DB password
-$dbname = "z6vet51amyrj9ci0"; // Your DB name
-
-// Create connection using MySQLi
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection and handle connection errors
-if ($conn->connect_error) {
-    die(json_encode(["status" => "error", "message" => "Connection failed: " . $conn->connect_error]));
-}
+include 'dbconnection.php';
 
 // Function to get the count of unique students by department
 function getDepartmentCount($conn, $department) {

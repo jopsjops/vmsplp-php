@@ -441,22 +441,11 @@
             <h1>STUDENT VIOLATION RECORDS</h1>
             <div class="main-content">
                 <div class="table-container">
-                    <?php
-// Database connection
-$servername = "tj5iv8piornf713y.cbetxkdyhwsb.us-east-1.rds.amazonaws.com";
-$username = "vl9ieik1ttwerlmd"; // Your DB username
-$password = "dxn55zzkhyp5ek1e";     // Your DB password
-$dbname = "z6vet51amyrj9ci0"; // Your DB name
-
-                    $conn = new mysqli($servername, $username, $password, $dbname);
-
-                    // Check connection
-                    if ($conn->connect_error) {
-                        die("Connection failed: " . $conn->connect_error);
-                    }
+                    <?php   
+                    include 'dbconnection.php';        
 
                     // Fetch data from the database
-                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Date
+                    $sql = "SELECT   id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Date
                             FROM student_info ORDER BY Date DESC";
                     $result = $conn->query($sql);
                     ?>
@@ -610,8 +599,9 @@ $dbname = "z6vet51amyrj9ci0"; // Your DB name
             </select>
 
             <label for="status">Status</label>
-            <input type="text" id="status" name="status" required>
-
+            <select id="status" name="status" required>
+                <option value="Active">Active</option>
+            </select>
             <label for="date">Date:</label>
             <input type="date" id="date" name="date" required>
 

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -454,20 +453,9 @@
             <div class="main-content">
                 <div class="table-container">
                     <?php
-// Database connection
-$servername = "tj5iv8piornf713y.cbetxkdyhwsb.us-east-1.rds.amazonaws.com";
-$username = "vl9ieik1ttwerlmd"; // Your DB username
-$password = "dxn55zzkhyp5ek1e";     // Your DB password
-$dbname = "z6vet51amyrj9ci0"; // Your DB name
-
-                    $conn = new mysqli($servername, $username, $password, $dbname);
-
-                    if ($conn->connect_error) {
-                        die("Connection failed: " . $conn->connect_error);
-                    }
-
+                    include 'dbconnection.php';        
                     // Fetch archive records
-                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Date FROM archive_info ORDER BY Date DESC";
+                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Status, Date FROM archive_info ORDER BY Date DESC";
                     $result = $conn->query($sql);
                     ?>
                     <table id="archiveTable">
@@ -478,7 +466,6 @@ $dbname = "z6vet51amyrj9ci0"; // Your DB name
                                 <th>Department</th>
                                 <th>Program</th>
                                 <th>Violation</th>
-                                <th>Offense</th>
                                 <th>Status</th>
                                 <th>Date</th>
                                 <th>Actions</th>
@@ -494,7 +481,7 @@ $dbname = "z6vet51amyrj9ci0"; // Your DB name
                                         <td>" . htmlspecialchars($row['Department']) . "</td>
                                         <td>" . htmlspecialchars($row['Program']) . "</td>
                                         <td>" . htmlspecialchars($row['Violation']) . "</td>
-                                        <td>" . htmlspecialchars($row['Offense']) . "</td>
+                                        
                                         <td>" . htmlspecialchars($row['Status']) . "</td>
                                         <td>" . htmlspecialchars($row['Date']) . "</td>
                                         <td>
