@@ -27,6 +27,25 @@ function getDepartmentCount($conn, $department) {
     return $total;
 }
 
+// Function to return the department's color based on its name
+function getDepartmentColor($department) {
+    return isset($colors[$department]) ? $colors[$department] : '#FFFFFF';  // Default to white if not found
+}
+
+$gaugeColors = [
+    'CCS' => 'rgba(97, 99, 99, 1)',       // Darker gray-blue
+    'CBA' => 'rgba(166, 154, 25, 1)',     // Darker gold/yellow
+    'CAS' => 'rgba(75, 0, 130, 1)',         // Darker maroon
+    'COE' => 'rgba(204, 85, 0, 1)',     // Darker purple
+    'COED' => 'rgba(33, 65, 170, 1)',     // Darker royal blue
+    'CIHM' => 'rgba(99, 8, 0, 1)',     // Darker navy blue
+    'CON' => 'rgba(180, 70, 150, 1)',     // Darker pink/magenta
+];
+
+
+
+
+
 // Get counts for each department
 $departments = ['CCS', 'CAS', 'CBA', 'CON', 'COE', 'COED', 'CIHM'];
 $departmentCounts = [];
@@ -62,14 +81,14 @@ json_encode($departmentCounts);
     <link rel="icon" type="image/png" sizes="32x32" href="img/plp.png">
     <title>Admin Dashboard</title>
     <style>
-  * {
+        * {
             padding: 0;
             margin: 0;
             box-sizing: border-box;
-            font-family: 'poppins', sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
-        
-        /* topbar */
+
+        /* Topbar */
         .topbar {
             position: fixed;
             background: #fff;
@@ -115,7 +134,7 @@ json_encode($departmentCounts);
             background-color: #f1f1f1;
         }
 
-        .dropdown-content ul{
+        .dropdown-content ul {
             display: flex;
             flex-direction: column;
         }
@@ -129,187 +148,292 @@ json_encode($departmentCounts);
             object-fit: cover;
         }
 
-        .user:hover{
+        .user:hover {
             cursor: pointer;
         }
 
-        /* side bar */
+        /* Sidebar */
         .sidebar {
             position: fixed;
             top: 60px;
-            width: 60px;
+            width: 200px;
             height: calc(100% - 60px);
-            background: #059212;
+            background: #fff;
             overflow-x: hidden;
             overflow-y: auto;
-            transition: width 0.3s;
             white-space: nowrap;
             z-index: 1;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
         }
 
-        .sidebar:hover {
-            width: 260px;
-        }
-
+        /* Sidebar list */
         .sidebar ul {
             margin-top: 20px;
             display: flex;
             flex-direction: column;
         }
 
+        /* Sidebar list items */
         .sidebar ul li {
             width: 100%;
             list-style: none;
             margin: 5px;
+            position: relative;
         }
 
+        /* Sidebar links */
         .sidebar ul li a {
             width: 100%;
             text-decoration: none;
-            color: #fff;
+            color: #333; /* Always dark font */
             height: 60px;
             display: flex;
             align-items: center;
-            transition: color 0.2s, background-color 0.2s;
+            transition: background-color 0.2s;
             border-radius: 10px 0 0 10px;
+            padding-left: 10px;
         }
 
+        /* Sidebar icons */
         .sidebar ul li a i {
             min-width: 60px;
             font-size: 24px;
             text-align: center;
         }
 
-        .sidebar ul li.dash a {
-            color: #059212;
-            background: #f5f5f5;
-        }
-
+        /* Hover effect */
         .sidebar ul li a:hover {
-            color: #059212;
             background: #f5f5f5;
         }
 
-        .sidebar ul li span {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            transition: opacity 0.3s;
+        /* ✅ Active tab: Only shows a green side bar */
+        .sidebar ul li.active::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 5px;
+            height: 40px;
+            background-color: #059212;
+            border-radius: 5px;
         }
 
-        .sidebar:hover ~ .main {
-            margin-left: 260px; /* Sidebar expanded */
-            
+        .logout {
+            margin-top: 250px;
+            padding: 10px;
+            text-align: center;
         }
 
-        /* main section */
-        .main{
+        .logout a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .logout i {
+            margin-right: 8px;
+        }
+
+        /* Main section */
+        .main {
             position: absolute;
             top: 60px;
             width: calc(100% - 260px);
             min-height: calc(100vh - 60px);
-            margin-left: 60px;
+            margin-left: 200px;
             padding: 20px;
             transition: margin-left 0.3s, width 0.3s; /* Smooth transition */
-            
+            display: flex;
+            justify-content: space-between; /* Align the cards and charts */
+            gap: 20px;
+            flex-wrap: wrap; /* Allow content to wrap on smaller screens */
+        }
+
+        .charts-container {
+            flex: 1 1 45%; /* Takes up 45% of the available space */
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
         }
 
         .cards {
-            width: 100%; /* Ensure it occupies the full width of the main container */
-            padding: 30px 40px;
+            flex: 1 1 25%; /* Takes up 45% of the available space */
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive layout */
-            grid-gap: 35px;
-            min-height: 30vh; 
-            transition: grid-template-columns 0.3s ease; /* Smooth transition when sidebar expands */
-        }
-
-
-        .cards .card {
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Adjusting the card size */
+            grid-gap: 15px;
+            min-height: 30vh;
+            justify-self: flex-end; /* Align cards to the right */
             padding: 20px;
+            margin-left: 20px
+        }
+
+        .icon-box {
             display: flex;
+            justify-content: center;
             align-items: center;
-            justify-content: space-between;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 7px 25px 0 rgba(0, 0, 0, 0.3);
-            cursor: pointer;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-bottom: 10px; /* Adjust the space below the icon */
+            width: 100%; /* Ensure the container takes full width */
         }
 
-        .cards .card.ccs {
-            background: #a2a5a5;
+        .icon-box img {
+            width: 100px; /* Adjust the width as needed */
+            height: auto;
+            max-width: 100px; /* Ensure the image doesn't grow larger than desired */
+            margin: 0; /* Remove any margin */
+            display: block; /* Ensures image is displayed as a block element */
         }
 
-        .cards .card.cas {
-            background: #ab3fbc;
-        }
 
-        .cards .card.cba {
-            background: #e6d540;
-        }
-
-        .cards .card.con {
-            background: #fa90d7;
-        }
-
-        .cards .card.coe {
-            background: #de993f;
-        }
-
-        .cards .card.coed {
-            background: #4169E1;
-        }
-
-        .cards .card.cihm {
-            background: #950c00;
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
         }
 
         .number {
             font-size: 35px;
             font-weight: 500;
-            color: #ffffff;
+            color: black;
         }
 
         .card-name {
-            color: #ffffff;
+            color: black;
             font-weight: 600;
         }
 
-        .icon-box img {
-            width: 80px;
-            height: auto;
-            transform: translateY(12px);
-            margin-right: -15px;
+        /* Charts container styling */
+        .charts-container .chart {
+            flex: 1 1 45%; /* Each chart takes up 45% of the row width */
+            max-width: 700px;
+            max-height: 390px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
         }
 
-        .cards .card:hover {
-            transform: scale(1.05);
+        .charts-container .chart:hover {
+            transform: translateY(-5px);
         }
 
-        /* Table styling */
-       
-        .charts-container {
-        display: flex;
-        flex-wrap: wrap; /* Ensure charts adjust for smaller screens */
-        gap: 20px; /* Space between charts */
-            justify-content: center;
-        }
-        .chart {
-            flex: 1 1 45%; /* Each chart takes up to 45% of the row width */
-            max-width: 600px; /* Optional: limit max width */
-        }
         canvas {
             width: 100%; /* Ensure canvas scales properly */
-            height: 300px; /* Set fixed height for charts */
+            height: 200px; /* Set fixed height for charts */
         }
 
-        .charts-container h3{
-            margin-top: 70px;
+        .charts-container h3 {
+            margin-top: 0;
             margin-bottom: 20px;
             color: #059212;
+            font-size: 22px;
+            font-weight: 600;
+            text-align: center;
         }
 
+        .card {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border-radius: 20px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .card.ccs {
+            background-image: url('img/ccs.png');
+            background-size: cover;
+        }
+
+        .card.cba {
+            background-image: url('img/cba.png');
+            background-size: cover;
+        }
+
+        .card.cas {
+            background-image: url('img/cas.png');
+            background-size: cover;
+        }
+
+        .card.coe {
+            background-image: url('img/coe.png');
+            background-size: cover;
+        }
+
+        .card.coed {
+            background-image: url('img/coed.png');
+            background-size: cover;
+        }
+
+        .card.cihm {
+            background-image: url('img/cihm.png');
+            background-size: cover;
+        }
+
+        .card.con {
+            background-image: url('img/con_con.png');
+            background-size: cover;
+        }
+
+        .gauge-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        .gauge {
+            width: 130px; /* Adjust the width */
+            height: 130px; /* Adjust the height */
+            margin: 0 auto; /* Center the gauge if needed */
+        }
+
+
+        .logo-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo-overlay img {
+            width: 90px;
+            height: 90px;
+        }
+
+        .hover-info {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: opacity 0.3s ease;
+            z-index: 3;
+        }
+
+        .card:hover .hover-info {
+            opacity: 1;
+        }
+
+        .card:hover{
+            transform: translateY(-5px);
+        }
+
+        
+
+        
     </style>
 </head>
 <body>
@@ -328,7 +452,7 @@ json_encode($departmentCounts);
         </div>
         <div class="sidebar">
             <ul>
-                <li class="dash">
+                <li class="active">
                     <a href="dashboarddb.php">
                         <i class='bx bxs-dashboard'></i>
                         <div>Dashboard</div>
@@ -359,26 +483,43 @@ json_encode($departmentCounts);
                     </a>
                 </li>
             </ul>
+            <div class="logout">
+                <a href="logout.php">
+                    <i class='bx bx-log-out'></i>
+                    <div>Logout</div>
+                </a>
+            </div>
         </div>
         <div class="main" id="main-content">
         <div class="cards">
-                <?php foreach ($departmentCounts as $dept => $count): ?>
-                    <a href="<?php echo strtolower($dept); ?>_page.php" style="text-decoration: none;">
-                        <div class="card <?php echo strtolower($dept); ?>">
-                            <div class="card-content">
-                                <div class="number"><?php echo $count; ?></div>
-                                <div class="card-name"><?php echo $dept; ?></div>
-                            </div>
-                            <div class="icon-box">
+            <?php foreach ($departmentCounts as $dept => $count): ?>
+                <a href="<?php echo strtolower($dept); ?>_page.php" style="text-decoration: none;">
+                    <div class="card <?php echo strtolower($dept); ?>" style="background-color: <?php echo getDepartmentColor($dept); ?>;">
+                        <div class="gauge-container">
+                            <!-- Gauge Chart -->
+                            <canvas class="gauge"
+                                data-count="<?php echo $count; ?>"
+                                data-color="<?php echo $gaugeColors[$dept] ?? '#059212'; ?>">
+                            </canvas>
+
+                            <!-- Department Logo -->
+                            <!-- <div class="logo-overlay">
                                 <?php
                                 $imageFile = strtolower($dept) === 'con' ? 'con_con.png' : strtolower($dept) . '.png'; 
                                 ?>
                                 <img src="img/<?php echo $imageFile; ?>" alt="<?php echo $dept; ?>">
+                            </div> -->
+
+                            <!-- Hover Text -->
+                            <div class="hover-info">
+                                <?php echo $dept; ?> <br>
+                                <?php echo $count; ?> Students
                             </div>
                         </div>
-                    </a>
-                <?php endforeach; ?>
-            </div>
+                    </div>
+                </a>
+            <?php endforeach; ?>
+        </div>
 
 
             <div class="charts-container">
@@ -387,7 +528,7 @@ json_encode($departmentCounts);
                     <canvas id="violationsLineChart"></canvas>
                 </div>
                 <div class="chart">
-                    <h3>Number of Students per Department</h3>
+                    <h3>Students per Department</h3>
                     <canvas id="studentsBarChart"></canvas>
                 </div>
             </div>
@@ -541,7 +682,46 @@ json_encode($departmentCounts);
         }
     });
 
+    // Get all sidebar links
+    const sidebarLinks = document.querySelectorAll('.sidebar ul li a');
 
+    // Add click event listener to each sidebar link
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            // Remove the 'active' class from all sidebar items
+            sidebarLinks.forEach(item => item.closest('li').classList.remove('active'));
+
+            // Add 'active' class to the clicked item
+            this.closest('li').classList.add('active');
+        });
+    });
+
+
+    document.querySelectorAll('.gauge').forEach((canvas) => {
+    const count = parseInt(canvas.dataset.count);
+    const max = 100;
+    const color = canvas.dataset.color;
+
+    new Chart(canvas, {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [count, max - count],
+                backgroundColor: [color, '#e0e0e0'],
+                borderWidth: 0,
+                cutout: '75%',
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: { enabled: false },
+                legend: { display: false }
+            }
+        }
+    });
+});
     </script>
 </body>
 </html> 
