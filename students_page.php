@@ -594,7 +594,6 @@
                                         <td>" . htmlspecialchars($row['Status']) . "</td>
                                         <td>" . htmlspecialchars($row['Date']) . "</td>
                                         <td>" . htmlspecialchars($row['Sanction']) . "</td>
-                                        <td>" . htmlspecialchars($row['email']) . "</td>
                                         <td>
                                             <button class='edit' onclick='editRow(" . $row['id'] . ")'>
                                                 <i class='fas fa-pencil-alt'></i>
