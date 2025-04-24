@@ -113,74 +113,132 @@
         display: flex;
         flex-direction: column;
     }
+ /* Sidebar */
+ .sidebar {
+            position: fixed;
+            top: 60px;
+            width: 200px;
+            height: calc(100% - 60px);
+            background: #fff;
+            overflow-x: hidden;
+            overflow-y: auto;
+            white-space: nowrap;
+            z-index: 1;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
 
-    /*sidebar*/
-    .sidebar {
-        position: fixed;
-        top: 60px;
-        width: 60px;
-        height: calc(100% - 60px);
-        background: #059212;
-        overflow-x: hidden;
-        overflow-y: auto;
-        transition: width 0.3s;
-        white-space: nowrap;
-        z-index: 1;
-    }
+        /* Sidebar list */
+        .sidebar ul {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+        }
 
-    .sidebar:hover {
-        width: 260px;
-    }
+        /* Sidebar list items */
+        .sidebar ul li {
+            width: 100%;
+            list-style: none;
+            margin: 5px;
+            position: relative;
+        }
 
-    .sidebar ul {
-        margin-top: 20px;
-        display: flex;
-        flex-direction: column;
-    }
+        /* Sidebar icons */
+        .sidebar ul li a i {
+            min-width: 60px;
+            font-size: 24px;
+            text-align: center;
+        }
 
-    .sidebar ul li {
-        width: 100%;
-        list-style: none;
-        margin: 5px;
-    }
+        /* Sidebar links */
+        .sidebar ul li a {
+            width: 100%;
+            text-decoration: none;
+            color: #333; /* Always dark font */
+            height: 60px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s;
+            border-radius: 10px 0 0 10px;
+            padding-left: 10px;
+        }
 
-    .sidebar ul li a {
-        width: 100%;
-        text-decoration: none;
-        color: #fff;
-        height: 60px;
-        display: flex;
-        align-items: center;
-        transition: color 0.2s, background-color 0.2s;
-        border-radius: 10px 0 0 10px;
-    }
+        .sidebar ul li a::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 5px;
+            height: 40px;
+            background-color: #059212;
+            border-radius: 5px;
+            opacity: 0;
+            transform: scaleY(0);
+            transition: all 0.3s ease;
+        }
 
-    .sidebar ul li a i {
-        min-width: 60px;
-        font-size: 24px;
-        text-align: center;
-    }
+                /* Hover effect */
+        .sidebar ul li a:hover::before {
+            opacity: 1;
+            transform: scaleY(1);
+        }
 
-    .sidebar ul li.tables a {
-        color: #059212;
-        background: #fff;
-    }
+        /* ✅ Active tab: Only shows a green side bar */
+        .sidebar ul li.active::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 5px;
+            height: 40px;
+            background-color: #059212;
+            border-radius: 5px;
+        }
 
-    .sidebar ul li a:hover {
-        color: #059212;
-        background: #fff;
-    }
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #ddd;
+        }
 
-    .sidebar ul li span {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        transition: opacity 0.3s;
-    }
+        .profile-logo img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%; /* Makes the logo circular */
+            object-fit: cover;
+        }
 
-    .sidebar:hover .sidebar-item-text {
-        opacity: 1;
-    }
+        .profile-info span {
+            font-size: 12px;
+            color: #777;
+        }
+
+        .profile-info h4 {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+
+        .logout {
+            margin-top: 250px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .logout a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .logout i {
+            margin-right: 8px;
+        }
 
     .main {
         margin-left: 60px;
@@ -188,9 +246,7 @@
         transition: margin-left 0.3s;
     }
 
-    .sidebar:hover+.main {
-        margin-left: 260px;
-    }
+    
 
     /*main content*/
     .main h1 {
@@ -300,6 +356,18 @@
     background-color: #046e0d;
 }
 
+/* Large screens (desktops) */
+@media screen and (min-width: 1200px) {
+           
+            .logout {
+                margin-top: 380px;
+                
+            }
+        }
+
+
+        
+
 
     
 </style>
@@ -308,52 +376,59 @@
     <div class="container">
         <div class="topbar">
             <div class="logo">
-                <a href="dashboarddb.php">SSO.</a>
+                <h2>VMS.</h2>
             </div>
             <div class="search">
             </div>
-            <div class="user">
-                <img src="img/plp.png" alt="Profile Image" id="profileImage">
-                <div class="dropdown-content" id="dropdownContent">
-                    <a href="admin_changepass.php" id="changePasswordButton"><i class='bx bx-lock'></i> Change
-                        Password</a>
-                    <a href="index.php" id="logoutButton"><i class='bx bx-log-out'></i> Log Out</a>
-                </div>
-            </div>
         </div>
         <div class="sidebar">
+            <div class="profile">
+                <div class="profile-logo">
+                    <img src="img/plp.png" alt="Logo">
+                </div>
+                <div class="profile-info">
+                    <span>Welcome,</span>
+                    <h4>Admin</h4>
+                </div>
+            </div>
             <ul>
-                <li class="dash">
+                <li>
                     <a href="dashboarddb.php">
                         <i class='bx bxs-dashboard'></i>
                         <div>Dashboard</div>
                     </a>
                 </li>
-                <li class="stud">
+                <li>
                     <a href="students_page.php">
                         <i class='bx bxs-group'></i>
-                        <div>Student</div>
+                        <div>Students</div>
                     </a>
                 </li>
-                <li class="pred">
+                <li>
                     <a href="prediction.php">
                         <i class='fas fa-chart-line'></i>
-                        <div>Prediction</div>
+                        <div>Predictions</div>
                     </a>
                 </li>
-                <li class="archive">
+                <li>
                     <a href="archive.php">
                         <i class='bx bxs-archive'></i>
                         <div>Archive</div>
                     </a>
                 </li>
-                <li class="tables">
+                <li class="active">
                     <a href="view_semviolation.php">
                         <i class='bx bx-table'></i>
                         <div>View Tables</div>
                     </a>
                 </li>
             </ul>
+            <div class="logout">
+                <a href="logout.php" onclick="return confirmLogout()">
+                    <i class='bx bx-log-out'></i>
+                    <span>Logout</span>
+                </a>
+            </div>
         </div>
         <div class="main">
             <h1>VIEW TABLES</h1>
@@ -432,26 +507,8 @@
     </div>
 
     <script>
-        document.getElementById("profileImage").onclick = function () {
-            var dropdown = document.getElementById("dropdownContent");
-            if (dropdown.style.display === "none" || dropdown.style.display === "") {
-                dropdown.style.display = "block";
-            } else {
-                dropdown.style.display = "none";
-            }
-        }
-
-        // Optionally close the dropdown if clicked outside
-        window.onclick = function (event) {
-            if (!event.target.matches('#profileImage')) {
-                var dropdowns = document.getElementsByClassName("dropdown-content");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.style.display === "block") {
-                        openDropdown.style.display = "none";
-                    }
-                }
-            }
+        function confirmLogout() {
+            return confirm("Are you sure you want to log out?");
         }
     </script>
 </body>

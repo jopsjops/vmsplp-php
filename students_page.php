@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="icon" type="image/png" sizes="32x32" href="img/plp.png">
     <title>Admin</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
     <style>
         * {
             padding: 0;
@@ -114,84 +116,146 @@
         }
 
         /*sidebar*/
-        .sidebar {
+         /* Sidebar */
+         .sidebar {
             position: fixed;
             top: 60px;
-            width: 60px;
+            width: 200px;
             height: calc(100% - 60px);
-            background: #059212;
+            background: #fff;
             overflow-x: hidden;
             overflow-y: auto;
-            transition: width 0.3s;
             white-space: nowrap;
             z-index: 1;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
         }
 
-        .sidebar:hover {
-            width: 260px;
-        }
-
+        /* Sidebar list */
         .sidebar ul {
             margin-top: 20px;
             display: flex;
             flex-direction: column;
         }
 
+        /* Sidebar list items */
         .sidebar ul li {
             width: 100%;
             list-style: none;
             margin: 5px;
+            position: relative;
         }
 
-        .sidebar ul li a {
-            width: 100%;
-            text-decoration: none;
-            color: #fff;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            transition: color 0.2s, background-color 0.2s;
-            border-radius: 10px 0 0 10px;
-        }
-
+        /* Sidebar icons */
         .sidebar ul li a i {
             min-width: 60px;
             font-size: 24px;
             text-align: center;
         }
 
-        .sidebar ul li.stud a {
-            color: #059212;
-            background: #fff;
+        /* Sidebar links */
+        .sidebar ul li a {
+            width: 100%;
+            text-decoration: none;
+            color: #333; /* Always dark font */
+            height: 60px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s;
+            border-radius: 10px 0 0 10px;
+            padding-left: 10px;
         }
 
-        .sidebar ul li a:hover {
-            color: #059212;
-            background: #fff;
+        .sidebar ul li a::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 5px;
+            height: 40px;
+            background-color: #059212;
+            border-radius: 5px;
+            opacity: 0;
+            transform: scaleY(0);
+            transition: all 0.3s ease;
         }
 
-        .sidebar ul li span {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            transition: opacity 0.3s;
-        }
-
-        .sidebar:hover .sidebar-item-text {
+                /* Hover effect */
+        .sidebar ul li a:hover::before {
             opacity: 1;
+            transform: scaleY(1);
         }
 
-        .main {
-            margin-left: 60px;
+        /* ✅ Active tab: Only shows a green side bar */
+        .sidebar ul li.active::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 5px;
+            height: 40px;
+            background-color: #059212;
+            border-radius: 5px;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
             padding: 20px;
-            transition: margin-left 0.3s;
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #ddd;
         }
 
-        .sidebar:hover+.main {
-            margin-left: 260px;
+        .profile-logo img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%; /* Makes the logo circular */
+            object-fit: cover;
+        }
+
+        .profile-info span {
+            font-size: 12px;
+            color: #777;
+        }
+
+        .profile-info h4 {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+
+        .logout {
+            margin-top: 250px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .logout a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .logout i {
+            margin-right: 8px;
         }
 
         /*main content*/
+        .main {
+            position: absolute;
+            width: calc(100% - 260px);
+            min-height: calc(100vh - 60px);
+            margin-left: 200px;
+            padding: 20px;
+            transition: margin-left 0.3s, width 0.3s; /* Smooth transition */
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap; /* Allow content to wrap on smaller screens */
+        }
+
         .main h1 {
             margin-top: 70px;
             margin-bottom: 20px;
@@ -226,95 +290,113 @@
             outline-style: auto;
         }
 
-        #charts div {
-            min-width: 250px;
-            max-width: 400px;
-            border-radius: 8px;
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        #charts h2 {
-            font-size: 18px;
-            color: #059212;
-            margin-bottom: 10px;
-        }
-
-        #charts canvas {
-            width: 100% !important;
-            height: 200px;
-        }
+        
 
         table {
-            border-radius: 5px;
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
+            background-color: #fff; /* White background for the table */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+            border-radius: 5px;
         }
 
         table,
         th,
         td {
-            border: 1px solid #ddd;
+            border: 1px solid #e0e0e0; /* Light gray border for a minimalistic look */
         }
 
         th,
         td {
-            padding: 12px;
-            text-align: center;
+            padding: 10px 15px; /* Reduced padding for a clean look */
+            text-align: center; /* Left align the text for a modern style */
+            font-size: 15px; /* Slightly smaller text for minimalism */
         }
 
         th {
-            background-color: #059212;
-            color: #fff;
-            margin: 0;
+            background-color: #f7f7f7; /* Light gray background for table headers */
+            color: #333; /* Dark text color for readability */
+            font-weight: bold; /* Make headers bold */
+            text-transform: uppercase; /* All caps for headers for a minimalistic feel */
         }
 
         tr:nth-child(even) {
-            background-color: #f2f2f2;
+            background-color: #fafafa; /* Very light gray background for even rows */
+        }
+
+        tr:hover {
+            background-color: #f1f1f1; /* Slight hover effect for rows */
+        }
+
+        td {
+            color: #333; /* Dark text color for the data */
         }
 
         button {
-            padding: 10px 20px;
+            padding: 8px 15px;
             border: none;
             border-radius: 5px;
-            color: #fff;
+            color: #333;
+            background-color: transparent;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
             transition: background-color 0.3s ease;
         }
 
         button:hover {
+            background-color: #f1f1f1; /* Hover effect for buttons */
             opacity: 0.9;
         }
 
+
+       
+
         button.edit {
-            color: #059212;
+            color: #333;
             background-color: transparent;
         }
 
         button.archive {
-            color: #059212;
+            color: #333;
             background-color: transparent;
         }
 
 
         button.add {
-            width: 50px; /* Set the width of the circle */
-            height: 50px; /* Set the height to be the same as the width */
-            border-radius: 50%; /* This makes the button round */
-            background-color: #059212; /* Background color of the button */
-            color: white; /* Icon color */
-            border: none; /* Remove border */
-            display: flex; /* Center icon inside the button */
-            justify-content: center; /* Horizontally center the icon */
-            align-items: center; /* Vertically center the icon */
-            cursor: pointer; /* Add a pointer on hover */
+            width: 50px;              /* Set the width of the circle */
+            height: 50px;             /* Set the height to be the same as the width */
+            border-radius: 50%;       /* This makes the button round */
+            background-color: #333; /* Background color of the button */
+            color: white;             /* Icon color */
+            border: none;             /* Remove border */
+            display: flex;            /* Center icon inside the button */
+            justify-content: center;  /* Horizontally center the icon */
+            align-items: center;      /* Vertically center the icon */
+            cursor: pointer;          /* Add a pointer on hover */
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
-            position: fixed; /* Make the button stay in a fixed position */
-            bottom: 20px; /* Distance from the bottom of the screen */
-            right: 20px; /* Distance from the right side of the screen */
+            position: fixed;          /* Make the button fixed to the viewport */
+            bottom: 20px;             /* Distance from the bottom of the viewport */
+            right: 20px;              /* Distance from the right of the viewport */
+            z-index: 1000;            /* Ensure it stays on top of other elements */
+        }
+
+        button.print-pdf {
+            width: 50px;              /* Set the width of the circle */
+            height: 50px;             /* Set the height to be the same as the width */
+            border-radius: 50%;       /* This makes the button round */
+            background-color: #333; /* Background color of the button */
+            color: white;             /* Icon color */
+            border: none;             /* Remove border */
+            display: flex;            /* Center icon inside the button */
+            justify-content: center;  /* Horizontally center the icon */
+            align-items: center;      /* Vertically center the icon */
+            cursor: pointer;          /* Add a pointer on hover */
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+            position: fixed;          /* Make the button fixed to the viewport */
+            bottom: 90px;             /* Distance from the bottom of the viewport */
+            right: 20px;              /* Distance from the right of the viewport */
+            z-index: 1000;            /* Ensure it stays on top of other elements */
         }
 
 
@@ -381,6 +463,30 @@
             background-color: #059212;
             width: 100%;
         }
+
+        @media screen and (min-width: 1200px) {
+            .main {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+
+            .charts-container {
+                flex: 2;
+                margin-left: auto;
+            }
+
+            .logout {
+                margin-top: 380px;
+            }
+
+            table{
+                margin-bottom: 600px;
+            }
+
+            
+        }
+
+        
     </style>
 </head>
 
@@ -388,39 +494,39 @@
     <div class="container">
         <div class="topbar">
             <div class="logo">
-                <a href="dashboarddb.php">SSO.</a>
+                <h2>VMS.</h2>
             </div>
             <div class="search">
                 <input type="text" id="search" placeholder="Search by Student Number">
             </div>
-
-            <div class="user">
-                <img src="img/plp.png" alt="Profile Image" id="profileImage">
-                <div class="dropdown-content" id="dropdownContent">
-                    <a href="cas_changepass.php" id="changePasswordButton"><i class='bx bx-lock'></i> Change
-                        Password</a>
-                        <a href="index.php" id="logoutButton"><i class='bx bx-log-out'></i> Log Out</a>
-                 </div>
-            </div>
         </div>
         <div class="sidebar">
+            <div class="profile">
+                <div class="profile-logo">
+                    <img src="img/plp.png" alt="Logo">
+                </div>
+                <div class="profile-info">
+                    <span>Welcome,</span>
+                    <h4>Admin</h4>
+                </div>
+            </div>
             <ul>
-                <li class="dash">
+                <li>
                     <a href="dashboarddb.php">
                         <i class='bx bxs-dashboard'></i>
                         <div>Dashboard</div>
                     </a>
                 </li>
-                <li class="stud">
+                <li class="active">
                     <a href="students_page.php">
                         <i class='bx bxs-group'></i>
-                        <div>Student</div>
+                        <div>Students</div>
                     </a>
                 </li>
-                <li class="pred">
+                <li>
                     <a href="prediction.php">
                         <i class='fas fa-chart-line'></i>
-                        <div>Prediction</div>
+                        <div>Predictions</div>
                     </a>
                 </li>
                 <li class="archive">
@@ -436,17 +542,25 @@
                     </a>
                 </li>
             </ul>
+            <div class="logout">
+                <a href="logout.php" onclick="return confirmLogout()">
+                    <i class='bx bx-log-out'></i>
+                    <span>Logout</span>
+                </a>
+            </div>
         </div>
         <div class="main">
             <h1>STUDENT VIOLATION RECORDS</h1>
             <div class="main-content">
                 <div class="table-container">
-                    <?php   
-                    include 'dbconnection.php';        
+                    <?php
+                    // Database connection
+                    include 'dbconnection.php';
 
                     // Fetch data from the database
-                    $sql = "SELECT   id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Date
-                            FROM student_info ORDER BY Date DESC";
+                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Date, Sanction
+                             FROM student_info ORDER BY Date DESC";
+
                     $result = $conn->query($sql);
                     ?>
                     <table id="violationTable">
@@ -460,6 +574,7 @@
                                 <th>Offense</th>
                                 <th>Status</th>
                                 <th>Date</th>
+                                <th>Sanction</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -467,6 +582,7 @@
                             <?php
                             if ($result->num_rows > 0) {
                                 while ($row = $result->fetch_assoc()) {
+                                    $sanctionText = "";
                                     echo "<tr>
                                         <td>" . htmlspecialchars($row['Student_ID']) . "</td>
                                         <td>" . htmlspecialchars($row['Student_Name']) . "</td>
@@ -476,6 +592,7 @@
                                         <td>" . htmlspecialchars($row['Offense']) . "</td>
                                         <td>" . htmlspecialchars($row['Status']) . "</td>
                                         <td>" . htmlspecialchars($row['Date']) . "</td>
+                                        <td>" . htmlspecialchars($row['Sanction']) . "</td>
                                         <td>
                                             <button class='edit' onclick='editRow(" . $row['id'] . ")'>
                                                 <i class='fas fa-pencil-alt'></i>
@@ -490,14 +607,19 @@
                                 echo "<tr><td colspan='9'>No records found</td></tr>";
                             }
                             ?>
-                            <tr id="noRecords" style="display:none;">
-                                <td colspan="9" style="text-align:center;">No records found</td>
-                            </tr>
+                                <tr id="noRecords" style="display:none;">
+                                    <td colspan="9" style="text-align:center;">No records found</td>
+                                </tr>
                         </tbody>
                     </table>
+
+                    <button id="printPdfButton" class="print-pdf" onclick="printTableToPDF()">
+                        <i class='bx bx-printer'></i>
+                    </button>
                     <button class="add" id="addButton" onclick="document.getElementById('addModal').style.display='block'">
                         <i class='bx bxs-add-to-queue'></i>
                     </button>
+
                 </div>
             </div>
         </div>
@@ -599,9 +721,8 @@
             </select>
 
             <label for="status">Status</label>
-            <select id="status" name="status" required>
-                <option value="Active">Active</option>
-            </select>
+            <input type="text" id="status" name="status" required>
+
             <label for="date">Date:</label>
             <input type="date" id="date" name="date" required>
 
@@ -612,6 +733,10 @@
 
 
     <script>
+        function confirmLogout() {
+            return confirm("Are you sure you want to log out?");
+        }
+
         function editRow(id) {
             // Confirm if the user wants to edit the specific student record
             const userConfirmed = confirm("Do you want to edit the data for this record?");
@@ -687,6 +812,51 @@
             }
         });
     });
+
+
+    function printTableToPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Add a custom header
+    doc.setFontSize(12); // Set smaller font size for the header
+    doc.text("Student Violation Records (Active)", 105, 10, { align: "center" }); // Centered text at the top
+    doc.setFontSize(8); // Set smaller font size for the date
+    doc.text("Generated on: " + new Date().toLocaleDateString(), 105, 16, { align: "center" }); // Centered date below the main header
+
+    // Add a margin for the header
+    const marginTop = 20;
+
+    // Select the table
+    const table = document.getElementById("violationTable");
+
+    // Extract headers (excluding the Actions column)
+    const headers = Array.from(table.querySelectorAll("thead th"))
+        .map(th => th.textContent.trim())
+        .filter((_, index) => index !== table.querySelectorAll("thead th").length - 1); // Exclude "Actions"
+
+    // Extract rows (excluding the Actions column)
+    const rows = Array.from(table.querySelectorAll("tbody tr")).map(row =>
+        Array.from(row.querySelectorAll("td"))
+            .map(td => td.textContent.trim())
+            .filter((_, index) => index !== row.querySelectorAll("td").length - 1) // Exclude "Actions"
+    );
+
+    // Generate the PDF with 30 rows per page
+    doc.autoTable({
+        head: [headers],
+        body: rows,
+        styles: { fontSize: 8, cellPadding: 2 }, // Smaller font and adjusted padding for readability
+        margin: { top: marginTop, left: 10, right: 10 }, // Adjust margins
+        pageBreak: 'auto', // Automatically paginate
+        showHead: 'everyPage', // Show table headers on every page
+        theme: 'grid', // Simple grid theme for readability
+    });
+
+    // Save the PDF
+    doc.save("Student_Violation_Records.pdf");
+}
+
     </script>
 </body>
 </html>

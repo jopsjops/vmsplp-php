@@ -115,77 +115,142 @@
         .sidebar {
             position: fixed;
             top: 60px;
-            width: 60px;
+            width: 200px;
             height: calc(100% - 60px);
-            background: #059212;
+            background: #fff;
             overflow-x: hidden;
             overflow-y: auto;
-            transition: width 0.3s;
             white-space: nowrap;
             z-index: 1;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
         }
 
-        .sidebar:hover {
-            width: 260px;
-        }
-
+        /* Sidebar list */
         .sidebar ul {
             margin-top: 20px;
             display: flex;
             flex-direction: column;
         }
 
+        /* Sidebar list items */
         .sidebar ul li {
             width: 100%;
             list-style: none;
             margin: 5px;
+            position: relative;
         }
 
-        .sidebar ul li a {
-            width: 100%;
-            text-decoration: none;
-            color: #fff;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            transition: color 0.2s, background-color 0.2s;
-            border-radius: 10px 0 0 10px;
-        }
-
+        /* Sidebar icons */
         .sidebar ul li a i {
             min-width: 60px;
             font-size: 24px;
             text-align: center;
         }
 
-        .sidebar ul li.pred a {
-            color: #059212;
-            background: #fff;
+        /* Sidebar links */
+        .sidebar ul li a {
+            width: 100%;
+            text-decoration: none;
+            color: #333; /* Always dark font */
+            height: 60px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s;
+            border-radius: 10px 0 0 10px;
+            padding-left: 10px;
         }
 
-        .sidebar ul li a:hover {
-            color: #059212;
-            background: #f5f5f5;
+        .sidebar ul li a::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 5px;
+            height: 40px;
+            background-color: #059212;
+            border-radius: 5px;
+            opacity: 0;
+            transform: scaleY(0);
+            transition: all 0.3s ease;
         }
 
-        .sidebar ul li span {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            transition: opacity 0.3s;
+                /* Hover effect */
+        .sidebar ul li a:hover::before {
+            opacity: 1;
+            transform: scaleY(1);
         }
+
+        /* ✅ Active tab: Only shows a green side bar */
+        .sidebar ul li.active::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 5px;
+            height: 40px;
+            background-color: #059212;
+            border-radius: 5px;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .profile-logo img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%; /* Makes the logo circular */
+            object-fit: cover;
+        }
+
+        .profile-info span {
+            font-size: 12px;
+            color: #777;
+        }
+
+        .profile-info h4 {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+
+        .logout {
+            margin-top: 250px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .logout a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .logout i {
+            margin-right: 8px;
+        }
+        /* main content*/
 
         .main {
-            margin-left: 60px;
+            position: absolute;
+            width: calc(100% - 260px);
+            min-height: calc(100vh - 60px);
+            margin-left: 200px;
             padding: 20px;
-            transition: margin-left 0.3s;
+            transition: margin-left 0.3s, width 0.3s; /* Smooth transition */
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap; /* Allow content to wrap on smaller screens */
         }
 
-        .sidebar:hover ~ .main {
-            margin-left: 260px; /* Sidebar expanded */
-        }
-
-        /* main content*/
         .main-content {
             margin-left: 0px; /* Sidebar width */
             padding: 20px;
@@ -231,6 +296,7 @@
             border-radius: 5px;
             background: #fff;
             text-align: center;
+           
         }
 
         table {
@@ -249,6 +315,89 @@
             background-color: #059212;
             color: white;
         } 
+
+        @media screen and (min-width: 1200px) {
+            .main {
+                flex-direction: row;
+                align-items: flex-start;
+                
+            }
+
+            .charts-container {
+                flex: 2;
+                margin-left: auto;
+            }
+
+            .logout {
+                margin-top: 380px;
+                
+            }
+
+            table{
+                width: 125%;;
+            }
+        }
+
+        /* Medium screens (tablets) */
+        @media screen and (max-width: 1199px) and (min-width: 768px) {
+            .main {
+                flex-direction: column;
+            }
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+                justify-content: center;
+            }
+
+            .charts-container {
+                flex-direction: column;
+            }
+        }
+
+        /* Small screens (phones) */
+        @media screen and (max-width: 767px) {
+            .topbar {
+                grid-template-columns: 1fr 1fr; /* Stack logo and user */
+                padding: 0 10px;
+            }
+
+            .sidebar {
+                width: 160px;
+            }
+
+            .main {
+                margin-left: 160px;
+                padding: 10px;
+                flex-direction: column;
+            }
+
+            .cards {
+                grid-template-columns: repeat(1, 1fr);
+                margin-left: 0;
+                padding: 10px;
+            }
+
+            .charts-container {
+                padding: 10px;
+            }
+
+            .card {
+                width: 100%;
+                max-width: 300px;
+                height: auto;
+                margin: 0 auto;
+            }
+
+            .card .gauge {
+                width: 100px;
+                height: 100px;
+            }
+
+            .logo-overlay img {
+                width: 70px;
+                height: 70px;
+            }
+        }
     </style>
    
 </head>
@@ -256,36 +405,38 @@
     <div class="container">
         <div class="topbar">
         <div class="logo">
-                <a href="dashboarddb.php">SSO.</a>
+                <h2>VMS.</h2>
             </div>
-            <div class="search">
-            </div>
-            <div class="user">
-                <img src="img/plp.png" alt="Profile Image" id="profileImage">
-                <div class="dropdown-content" id="dropdownContent">
-                    <a href="cas_changepass.php" id="changePasswordButton"><i class='bx bx-lock'></i> Change
-                        Password</a>
-                        <a href="index.php" id="logoutButton"><i class='bx bx-log-out'></i> Log Out</a>                </div>
-            </div>
+            
+            
         </div>
         <div class="sidebar">
+            <div class="profile">
+                <div class="profile-logo">
+                    <img src="img/plp.png" alt="Logo">
+                </div>
+                <div class="profile-info">
+                    <span>Welcome,</span>
+                    <h4>Admin</h4>
+                </div>
+            </div>
             <ul>
-                <li class="dash">
+                <li>
                     <a href="dashboarddb.php">
                         <i class='bx bxs-dashboard'></i>
                         <div>Dashboard</div>
                     </a>
                 </li>
-                <li class="stud">
+                <li>
                     <a href="students_page.php">
                         <i class='bx bxs-group'></i>
-                        <div>Student</div>
+                        <div>Students</div>
                     </a>
                 </li>
-                <li class="pred">
+                <li class="active">
                     <a href="prediction.php">
                         <i class='fas fa-chart-line'></i>
-                        <div>Prediction</div>
+                        <div>Predictions</div>
                     </a>
                 </li>
                 <li class="archive">
@@ -301,6 +452,12 @@
                     </a>
                 </li>
             </ul>
+            <div class="logout">
+                <a href="logout.php" onclick="return confirmLogout()">
+                    <i class='bx bx-log-out'></i>
+                    <span>Logout</span>
+                </a>
+            </div>
         </div>
         <div class="main">    
             <div class="main-content">
@@ -325,38 +482,16 @@
                 }
                 ?>
             </div>
-
                     <div id="table-container">
                         <!-- Table will be displayed here -->
                     </div>
                 </main>
             </div>
-        </div>
+        </div>  
         <script>
-
-            document.getElementById("profileImage").onclick = function() {
-                var dropdown = document.getElementById("dropdownContent");
-                dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-            };
-
-            window.onclick = function(event) {
-                if (!event.target.matches('#profileImage')) {
-                    var dropdowns = document.getElementsByClassName("dropdown-content");
-                    for (var i = 0; i < dropdowns.length; i++) {
-                        var openDropdown = dropdowns[i];
-                        if (openDropdown.style.display === "block") {
-                            openDropdown.style.display = "none";
-                        }
-                    }
-                }
-            };
-
-            document.getElementById("logoutButton").onclick = function(event) {
-                var confirmLogout = confirm("Are you sure you want to log out?");
-                if (!confirmLogout) {
-                    event.preventDefault();
-                }
-            };
+        function confirmLogout() {
+            return confirm("Are you sure you want to log out?");
+        }
         </script>
     </div>
 </body>

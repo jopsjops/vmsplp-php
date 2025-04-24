@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="icon" type="image/png" sizes="32x32" href="img/plp.png">
     <title>Admin</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
     <style>
         * {
             padding: 0;
@@ -114,84 +116,146 @@
         }
 
         /*sidebar*/
-        .sidebar {
+         /* Sidebar */
+         .sidebar {
             position: fixed;
             top: 60px;
-            width: 60px;
+            width: 200px;
             height: calc(100% - 60px);
-            background: #059212;
+            background: #fff;
             overflow-x: hidden;
             overflow-y: auto;
-            transition: width 0.3s;
             white-space: nowrap;
             z-index: 1;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
         }
 
-        .sidebar:hover {
-            width: 260px;
-        }
-
+        /* Sidebar list */
         .sidebar ul {
             margin-top: 20px;
             display: flex;
             flex-direction: column;
         }
 
+        /* Sidebar list items */
         .sidebar ul li {
             width: 100%;
             list-style: none;
             margin: 5px;
+            position: relative;
         }
 
-        .sidebar ul li a {
-            width: 100%;
-            text-decoration: none;
-            color: #fff;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            transition: color 0.2s, background-color 0.2s;
-            border-radius: 10px 0 0 10px;
-        }
-
+        /* Sidebar icons */
         .sidebar ul li a i {
             min-width: 60px;
             font-size: 24px;
             text-align: center;
         }
 
-        .sidebar ul li.archive a {
-            color: #059212;
-            background: #fff;
+        /* Sidebar links */
+        .sidebar ul li a {
+            width: 100%;
+            text-decoration: none;
+            color: #333; /* Always dark font */
+            height: 60px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s;
+            border-radius: 10px 0 0 10px;
+            padding-left: 10px;
         }
 
-        .sidebar ul li a:hover {
-            color: #059212;
-            background: #fff;
+        .sidebar ul li a::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 5px;
+            height: 40px;
+            background-color: #059212;
+            border-radius: 5px;
+            opacity: 0;
+            transform: scaleY(0);
+            transition: all 0.3s ease;
         }
 
-        .sidebar ul li span {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            transition: opacity 0.3s;
-        }
-
-        .sidebar:hover .sidebar-item-text {
+                /* Hover effect */
+        .sidebar ul li a:hover::before {
             opacity: 1;
+            transform: scaleY(1);
         }
 
-        .main {
-            margin-left: 60px;
+        /* ✅ Active tab: Only shows a green side bar */
+        .sidebar ul li.active::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 5px;
+            height: 40px;
+            background-color: #059212;
+            border-radius: 5px;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
             padding: 20px;
-            transition: margin-left 0.3s;
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #ddd;
         }
 
-        .sidebar:hover+.main {
-            margin-left: 260px;
+        .profile-logo img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%; /* Makes the logo circular */
+            object-fit: cover;
+        }
+
+        .profile-info span {
+            font-size: 12px;
+            color: #777;
+        }
+
+        .profile-info h4 {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+
+        .logout {
+            margin-top: 250px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .logout a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .logout i {
+            margin-right: 8px;
         }
 
         /*main content*/
+        .main {
+            position: absolute;
+            width: calc(100% - 260px);
+            min-height: calc(100vh - 60px);
+            margin-left: 200px;
+            padding: 20px;
+            transition: margin-left 0.3s, width 0.3s; /* Smooth transition */
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap; /* Allow content to wrap on smaller screens */
+        }
+
         .main h1 {
             margin-top: 70px;
             margin-bottom: 20px;
@@ -226,173 +290,262 @@
             outline-style: auto;
         }
 
-        #charts div {
-            min-width: 250px;
-            max-width: 400px;
-            border-radius: 8px;
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        #charts h2 {
-            font-size: 18px;
-            color: #059212;
-            margin-bottom: 10px;
-        }
-
-        #charts canvas {
-            width: 100% !important;
-            height: 200px;
-        }
+        
 
         table {
-            border-radius: 5px;
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
+            background-color: #fff; /* White background for the table */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+            border-radius: 5px;
         }
 
         table,
         th,
         td {
-            border: 1px solid #ddd;
+            border: 1px solid #e0e0e0; /* Light gray border for a minimalistic look */
         }
 
         th,
         td {
-            padding: 12px;
-            text-align: center;
+            padding: 10px 15px; /* Reduced padding for a clean look */
+            text-align: center; /* Left align the text for a modern style */
+            font-size: 15px; /* Slightly smaller text for minimalism */
         }
 
         th {
-            background-color: #059212;
-            color: #fff;
-            margin: 0;
+            background-color: #f7f7f7; /* Light gray background for table headers */
+            color: #333; /* Dark text color for readability */
+            font-weight: bold; /* Make headers bold */
+            text-transform: uppercase; /* All caps for headers for a minimalistic feel */
         }
 
         tr:nth-child(even) {
-            background-color: #f2f2f2;
+            background-color: #fafafa; /* Very light gray background for even rows */
+        }
+
+        tr:hover {
+            background-color: #f1f1f1; /* Slight hover effect for rows */
+        }
+
+        td {
+            color: #333; /* Dark text color for the data */
         }
 
         button {
-            padding: 10px 20px;
+            padding: 8px 15px;
             border: none;
             border-radius: 5px;
-            color: #fff;
+            color: #333;
+            background-color: transparent;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
             transition: background-color 0.3s ease;
         }
 
         button:hover {
+            background-color: #f1f1f1; /* Hover effect for buttons */
             opacity: 0.9;
         }
 
+
+       
+
         button.edit {
-            color: #059212;
+            color: #333;
             background-color: transparent;
         }
 
         button.archive {
-            color: #059212;
+            color: #333;
             background-color: transparent;
         }
 
 
         button.add {
-            width: 50px; /* Set the width of the circle */
-            height: 50px; /* Set the height to be the same as the width */
-            border-radius: 50%; /* This makes the button round */
-            background-color: #059212; /* Background color of the button */
-            color: white; /* Icon color */
-            border: none; /* Remove border */
-            display: flex; /* Center icon inside the button */
-            justify-content: center; /* Horizontally center the icon */
-            align-items: center; /* Vertically center the icon */
-            cursor: pointer; /* Add a pointer on hover */
+            width: 50px;              /* Set the width of the circle */
+            height: 50px;             /* Set the height to be the same as the width */
+            border-radius: 50%;       /* This makes the button round */
+            background-color: #333; /* Background color of the button */
+            color: white;             /* Icon color */
+            border: none;             /* Remove border */
+            display: flex;            /* Center icon inside the button */
+            justify-content: center;  /* Horizontally center the icon */
+            align-items: center;      /* Vertically center the icon */
+            cursor: pointer;          /* Add a pointer on hover */
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
-            position: fixed; /* Make the button stay in a fixed position */
-            bottom: 20px; /* Distance from the bottom of the screen */
-            right: 20px; /* Distance from the right side of the screen */
+            position: fixed;          /* Make the button fixed to the viewport */
+            bottom: 20px;             /* Distance from the bottom of the viewport */
+            right: 20px;              /* Distance from the right of the viewport */
+            z-index: 1000;            /* Ensure it stays on top of other elements */
         }
 
-        #moveDataModal {
+        button.print-pdf {
+            width: 50px;              /* Set the width of the circle */
+            height: 50px;             /* Set the height to be the same as the width */
+            border-radius: 50%;       /* This makes the button round */
+            background-color: #333; /* Background color of the button */
+            color: white;             /* Icon color */
+            border: none;             /* Remove border */
+            display: flex;            /* Center icon inside the button */
+            justify-content: center;  /* Horizontally center the icon */
+            align-items: center;      /* Vertically center the icon */
+            cursor: pointer;          /* Add a pointer on hover */
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+            position: fixed;          /* Make the button fixed to the viewport */
+            bottom: 90px;             /* Distance from the bottom of the viewport */
+            right: 20px;              /* Distance from the right of the viewport */
+            z-index: 1000;            /* Ensure it stays on top of other elements */
+        }
+
+
+        #addModal {
+            display: none;
             position: fixed;
             z-index: 1;
-            top: 0;
             left: 0;
+            top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Dark overlay background */
-            display: flex;
-            padding: 20px;            /* Add some padding to prevent the modal from touching the edges */
+            overflow: hidden;
+            /* Prevents scrolling inside the modal */
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        #modalContent {
+            background-color: #fff;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            /* Centers the modal content */
+            padding: 20px;
+            border: 1px solid #ddd;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
 
-#modalContent {
-    background-color: #fff;
-    padding: 30px 40px;
-    border-radius: 10px;
-    width: 400px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Soft shadow */
-    text-align: center;
-    position: relative;
-    font-family: Arial, sans-serif;
-    color: #333;
-    margin-left: 520px;
-    margin-top: 200px;
-    
-}
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 24px;
+            font-weight: bold;
+        }
 
-.close {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    font-size: 1.5em;
-    font-weight: bold;
-    color: #888;
-    cursor: pointer;
-    transition: color 0.3s;
-}
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
 
-.close:hover {
-    color: #333; /* Darker on hover */
-}
+        form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
 
-/* Input fields styling */
-#moveDataForm input[type="text"],
-#moveDataForm button {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1em;
-}
+        form input,
+        form select {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
 
-#moveDataForm input[type="text"]:focus {
-    border-color: #5a9; /* Light green border on focus */
-    outline: none;
-}
+        form button {
+            color: #fff;
+            background-color: #059212;
+            width: 100%;
+        }
 
-/* Button styling */
-#moveDataForm button {
-    background-color: #28a745; /* Green background */
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    border: none;
-    transition: background-color 0.3s;
-}
+        @media screen and (min-width: 1200px) {
+            .main {
+                flex-direction: row;
+                align-items: flex-start;
+            }
 
-#moveDataForm button:hover {
-    background-color: #218838; /* Darker green on hover */
-}
+            .charts-container {
+                flex: 2;
+                margin-left: auto;
+            }
 
-#moveDataForm button:active {
-    background-color: #1e7e34; /* Darkest green on click */
-}
+            .logout {
+                margin-top: 380px;
+            }
+
+            table{
+                margin-bottom: 600px;
+            }
+
+            
+        }
+
+        /* Medium screens (tablets) */
+        @media screen and (max-width: 1199px) and (min-width: 768px) {
+            .main {
+                flex-direction: column;
+            }
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+                justify-content: center;
+            }
+
+            .charts-container {
+                flex-direction: column;
+            }
+        }
+
+        /* Small screens (phones) */
+        @media screen and (max-width: 767px) {
+            .topbar {
+                grid-template-columns: 1fr 1fr; /* Stack logo and user */
+                padding: 0 10px;
+            }
+
+            .sidebar {
+                width: 160px;
+            }
+
+            .main {
+                margin-left: 160px;
+                padding: 10px;
+                flex-direction: column;
+            }
+
+            .cards {
+                grid-template-columns: repeat(1, 1fr);
+                margin-left: 0;
+                padding: 10px;
+            }
+
+            .charts-container {
+                padding: 10px;
+            }
+
+            .card {
+                width: 100%;
+                max-width: 300px;
+                height: auto;
+                margin: 0 auto;
+            }
+
+            .card .gauge {
+                width: 100px;
+                height: 100px;
+            }
+
+            .logo-overlay img {
+                width: 70px;
+                height: 70px;
+            }
+        }
     </style>
 </head>
 
@@ -400,41 +553,42 @@
     <div class="container">
         <div class="topbar">
             <div class="logo">
-                <a href="dashboarddb.php">SSO.</a>
+                <h2>VMS.</h2>
             </div>
             <div class="search">
                 <input type="text" id="search" placeholder="Search by Student Number">
             </div>
-
-            <div class="user">
-                <img src="img/plp.png" alt="Profile Image" id="profileImage">
-                <div class="dropdown-content" id="dropdownContent">
-                    <a href="admin_changepass.php" id="changePasswordButton"><i class='bx bx-lock'></i> Change Password</a>
-                    <a href="index.php" id="logoutButton"><i class='bx bx-log-out'></i> Log Out</a>
-                </div>
-            </div>
         </div>
         <div class="sidebar">
+            <div class="profile">
+                <div class="profile-logo">
+                    <img src="img/plp.png" alt="Logo">
+                </div>
+                <div class="profile-info">
+                    <span>Welcome,</span>
+                    <h4>Admin</h4>
+                </div>
+            </div>
             <ul>
-                <li class="dash">
+                <li>
                     <a href="dashboarddb.php">
                         <i class='bx bxs-dashboard'></i>
                         <div>Dashboard</div>
                     </a>
                 </li>
-                <li class="stud">
+                <li>
                     <a href="students_page.php">
                         <i class='bx bxs-group'></i>
-                        <div>Student</div>
+                        <div>Students</div>
                     </a>
                 </li>
-                <li class="pred">
+                <li>
                     <a href="prediction.php">
                         <i class='fas fa-chart-line'></i>
-                        <div>Prediction</div>
+                        <div>Predictions</div>
                     </a>
                 </li>
-                <li class="archive">
+                <li class="active">
                     <a href="archive.php">
                         <i class='bx bxs-archive'></i>
                         <div>Archive</div>
@@ -447,18 +601,28 @@
                     </a>
                 </li>
             </ul>
+            <div class="logout">
+                <a href="logout.php" onclick="return confirmLogout()">
+                    <i class='bx bx-log-out'></i>
+                    <span>Logout</span>
+                </a>
+            </div>
         </div>
         <div class="main">
-            <h1>STUDENT ARCHIVE</h1>
+            <h1>STUDENT VIOLATION ARCHIVES</h1>
             <div class="main-content">
                 <div class="table-container">
                     <?php
-                    include 'dbconnection.php';        
-                    // Fetch archive records
-                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Status, Date FROM archive_info ORDER BY Date DESC";
+                    // Database connection
+                    include 'dbconnection.php';
+
+                    // Fetch data from the database
+                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Date, Sanction
+                             FROM archive_info ORDER BY Date DESC";
+
                     $result = $conn->query($sql);
                     ?>
-                    <table id="archiveTable">
+                    <table id="violationTable">
                         <thead>
                             <tr>
                                 <th>Student ID</th>
@@ -466,8 +630,10 @@
                                 <th>Department</th>
                                 <th>Program</th>
                                 <th>Violation</th>
+                                <th>Offense</th>
                                 <th>Status</th>
                                 <th>Date</th>
+                                <th>Sanction</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -475,21 +641,23 @@
                             <?php
                             if ($result->num_rows > 0) {
                                 while ($row = $result->fetch_assoc()) {
+                                    $sanctionText = "";
                                     echo "<tr>
                                         <td>" . htmlspecialchars($row['Student_ID']) . "</td>
                                         <td>" . htmlspecialchars($row['Student_Name']) . "</td>
                                         <td>" . htmlspecialchars($row['Department']) . "</td>
                                         <td>" . htmlspecialchars($row['Program']) . "</td>
                                         <td>" . htmlspecialchars($row['Violation']) . "</td>
-                                        
+                                        <td>" . htmlspecialchars($row['Offense']) . "</td>
                                         <td>" . htmlspecialchars($row['Status']) . "</td>
                                         <td>" . htmlspecialchars($row['Date']) . "</td>
+                                        <td>" . htmlspecialchars($row['Sanction']) . "</td>
                                         <td>
                                             <button class='edit' onclick='editRow(" . $row['id'] . ")'>
-                                                <i class='fas fa-pencil-alt'></i> 
+                                                <i class='fas fa-pencil-alt'></i>
                                             </button>
                                             <button class='archive' onclick='transferRow(" . $row['id'] . ")'>
-                                                <i class='fa-solid fa-folder-plus'></i> 
+                                                <i class='fa-solid fa-folder-plus'></i>
                                             </button>
                                         </td>
                                     </tr>";
@@ -498,29 +666,130 @@
                                 echo "<tr><td colspan='9'>No records found</td></tr>";
                             }
                             ?>
+                                <tr id="noRecords" style="display:none;">
+                                    <td colspan="9" style="text-align:center;">No records found</td>
+                                </tr>
                         </tbody>
                     </table>
+
+                    <button id="printPdfButton" class="print-pdf" onclick="printTableToPDF()">
+                        <i class='bx bx-printer'></i>
+                    </button>
                     <button class="add" id="addButton" onclick="document.getElementById('moveDataModal').style.display='block'">
                         <i class='bx bxs-data'></i>
                     </button>
+
                 </div>
             </div>
         </div>
     </div>
 
-    
-    <div id="moveDataModal" style="display:none;">
-        <div id="modalContent">
-            <span class="close" onclick="document.getElementById('moveDataModal').style.display='none'">&times;</span>
-            <form id="moveDataForm" action="move_data.php" method="post">
-                <label for="newTableName">Enter New Table Name: (Ex: Sem_AY)</label>
-                <input type="text" id="newTableName" name="newTableName" required>
+    <div id="addModal">
+    <div id="modalContent">
+        <span class="close" onclick="document.getElementById('addModal').style.display='none'">&times;</span>
+        <form id="addForm" action="add_record.php" method="post">
+            <label for="studentId">Student ID:</label>
+            <input type="text" id="studentId" name="studentId" required>
 
-                <label>Do you want to transfer all data from archive_info to the new table?</label>
-                <button type="submit">Confirm Transfer</button>
-            </form>
-        </div>
+            <label for="name">Student Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="program">Department:</label>
+            <select id="program" name="program" required>
+                <option value="CCS">CCS</option>
+                <option value="CAS">CAS</option>
+                <option value="CBA">CBA</option>
+                <option value="CON">CON</option>
+                <option value="COE">COE</option>
+                <option value="COED">COED</option>
+                <option value="CIHM">CIHM</option>
+            </select>
+
+            <label for="course">Program</label>
+            <select id="course" name="course" required>
+                <option value="BEED">BEED</option>
+                <option value="BSED">BSED</option>
+                <option value="BSA">BSA</option>
+                <option value="BSBA">BSBA</option>
+                <option value="BSENT">BSENT</option>
+                <option value="BSHM">BSHM</option>
+                <option value="BSCS">BSCS</option>
+                <option value="BSIT">BSIT</option>
+                <option value="BSECE">BSECE</option>
+                <option value="BSN">BSN</option>
+            </select>
+
+
+
+            <label for="violation">Violation:</label>
+            <select id="violation" name="violation" required>
+            <optgroup label="Major Offense Violations">
+                    <option value="Cheating">Cheating</option>
+                    <option value="Forgery & Plagiarism">Forgery & Plagiarism</option>
+                    <option value="False Representation">False Representation</option>
+                    <option value="Defamation">Defamation</option>
+                    <option value="Substance Influence">Substance Influence</option>
+                    <option value="Unauthorized Entry">Unauthorized Entry</option>
+                    <option value="Theft">Theft</option>
+                    <option value="Drug Possession/Use">Drug Possession/Use</option>
+                    <option value="Insubordination">Insubordination</option>
+                    <option value="Physical Injury">Physical Injury</option>
+                    <option value="Threats & Bullying">Threats & Bullying</option>
+                    <option value="Gambling">Gambling</option>
+                    <option value="Hazing">Hazing</option>
+                    <option value="Unauthorized Name Use">Unauthorized Name Use</option>
+                    <option value="Financial Misconduct">Financial Misconduct</option>
+                    <option value="Unauthorized Sales">Unauthorized Sales</option>
+                    <option value="Extortion">Extortion</option>
+                    <option value="Vandalism">Vandalism</option>
+                    <option value="Degrading Treatment">Degrading Treatment</option>
+                    <option value="Deadly Weapons">Deadly Weapons</option>
+                    <option value="Abusive Behavior">Abusive Behavior</option>
+                </optgroup>
+                <optgroup label="Minor Offense Violations">
+                    <option value="Policy Violation">Policy Violation</option>
+                    <option value="Violating dress protocol">Violating dress protocol</option>
+                    <option value="Incomplete uniform">Incomplete uniform</option>
+                    <option value="Littering">Littering</option>
+                    <option value="Loitering in hallways">Loitering in hallways</option>
+                    <option value="Class disturbance">Class disturbance</option>
+                    <option value="Shouting">Shouting</option>
+                    <option value="Eating in class">Eating in class</option>
+                    <option value="Public affection">Public affection</option>
+                    <option value="Kissing">Kissing</option>
+                    <option value="Suggestive poses">Suggestive poses</option>
+                    <option value="Inappropriate touching">Inappropriate touching</option>
+                    <option value="No ID card">No ID card</option>
+                    <option value="Using others' ID">Using others' ID</option>
+                    <option value="Caps indoors">Caps indoors</option>
+                    <option value="Noise in quiet areas">Noise in quiet areas</option>
+                    <option value="Discourtesy">Discourtesy</option>
+                    <option value="Malicious calls">Malicious calls</option>
+                    <option value="Refusing ID check">Refusing ID check</option>
+                    <option value="Blocking passageways">Blocking passageways</option>
+                    <option value="Unauthorized charging">Unauthorized charging</option>
+                    <option value="Academic non-compliance">Academic non-compliance</option>
+                </optgroup>
+            </select>
+
+            <label for="offense">Offense:</label>
+            <select id="offense" name="offense" required>
+                <option value="">Select Offense</option>
+                <option value="Major">Major</option>
+                <option value="Minor">Minor</option>
+            </select>
+
+            <label for="status">Status</label>
+            <input type="text" id="status" name="status" required>
+
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required>
+
+            <button type="submit" class="submit-btn">Submit</button>
+        </form>
     </div>
+</div>
+
 
     <script>
         function editRow(id) {
@@ -529,84 +798,39 @@
 
             // If confirmed, redirect to the edit page with the specific ID
             if (userConfirmed) {
-                const url = 'edit_archive.php?id=' + id;
+                const url = 'edit_record.php?id=' + id;
                 window.location.href = url;
             }
         }
 
-        // Transfer from Archive back to Student Info
         function transferRow(id) {
-            const userConfirmed = confirm("Are you sure you want to restore this student with ID: " + id + "?");
+    const userConfirmed = confirm("Are you sure you want to archive this student with ID: " + id + "?");
 
-            if (userConfirmed) {
-                fetch('transfer_archive.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id: id }) // Send student ID for restoration
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert(data.message); // Show success message
-                        window.location.reload(); // Reload the page to update the table
-                    } else {
-                        alert("Error: " + data.message); // Show error message
-                    }
-                })
-                .catch(error => console.error('Error:', error)); // Log any errors
-            }
-        }
-
-        // Search functionality
-        document.getElementById('search').addEventListener('keyup', function () {
-            const searchValue = this.value.toLowerCase();
-            const rows = document.querySelectorAll('#archiveTable tbody tr');
-            let rowCount = 0;
-
-            rows.forEach(function (row) {
-                const rowText = row.textContent.toLowerCase();
-                if (rowText.includes(searchValue)) {
-                    row.style.display = '';
-                    rowCount++;
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-
-            // Display "No records found" if no rows match the search query
-            const noRecordsRow = document.getElementById('noRecords');
-            if (rowCount === 0) {
-                noRecordsRow.style.display = '';
+    if (userConfirmed) {
+        fetch('transfer_student.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: id })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);  // Alert the user for successful archival
+                window.location.reload();  // Reload the page to reflect changes
             } else {
-                noRecordsRow.style.display = 'none';
+                alert("Error: " + data.message);  // Show error if there is any
             }
-        });
-
-        document.getElementById("profileImage").onclick = function() {
-        var dropdown = document.getElementById("dropdownContent");
-        dropdown.style.display = (dropdown.style.display === "none" || dropdown.style.display === "") ? "block" : "none";
+        })
+        .catch(error => console.error("Error:", error));  // Catch any potential errors
     }
+}
 
-    window.onclick = function(event) {
-        if (!event.target.matches('#profileImage')) {
-            var dropdowns = document.getElementsByClassName("dropdown-content");
-            for (var i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.style.display === "block") {
-                    openDropdown.style.display = "none";
-                }
-            }
-        }
+
+    function confirmLogout() {
+        return confirm("Are you sure you want to log out?");
     }
-
-    document.getElementById("logoutButton").onclick = function(event) {
-        var confirmLogout = confirm("Are you sure you want to log out?");
-        if (!confirmLogout) {
-            event.preventDefault();
-        }
-    };
 
 
      // Attach an event listener to the search input
@@ -623,8 +847,51 @@
             }
         });
     });
-    
+
+
+    function printTableToPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Add a custom header
+    doc.setFontSize(12); // Set smaller font size for the header
+    doc.text("Student Violation Records (Active)", 105, 10, { align: "center" }); // Centered text at the top
+    doc.setFontSize(8); // Set smaller font size for the date
+    doc.text("Generated on: " + new Date().toLocaleDateString(), 105, 16, { align: "center" }); // Centered date below the main header
+
+    // Add a margin for the header
+    const marginTop = 20;
+
+    // Select the table
+    const table = document.getElementById("violationTable");
+
+    // Extract headers (excluding the Actions column)
+    const headers = Array.from(table.querySelectorAll("thead th"))
+        .map(th => th.textContent.trim())
+        .filter((_, index) => index !== table.querySelectorAll("thead th").length - 1); // Exclude "Actions"
+
+    // Extract rows (excluding the Actions column)
+    const rows = Array.from(table.querySelectorAll("tbody tr")).map(row =>
+        Array.from(row.querySelectorAll("td"))
+            .map(td => td.textContent.trim())
+            .filter((_, index) => index !== row.querySelectorAll("td").length - 1) // Exclude "Actions"
+    );
+
+    // Generate the PDF with 30 rows per page
+    doc.autoTable({
+        head: [headers],
+        body: rows,
+        styles: { fontSize: 8, cellPadding: 2 }, // Smaller font and adjusted padding for readability
+        margin: { top: marginTop, left: 10, right: 10 }, // Adjust margins
+        pageBreak: 'auto', // Automatically paginate
+        showHead: 'everyPage', // Show table headers on every page
+        theme: 'grid', // Simple grid theme for readability
+    });
+
+    // Save the PDF
+    doc.save("Student_Violation_Records.pdf");
+}
+
     </script>
 </body>
-
 </html>

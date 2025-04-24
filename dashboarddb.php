@@ -181,6 +181,13 @@ json_encode($departmentCounts);
             position: relative;
         }
 
+        /* Sidebar icons */
+        .sidebar ul li a i {
+            min-width: 60px;
+            font-size: 24px;
+            text-align: center;
+        }
+
         /* Sidebar links */
         .sidebar ul li a {
             width: 100%;
@@ -194,16 +201,24 @@ json_encode($departmentCounts);
             padding-left: 10px;
         }
 
-        /* Sidebar icons */
-        .sidebar ul li a i {
-            min-width: 60px;
-            font-size: 24px;
-            text-align: center;
+        .sidebar ul li a::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 5px;
+            height: 40px;
+            background-color: #059212;
+            border-radius: 5px;
+            opacity: 0;
+            transform: scaleY(0);
+            transition: all 0.3s ease;
         }
 
-        /* Hover effect */
-        .sidebar ul li a:hover {
-            background: #f5f5f5;
+                /* Hover effect */
+                .sidebar ul li a:hover::before {
+            opacity: 1;
+            transform: scaleY(1);
         }
 
         /* ✅ Active tab: Only shows a green side bar */
@@ -217,6 +232,34 @@ json_encode($departmentCounts);
             background-color: #059212;
             border-radius: 5px;
         }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .profile-logo img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%; /* Makes the logo circular */
+            object-fit: cover;
+        }
+
+        .profile-info span {
+            font-size: 12px;
+            color: #777;
+        }
+
+        .profile-info h4 {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
+
 
         .logout {
             margin-top: 250px;
@@ -306,10 +349,30 @@ json_encode($departmentCounts);
         }
 
         /* Charts container styling */
+        /* General Styling for Charts and Cards Container */
+        /* Cards Section - Grid with 2 Columns */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            padding: 10px;
+            justify-content: center;
+        }
+
+        /* Charts Section */
+        .charts-container {
+            display: flex;
+            flex-direction: column; /* stack charts vertically */
+            align-items: center;     /* center horizontally */
+            justify-content: center; /* optional: center vertically if it has height */
+            gap: 20px;
+            width: 100%;
+        }
+
+        /* Individual Chart Box */
         .charts-container .chart {
-            flex: 1 1 45%; /* Each chart takes up 45% of the row width */
-            max-width: 700px;
-            max-height: 390px;
+            width: 100%;
+            max-width: 700px; /* your original value */
             background: #fff;
             padding: 30px;
             border-radius: 16px;
@@ -317,15 +380,18 @@ json_encode($departmentCounts);
             transition: transform 0.3s ease;
         }
 
+
         .charts-container .chart:hover {
             transform: translateY(-5px);
         }
 
+        /* Canvas Scaling */
         canvas {
-            width: 100%; /* Ensure canvas scales properly */
-            height: 200px; /* Set fixed height for charts */
+            width: 100%;
+            height: 200px;
         }
 
+        /* Chart Title */
         .charts-container h3 {
             margin-top: 0;
             margin-bottom: 20px;
@@ -334,6 +400,18 @@ json_encode($departmentCounts);
             font-weight: 600;
             text-align: center;
         }
+
+        /* Individual Card */
+        .card {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            border-radius: 20px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
 
         .card {
             position: relative;
@@ -345,7 +423,7 @@ json_encode($departmentCounts);
             transition: transform 0.3s ease;
         }
 
-        .card.ccs {
+        /* .card.ccs {
             background-image: url('img/ccs.png');
             background-size: cover;
         }
@@ -378,7 +456,7 @@ json_encode($departmentCounts);
         .card.con {
             background-image: url('img/con_con.png');
             background-size: cover;
-        }
+        } */
 
         .gauge-container {
             position: relative;
@@ -431,7 +509,96 @@ json_encode($departmentCounts);
             transform: translateY(-5px);
         }
 
-        
+        /* Large screens (desktops) */
+        @media screen and (min-width: 1200px) {
+            .main {
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 40px;
+            }
+
+            .cards {
+                margin-left: 200px;
+                margin-right: 100px;
+                transform: translateY(10px);
+                flex: 1;
+                grid-template-columns: repeat(3, 1fr);
+                max-width: 420px;
+            }
+
+            .charts-container {
+                flex: 2;
+                margin-left: auto;
+            }
+
+            .logout {
+                margin-top: 380px;
+                
+            }
+        }
+
+
+
+        /* Medium screens (tablets) */
+        @media screen and (max-width: 1199px) and (min-width: 768px) {
+            .main {
+                flex-direction: column;
+            }
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+                justify-content: center;
+            }
+
+            .charts-container {
+                flex-direction: column;
+            }
+        }
+
+        /* Small screens (phones) */
+        @media screen and (max-width: 767px) {
+            .topbar {
+                grid-template-columns: 1fr 1fr; /* Stack logo and user */
+                padding: 0 10px;
+            }
+
+            .sidebar {
+                width: 160px;
+            }
+
+            .main {
+                margin-left: 160px;
+                padding: 10px;
+                flex-direction: column;
+            }
+
+            .cards {
+                grid-template-columns: repeat(1, 1fr);
+                margin-left: 0;
+                padding: 10px;
+            }
+
+            .charts-container {
+                padding: 10px;
+            }
+
+            .card {
+                width: 100%;
+                max-width: 300px;
+                height: auto;
+                margin: 0 auto;
+            }
+
+            .card .gauge {
+                width: 100px;
+                height: 100px;
+            }
+
+            .logo-overlay img {
+                width: 70px;
+                height: 70px;
+            }
+        }
 
         
     </style>
@@ -440,17 +607,20 @@ json_encode($departmentCounts);
     <div class="container">
         <div class="topbar">
             <div class="logo">
-                <h2>SSO.</h2>
+                <h2>VMS.</h2>
             </div>
-            <div class="user">
-                <img src="img/plp.png" alt="Profile Image" id="profileImage">
-                <div class="dropdown-content" id="dropdownContent">
-                <a href="admin_changepass.php" id="changePasswordButton"><i class='bx bx-lock'></i> Change Password</a>
-                    <a href="index.php" id="logoutButton"><i class='bx bx-log-out'></i> Log Out</a>
-                </div>
-            </div>
+            
         </div>
         <div class="sidebar">
+            <div class="profile">
+                <div class="profile-logo">
+                    <img src="img/plp.png" alt="Logo">
+                </div>
+                <div class="profile-info">
+                    <span>Welcome,</span>
+                    <h4>Admin</h4>
+                </div>
+            </div>
             <ul>
                 <li class="active">
                     <a href="dashboarddb.php">
@@ -484,9 +654,9 @@ json_encode($departmentCounts);
                 </li>
             </ul>
             <div class="logout">
-                <a href="logout.php">
+                <a href="logout.php" onclick="return confirmLogout()">
                     <i class='bx bx-log-out'></i>
-                    <div>Logout</div>
+                    <span>Logout</span>
                 </a>
             </div>
         </div>
@@ -542,29 +712,9 @@ json_encode($departmentCounts);
     </div>
     
     <script>
-    document.getElementById("profileImage").onclick = function() {
-        var dropdown = document.getElementById("dropdownContent");
-        dropdown.style.display = (dropdown.style.display === "none" || dropdown.style.display === "") ? "block" : "none";
+    function confirmLogout() {
+        return confirm("Are you sure you want to log out?");
     }
-
-    window.onclick = function(event) {
-        if (!event.target.matches('#profileImage')) {
-            var dropdowns = document.getElementsByClassName("dropdown-content");
-            for (var i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.style.display === "block") {
-                    openDropdown.style.display = "none";
-                }
-            }
-        }
-    }
-
-    document.getElementById("logoutButton").onclick = function(event) {
-        var confirmLogout = confirm("Are you sure you want to log out?");
-        if (!confirmLogout) {
-            event.preventDefault();
-        }
-    };
 
     // Fetch the violation trend data from the PHP backend
     const violationData = <?php echo json_encode($graphData); ?>;
