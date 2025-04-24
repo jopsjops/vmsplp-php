@@ -576,6 +576,7 @@
                                 <th>Date</th>
                                 <th>Sanction</th>
                                 <th>Actions</th>
+                                <th>Email</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -593,6 +594,7 @@
                                         <td>" . htmlspecialchars($row['Status']) . "</td>
                                         <td>" . htmlspecialchars($row['Date']) . "</td>
                                         <td>" . htmlspecialchars($row['Sanction']) . "</td>
+                                        <td>" . htmlspecialchars($row['Email']) . "</td>
                                         <td>
                                             <button class='edit' onclick='editRow(" . $row['id'] . ")'>
                                                 <i class='fas fa-pencil-alt'></i>
