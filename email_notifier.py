@@ -19,10 +19,12 @@ db = mysql.connector.connect(
     database="violationdb"
 )
 
+
+
 cursor = db.cursor()
 
 # Fetch violations that haven't been emailed
-cursor.execute("SELECT id, Email, Student_Name, Violation FROM student_info WHERE Email_status = 'Pending'")
+cursor.execute("SELECT id, Email, Student_Name, Violation FROM student_info WHERE Email_Status = 'Pending'")
 student_info = cursor.fetchall()
 
 if not student_info:
@@ -59,10 +61,10 @@ else:
                 smtp.login(sender_email, sender_password)
                 smtp.send_message(msg)
             print(f" Email successfully sent to: {receiver_email}")
-            cursor.execute("UPDATE student_info SET email_status = 'Sent' WHERE id = %s", (id,))
+            cursor.execute("UPDATE student_info SET Email_Status = 'Sent' WHERE id = %s", (id,))
         except Exception as e:
             print(f" Failed to send email to: {receiver_email}. Error: {e}")
-            cursor.execute("UPDATE student_info SET email_status = 'Failed' WHERE id = %s", (id,))
+            cursor.execute("UPDATE student_info SET Email_Status = 'Failed' WHERE id = %s", (id,))
 
 # Commit changes and close connection
 db.commit()
