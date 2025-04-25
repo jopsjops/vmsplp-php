@@ -558,7 +558,7 @@
                     include 'dbconnection.php';
 
                     // Fetch data from the database
-                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Date FROM student_info WHERE Department = 'CCS'";
+                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Date, Sanction FROM student_info WHERE Department = 'CCS'";
                     $result = $conn->query($sql);
                     ?>
                     <table id="violationTable">
