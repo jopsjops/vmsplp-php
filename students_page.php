@@ -464,7 +464,7 @@
             width: 100%;
         }
 
-        @media screen and (min-width: 1200px) {
+        /* @media screen and (min-width: 1200px) {
             .main {
                 flex-direction: row;
                 align-items: flex-start;
@@ -484,7 +484,7 @@
             }
 
             
-        }
+        } */
 
         
     </style>
