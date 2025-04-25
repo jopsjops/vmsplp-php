@@ -223,7 +223,7 @@
 
 
         .logout {
-            margin-top: 250px;
+            margin-top: 180px;
             padding: 10px;
             text-align: center;
         }
@@ -357,13 +357,13 @@
 }
 
 /* Large screens (desktops) */
-@media screen and (min-width: 1200px) {
+/* @media screen and (min-width: 1200px) {
            
             .logout {
                 margin-top: 380px;
                 
             }
-        }
+        } */
 
 
         

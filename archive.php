@@ -226,7 +226,7 @@
 
 
         .logout {
-            margin-top: 250px;
+            margin-top: 180px;
             padding: 10px;
             text-align: center;
         }
@@ -464,10 +464,11 @@
             width: 100%;
         }
 
-        @media screen and (min-width: 1200px) {
+        /* @media screen and (min-width: 1200px) {
             .main {
                 flex-direction: row;
                 align-items: flex-start;
+                
             }
 
             .charts-container {
@@ -477,17 +478,16 @@
 
             .logout {
                 margin-top: 380px;
+                
             }
 
             table{
-                margin-bottom: 600px;
+                width: 125%;;
             }
-
-            
-        }
+        } */
 
         /* Medium screens (tablets) */
-        @media screen and (max-width: 1199px) and (min-width: 768px) {
+        /* @media screen and (max-width: 1199px) and (min-width: 768px) {
             .main {
                 flex-direction: column;
             }
@@ -500,12 +500,12 @@
             .charts-container {
                 flex-direction: column;
             }
-        }
+        } */
 
         /* Small screens (phones) */
-        @media screen and (max-width: 767px) {
+        /* @media screen and (max-width: 767px) {
             .topbar {
-                grid-template-columns: 1fr 1fr; /* Stack logo and user */
+                grid-template-columns: 1fr 1fr; 
                 padding: 0 10px;
             }
 
@@ -545,7 +545,7 @@
                 width: 70px;
                 height: 70px;
             }
-        }
+        } */
     </style>
 </head>
 
