@@ -262,7 +262,7 @@ json_encode($departmentCounts);
 
 
         .logout {
-            margin-top: 250px;
+            margin-top: 180px;
             padding: 10px;
             text-align: center;
         }
@@ -510,7 +510,7 @@ json_encode($departmentCounts);
         }
 
         /* Large screens (desktops) */
-        @media screen and (min-width: 1200px) {
+        /* @media screen and (min-width: 1200px) {
             .main {
                 flex-direction: row;
                 align-items: flex-start;
@@ -535,12 +535,12 @@ json_encode($departmentCounts);
                 margin-top: 380px;
                 
             }
-        }
+        } */
 
 
 
         /* Medium screens (tablets) */
-        @media screen and (max-width: 1199px) and (min-width: 768px) {
+        /* @media screen and (max-width: 1199px) and (min-width: 768px) {
             .main {
                 flex-direction: column;
             }
@@ -553,12 +553,12 @@ json_encode($departmentCounts);
             .charts-container {
                 flex-direction: column;
             }
-        }
+        } */
 
         /* Small screens (phones) */
-        @media screen and (max-width: 767px) {
+        /*@media screen and (max-width: 767px) {
             .topbar {
-                grid-template-columns: 1fr 1fr; /* Stack logo and user */
+                grid-template-columns: 1fr 1fr; 
                 padding: 0 10px;
             }
 
@@ -598,7 +598,7 @@ json_encode($departmentCounts);
                 width: 70px;
                 height: 70px;
             }
-        }
+        }*/
 
         
     </style>
