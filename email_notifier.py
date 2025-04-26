@@ -19,19 +19,17 @@ db = mysql.connector.connect(
     database="violationdb"
 )
 
-
-
 cursor = db.cursor()
 
 # Fetch violations that haven't been emailed
-cursor.execute("SELECT id, Email, Student_Name, Violation FROM student_info WHERE Email_Status = 'Pending'")
-student_info = cursor.fetchall()
+cursor.execute("SELECT id, email, student_id, violation FROM violations WHERE email_status = 'Pending'")
+violations = cursor.fetchall()
 
-if not student_info:
+if not violations:
     print("No pending emails to send.")
 else:
-    for v in student_info:
-        id, receiver_email, name, Violation = v
+    for v in violations:
+        id, receiver_email, name, violation = v
 
         msg = EmailMessage()
         msg['Subject'] = "Pamantasan ng Lungsod ng Pasig Violation Alert"
@@ -44,7 +42,7 @@ else:
             <body>
                 <p>Dear {name},</p>
                 <p>We hope this message finds you well. This is to formally inform you that you have been recorded for the following violation:</p>
-                <p><strong>{Violation}</strong></p>
+                <p><strong>{violation}</strong></p>
                 <p>Kindly report to the student success office at your earliest convenience to address this matter accordingly.</p>
                 <p>Thank you for your attention.</p>
                 <br> 
@@ -61,13 +59,13 @@ else:
                 smtp.login(sender_email, sender_password)
                 smtp.send_message(msg)
             print(f" Email successfully sent to: {receiver_email}")
-            cursor.execute("UPDATE student_info SET Email_Status = 'Sent' WHERE id = %s", (id,))
+            cursor.execute("UPDATE violations SET email_status = 'Sent' WHERE id = %s", (id,))
         except Exception as e:
             print(f" Failed to send email to: {receiver_email}. Error: {e}")
-            cursor.execute("UPDATE student_info SET Email_Status = 'Failed' WHERE id = %s", (id,))
+            cursor.execute("UPDATE violations SET email_status = 'Failed' WHERE id = %s", (id,))
 
 # Commit changes and close connection
 db.commit()
 cursor.close()
 db.close()
-print("Email processing complete.")
+print("✅ Email processing complete.")
