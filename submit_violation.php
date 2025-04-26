@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
         // Prepare the SQL statement for insertion (auto-increment handles 'id' automatically)
-        $stmt = $conn->prepare("INSERT INTO student_info (Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Date, Email) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO student_info (Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Date, Email) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("sssssssss", $studentId, $studentName, $department, $program, $violation, $offense, $status, $date, $email);
 
         // Execute and check for errors
