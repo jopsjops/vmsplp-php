@@ -558,7 +558,7 @@
                     include 'dbconnection.php';
 
                     // Fetch data from the database
-                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Date, Sanction
+                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Personnel, Date, Time, Sanction
                              FROM student_info ORDER BY Date DESC";
 
                     $result = $conn->query($sql);
@@ -573,7 +573,9 @@
                                 <th>Violation</th>
                                 <th>Offense</th>
                                 <th>Status</th>
+                                <th>Personnel</th>
                                 <th>Date</th>
+                                <th>Time</th>
                                 <th>Sanction</th>
                                 <th>Actions</th>                  
                             </tr>
@@ -591,7 +593,9 @@
                                         <td>" . htmlspecialchars($row['Violation']) . "</td>
                                         <td>" . htmlspecialchars($row['Offense']) . "</td>
                                         <td>" . htmlspecialchars($row['Status']) . "</td>
+                                        <td>" . htmlspecialchars($row['Personnel']) . "</td>
                                         <td>" . htmlspecialchars($row['Date']) . "</td>
+                                        <td>" . htmlspecialchars($row['Time']) . "</td>
                                         <td>" . htmlspecialchars($row['Sanction']) . "</td>
                                         <td>
                                             <button class='edit' onclick='editRow(" . $row['id'] . ")'>

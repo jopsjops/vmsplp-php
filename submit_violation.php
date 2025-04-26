@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode($input, true);
     
     // Validate the JSON data
-    if (isset($data['studentId'], $data['studentName'], $data['department'], $data['program'], $data['violation'], $data['offense'], $data['status'], $data['date'], $data['email'])) {
+    if (isset($data['studentId'], $data['studentName'], $data['department'], $data['program'], $data['violation'], $data['offense'], $data['status'], $data['date'], $data['email'], $data['time'], $data['personnelName'])) {
         $studentId = $data['studentId'];
         $studentName = $data['studentName'];
         $department = $data['department'];
@@ -32,11 +32,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $status = $data['status'];
         $date = $data['date'];
         $email = $data['email']; // Assuming you want to use this in the future
+        $time = $data['time']; // Assuming you want to use this in the future
+        $personnelName = $data['personnelName']; // Assuming you want to use this in the future
 
 
         // Prepare the SQL statement for insertion (auto-increment handles 'id' automatically)
-        $stmt = $conn->prepare("INSERT INTO student_info (Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Date, Email) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssssssss", $studentId, $studentName, $department, $program, $violation, $offense, $status, $date, $email);
+        $stmt = $conn->prepare("INSERT INTO student_info (Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Personnel, Date, Time, Email) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssssssssss", $studentId, $studentName, $department, $program, $violation, $offense, $status, $date, $email, $time, $personnelName);
 
         // Execute and check for errors
         if ($stmt->execute()) {
