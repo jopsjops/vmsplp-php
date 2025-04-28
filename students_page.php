@@ -647,30 +647,22 @@
             <label for="name">Student Name:</label>
             <input type="text" id="name" name="name" required>
 
-            <label for="program">Department:</label>
-            <select id="program" name="program" required>
-                <option value="CCS">CCS</option>
-                <option value="CAS">CAS</option>
-                <option value="CBA">CBA</option>
-                <option value="CON">CON</option>
-                <option value="COE">COE</option>
-                <option value="COED">COED</option>
-                <option value="CIHM">CIHM</option>
-            </select>
+            <label for="program">Department</label>
+                <select id="program" name="program" required>
+                    <option value="">-- Select --</option>
+                    <option value="CCS">CCS</option>
+                    <option value="CAS">CAS</option>
+                    <option value="CBA">CBA</option>
+                    <option value="CON">CON</option>
+                    <option value="COE">COE</option>
+                    <option value="COED">COED</option>
+                    <option value="CIHM">CIHM</option>
+                </select>
 
             <label for="course">Program</label>
-            <select id="course" name="course" required>
-                <option value="BEED">BEED</option>
-                <option value="BSED">BSED</option>
-                <option value="BSA">BSA</option>
-                <option value="BSBA">BSBA</option>
-                <option value="BSENT">BSENT</option>
-                <option value="BSHM">BSHM</option>
-                <option value="BSCS">BSCS</option>
-                <option value="BSIT">BSIT</option>
-                <option value="BSECE">BSECE</option>
-                <option value="BSN">BSN</option>
-            </select>
+                <select id="course" name="course" required>
+                    <option value="">-- Select --</option>
+                </select>
 
 
 
@@ -727,16 +719,17 @@
 
             <label for="offense">Offense:</label>
             <select id="offense" name="offense" required>
-                <option value="">Select Offense</option>
+                <option value="">--Select--</option>
                 <option value="Major">Major</option>
                 <option value="Minor">Minor</option>
             </select>
 
-            <label for="status">Status</label>
-            <input type="text" id="status" name="status" required>
 
             <label for="date">Date:</label>
             <input type="date" id="date" name="date" required>
+
+            <label for="time">Time:</label>
+            <input type="time" id="time" name="time" required>
 
             <button type="submit" class="submit-btn">Submit</button>
         </form>
@@ -748,6 +741,86 @@
         function confirmLogout() {
             return confirm("Are you sure you want to log out?");
         }
+
+        //Selection Process in add form by department and course
+        document.getElementById('program').addEventListener('change', function () {
+            const course = document.getElementById('course');
+            const selectedProgram = this.value;
+            
+            // Clear existing options
+            course.innerHTML = '';
+
+            // Set options based on selected program
+            if (selectedProgram === 'CCS') {
+                const ccsOptions = ['BSCS', 'BSIT'];
+                ccsOptions.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    course.appendChild(opt);
+                });
+            } else if (selectedProgram === 'CAS') {
+                const casOptions = ['AB Psych'];
+                casOptions.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    course.appendChild(opt);
+                });
+            
+
+            } else if (selectedProgram ==='CBA') {
+                const cbaOptions = ['BSBA', 'BSENT', 'BSA'];
+                cbaOptions.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    course.appendChild(opt);
+                });
+            } else if (selectedProgram === 'CON') {
+                const conOptions = ['BSN'];
+                conOptions.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    course.appendChild(opt);
+                });
+            } else if (selectedProgram === 'COE') {
+                const coeOptions = ['BSECE'];
+                coeOptions.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    course.appendChild(opt);
+                });
+            } else if (selectedProgram === 'COED') {
+                const coedOptions = ['BEED', 'BSED'];
+                coedOptions.forEach(option =>{
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    course.appendChild(opt);
+                });
+            } else if (selectedProgram === 'CIHM') {
+                const cihmOptions = ['BSHM'];
+                cihmOptions.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    course.appendChild(opt);
+                });
+            } else {
+                const defaultOption = document.createElement('option');
+                defaultOption.value = 'N/A';
+                defaultOption.innerHTML = 'Not Applicable';
+                course.appendChild(defaultOption);
+            }
+        });
+
+        // document.addEventListener('DOMContentLoaded', function() {
+        // const today = new Date().toISOString().split('T')[0]; // Get today's date in 'YYYY-MM-DD' format
+        // document.getElementById('date').value = today; // Set the value of the input field
+        // });
 
         function editRow(id) {
             // Confirm if the user wants to edit the specific student record
@@ -784,8 +857,26 @@
         }
     }
 
+    // Listen for changes in the violation select
+document.getElementById("violation").addEventListener("change", function() {
+    const violationValue = this.value; // Get selected violation
+    const offenseSelect = document.getElementById("offense");
 
-    
+    // Check if the violation is a major or minor offense based on the selection
+    const majorOffenses = [
+        "Cheating", "Forgery & Plagiarism", "False Representation", "Defamation", "Substance Influence", 
+        "Unauthorized Entry", "Theft", "Drug Possession/Use", "Insubordination", "Physical Injury", 
+        "Threats & Bullying", "Gambling", "Hazing", "Unauthorized Name Use", "Financial Misconduct", 
+        "Unauthorized Sales", "Extortion", "Vandalism", "Degrading Treatment", "Deadly Weapons", "Abusive Behavior"
+    ];
+
+    // If the violation is a major offense, set the offense field to "Major"
+    if (majorOffenses.includes(violationValue)) {
+        offenseSelect.value = "Major"; // Automatically select Major
+    } else {
+        offenseSelect.value = "Minor"; // Automatically select Minor if not a major offense
+    }
+});
 
    
 
