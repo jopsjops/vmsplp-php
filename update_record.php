@@ -2,7 +2,7 @@
 include 'dbconnection.php';
 
 // Check if id and other details are posted
-if (isset($_POST['id']) && isset($_POST['Student_Name']) && isset($_POST['Department']) && isset($_POST['Program']) && isset($_POST['Violation']) && isset($_POST['Offense']) && isset($_POST['Status']) && isset($_POST['Date'])) {
+if (isset($_POST['id']) && isset($_POST['Student_Name']) && isset($_POST['Department']) && isset($_POST['Program']) && isset($_POST['Violation']) && isset($_POST['Offense']) && isset($_POST['Status']) && isset($_POST['Sanction']) && isset($_POST['Date'])) {
     $id = $_POST['id'];
     $studentName = $_POST['Student_Name'];
     $department = $_POST['Department'];
@@ -11,11 +11,12 @@ if (isset($_POST['id']) && isset($_POST['Student_Name']) && isset($_POST['Depart
     $offense = $_POST['Offense'];
     $status = $_POST['Status'];
     $date = $_POST['Date'];
+    $sanction = $_POST['Sanction'];
 
     // Update query using the unique id to target the exact record
-    $sql = "UPDATE student_info SET Student_Name=?, Department=?, Program=?, Violation=?, Offense=?, Status=?, Date=? WHERE id=?";
+    $sql = "UPDATE student_info SET Student_Name=?, Department=?, Program=?, Violation=?, Offense=?, Status=?, Sanction=?, Date=? WHERE id=?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssssssi", $studentName, $department, $program, $violation, $offense, $status, $date, $id);
+    $stmt->bind_param("ssssssssi", $studentName, $department, $program, $violation, $offense, $status, $sanction, $date, $id);
 
     if ($stmt->execute()) {
         echo "<script>

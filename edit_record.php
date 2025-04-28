@@ -204,6 +204,9 @@ $conn->close();
         <!-- Add other status options if needed -->
     </select>
 
+    <label for="Sanction">Sanction:</label>
+    <input type="text" name="Sanction" value="<?php echo htmlspecialchars($data['Sanction']); ?>" required>
+
     <label for="Date">Date:</label>
     <input type="date" name="Date" value="<?php echo htmlspecialchars($data['Date']); ?>" required>
 

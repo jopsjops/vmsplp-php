@@ -467,28 +467,77 @@
         }
 
         .sorting-section {
-    display: flex;
-    align-items: center;
-    margin-left: 15px; /* slight space from the search bar */
-    font-size: 14px;
-}
+        display: flex;
+        align-items: center;
+        margin-left: 15px; /* slight space from the search bar */
+        font-size: 14px;
+        }
 
-.sorting-section label {
-    margin-right: 5px;
-    font-weight: bold;
-    color: #333;
-}
+        .sorting-section label {
+            margin-right: 5px;
+            font-weight: bold;
+            color: #333;
+        }
 
-.sorting-section select {
-    padding: 5px 10px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    outline: none;
-    background-color: #f9f9f9;
-    cursor: pointer;
-}
+        .sorting-section select {
+            padding: 5px 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
 
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: #4CAF50;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
+
+        .status-text {
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
 
     </style>
 </head>
@@ -593,35 +642,45 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php
-                            if ($result->num_rows > 0) {
-                                while ($row = $result->fetch_assoc()) {
-                                    $sanctionText = "";
-                                    echo "<tr>
-                                        <td>" . htmlspecialchars($row['Student_ID']) . "</td>
-                                        <td>" . htmlspecialchars($row['Student_Name']) . "</td>
-                                        <td>" . htmlspecialchars($row['Department']) . "</td>
-                                        <td>" . htmlspecialchars($row['Program']) . "</td>
-                                        <td>" . htmlspecialchars($row['Violation']) . "</td>
-                                        <td>" . htmlspecialchars($row['Offense']) . "</td>
-                                        <td>" . htmlspecialchars($row['Status']) . "</td>
-                                        <td>" . htmlspecialchars($row['Personnel']) . "</td>
-                                        <td>" . htmlspecialchars(date('M d, Y h:i A', strtotime($row['Date'] . ' ' . $row['Time']))) . "</td>
-                                        <td>" . htmlspecialchars($row['Sanction']) . "</td>
-                                        <td>
-                                            <button class='edit' onclick='editRow(" . $row['id'] . ")'>
-                                                <i class='fas fa-pencil-alt'></i>
-                                            </button>
-                                            <button class='archive' onclick='transferRow(" . $row['id'] . ")'>
-                                                <i class='fa-solid fa-folder-plus'></i>
-                                            </button>
-                                        </td>
-                                    </tr>";
-                                }
-                            } else {
-                                echo "<tr><td colspan='9'>No records found</td></tr>";
+                        <?php
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($row['Student_ID']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['Student_Name']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['Department']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['Program']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['Violation']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['Offense']); ?></td>
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" onchange="toggleStatus(this)" <?php echo ($row['Status'] == 'Official Violation') ? 'checked' : ''; ?>>
+                                            <span class="slider"></span>
+                                        </label>
+                                        <div class="status-text">
+                                            <?php echo ($row['Status'] == 'Official Violation') ? 'Official Violation' : 'Under Investigation'; ?>
+                                        </div>
+                                    </td>
+                                    <td><?php echo htmlspecialchars($row['Personnel']); ?></td>
+                                    <td><?php echo htmlspecialchars(date('M d, Y h:i A', strtotime($row['Date'] . ' ' . $row['Time']))); ?>
+                                    </td>
+                                    <td><?php echo htmlspecialchars($row['Sanction']); ?></td>
+                                    <td>
+                                        <button class='edit' onclick='editRow(<?php echo $row['id']; ?>)'>
+                                            <i class='fas fa-pencil-alt'></i>
+                                        </button>
+                                        <button class='archive' onclick='transferRow(<?php echo $row['id']; ?>)'>
+                                            <i class='fa-solid fa-folder-plus'></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <?php
                             }
-                            ?>
+                        } else {
+                            echo "<tr><td colspan='11' style='text-align:center;'>No records found</td></tr>";
+                        }
+                        ?>
                             <tr id="noRecords" style="display:none;">
                                 <td colspan="11" style="text-align:center;">No records found</td>
                             </tr>
@@ -727,6 +786,8 @@
                 <option value="Minor">Minor</option>
             </select>
 
+            <label for="sanction">Sanction:</label>
+            <input type="text" id="sanction" name="sanction" required>
 
             <label for="date">Date:</label>
             <input type="date" id="date" name="date" required>
@@ -960,6 +1021,15 @@ document.getElementById("violation").addEventListener("change", function() {
     // Save the PDF
     doc.save("Student_Violation_Records.pdf");
 }
+
+function toggleStatus(checkbox) {
+            const statusDiv = checkbox.parentElement.nextElementSibling;
+            if (checkbox.checked) {
+                statusDiv.textContent = "Official Violation";
+            } else {
+                statusDiv.textContent = "Under Investigation";
+            }
+        }
 
     </script>
 </body>
