@@ -293,8 +293,8 @@
         
         table {
             position: absolute; /* Make the table fixed in place */
-            top: 11 0px; /* Adjust top position to ensure it's below the top bar */
-            left: 0;
+            top: 110px; /* Adjust top position to ensure it's below the top bar */
+            left: 20px;
             right: 0;
             width: 100%; /* Ensure the table takes the full width */
             border-collapse: collapse;
