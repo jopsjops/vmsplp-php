@@ -463,29 +463,30 @@
             width: 100%;
         }
 
-        /* @media screen and (min-width: 1200px) {
-            .main {
-                flex-direction: row;
-                align-items: flex-start;
-            }
+        .sorting-section {
+    display: flex;
+    align-items: center;
+    margin-left: 15px; /* slight space from the search bar */
+    font-size: 14px;
+}
 
-            .charts-container {
-                flex: 2;
-                margin-left: auto;
-            }
+.sorting-section label {
+    margin-right: 5px;
+    font-weight: bold;
+    color: #333;
+}
 
-            .logout {
-                margin-top: 380px;
-            }
+.sorting-section select {
+    padding: 5px 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
 
-            table{
-                margin-bottom: 600px;
-            }
 
-            
-        } */
-
-        
     </style>
 </head>
 
@@ -498,6 +499,15 @@
             <div class="search">
                 <input type="text" id="search" placeholder="Search">
             </div>
+            
+            <div class="sorting-section">
+            <label for="sortDropdown"></label>
+            <select id="sortDropdown">
+                <option value="">Select Type</option>
+                <option value="major">Major</option>
+                <option value="minor">Minor</option>
+            </select>
+    </div>
         </div>
         <div class="sidebar">
             <div class="profile">
@@ -548,6 +558,7 @@
                 </a>
             </div>
         </div>
+        
         <div class="main">
             <h1>STUDENT VIOLATION RECORDS</h1>
             <div class="main-content">
