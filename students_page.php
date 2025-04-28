@@ -294,6 +294,7 @@
 
         table {
             width: 100%;
+            margin-top: -270px;
             border-collapse: collapse;
             margin-bottom: 20px;
             background-color: #fff; /* White background for the table */
@@ -349,8 +350,6 @@
             opacity: 0.9;
         }
 
-
-       
 
         button.edit {
             color: #333;
@@ -574,8 +573,7 @@
                                 <th>Offense</th>
                                 <th>Status</th>
                                 <th>Personnel</th>
-                                <th>Date</th>
-                                <th>Time</th>
+                                <th>Date & Time</th>
                                 <th>Sanction</th>
                                 <th>Actions</th>                  
                             </tr>
@@ -594,8 +592,7 @@
                                         <td>" . htmlspecialchars($row['Offense']) . "</td>
                                         <td>" . htmlspecialchars($row['Status']) . "</td>
                                         <td>" . htmlspecialchars($row['Personnel']) . "</td>
-                                        <td>" . htmlspecialchars($row['Date']) . "</td>
-                                        <td>" . htmlspecialchars($row['Time']) . "</td>
+                                        <td>" . htmlspecialchars(date('M d, Y h:i A', strtotime($row['Date'] . ' ' . $row['Time']))) . "</td>
                                         <td>" . htmlspecialchars($row['Sanction']) . "</td>
                                         <td>
                                             <button class='edit' onclick='editRow(" . $row['id'] . ")'>
