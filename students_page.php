@@ -837,7 +837,7 @@
         }
 
         function transferRow(id) {
-        const userConfirmed = confirm("Are you sure you want to archive this student with ID: " + id + "?");
+        const userConfirmed = confirm("Are you sure you want to archive this student?");
 
         if (userConfirmed) {
             fetch('transfer_student.php', {

@@ -2,19 +2,8 @@
 header('Content-Type: application/json');
 ob_clean();
 
-// Database connection
-$servername = "tj5iv8piornf713y.cbetxkdyhwsb.us-east-1.rds.amazonaws.com";
-$username = "vl9ieik1ttwerlmd"; // Your DB username
-$password = "dxn55zzkhyp5ek1e";     // Your DB password
-$dbname = "z6vet51amyrj9ci0"; // Your DB name
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    echo json_encode(['success' => false, 'message' => 'Database connection failed: ' . $conn->connect_error]);
-    exit;
-}
-
+include 'dbconnection.php';
 $data = json_decode(file_get_contents("php://input"), true);
 $id = $data['id'];  // The ID of the student to be transferred
 
