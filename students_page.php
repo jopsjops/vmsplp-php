@@ -291,16 +291,19 @@
         }
 
         
-
         table {
-            width: 100%;
-            margin-top: -270px;
+            position: absolute; /* Make the table fixed in place */
+            top: 11 0px; /* Adjust top position to ensure it's below the top bar */
+            left: 0;
+            right: 0;
+            width: 100%; /* Ensure the table takes the full width */
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-top: 20px; /* Adjust top margin if needed */
             background-color: #fff; /* White background for the table */
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
             border-radius: 5px;
         }
+
 
         table,
         th,
