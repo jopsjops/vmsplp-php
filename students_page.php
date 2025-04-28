@@ -553,12 +553,15 @@
             </div>
             
             <div class="sorting-section">
-            <label for="sortDropdown"></label>
-            <select id="sortDropdown">
-                <option value="">Select Type</option>
-                <option value="major">Major</option>
-                <option value="minor">Minor</option>
-            </select>
+                <label for="sortDropdown">Sort By:</label>
+                <select id="sortDropdown">
+                    <option value="">Select Type</option>
+                    <option value="department">Department (Alphabetical)</option>
+                    <option value="name">Name (Alphabetical)</option>
+                    <option value="date">Date</option>
+                    <option value="violation">Violation</option>
+                </select>
+            </div>
     </div>
         </div>
         <div class="sidebar">
@@ -627,12 +630,12 @@
                     ?>
                     <table id="violationTable">
                         <thead>
-                            <tr>
+                            <tr>    
                                 <th>Student ID</th>
-                                <th>Name</th>
-                                <th>Department</th>
-                                <th>Program</th>
-                                <th>Violation</th>
+                                <th onclick="sortTable(0)">Name</th>
+                                <th onclick="sortTable(1)">Department</th>
+                                <th onclick="sortTable(2)">Program</th>
+                                <th onclick="sortTable(3)">Violation</th>
                                 <th>Offense</th>
                                 <th>Status</th>
                                 <th>Personnel</th>
@@ -888,7 +891,7 @@
 
         function editRow(id) {
             // Confirm if the user wants to edit the specific student record
-            const userConfirmed = confirm("Do you want to edit the data for this record?");
+            const userConfirmed = confirm("Do you want to edit the data for this record?" + id);
 
             // If confirmed, redirect to the edit page with the specific ID
             if (userConfirmed) {
@@ -898,7 +901,7 @@
         }
 
         function transferRow(id) {
-        const userConfirmed = confirm("Are you sure you want to archive this student?");
+        const userConfirmed = confirm("Are you sure this student is cleared?");
 
         if (userConfirmed) {
             fetch('transfer_student.php', {
@@ -1029,7 +1032,50 @@ function toggleStatus(checkbox) {
             } else {
                 statusDiv.textContent = "Under Investigation";
             }
+}
+
+<script>
+function sortTable(columnIndex) {
+    const table = document.getElementById("violationTable");
+    let switching = true;
+    let dir = "asc"; 
+    let switchcount = 0;
+
+    while (switching) {
+        switching = false;
+        let rows = table.rows;
+
+        for (let i = 1; i < (rows.length - 1); i++) { 
+            let shouldSwitch = false;
+            let x = rows[i].getElementsByTagName("TD")[columnIndex];
+            let y = rows[i + 1].getElementsByTagName("TD")[columnIndex];
+
+            if (dir === "asc") {
+                if (x.innerText.toLowerCase() > y.innerText.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                }
+            } else if (dir === "desc") {
+                if (x.innerText.toLowerCase() < y.innerText.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                }
+            }
         }
+
+        if (shouldSwitch) {
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+            switchcount++;
+        } else {
+            if (switchcount === 0 && dir === "asc") {
+                dir = "desc";
+                switching = true;
+            }
+        }
+    }
+}
+</script>
 
     </script>
 </body>

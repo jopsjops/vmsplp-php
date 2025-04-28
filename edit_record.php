@@ -114,7 +114,7 @@ $conn->close();
 
 <!-- HTML Form to Edit the Record -->
 <h2>Edit Student Record</h2>
-<form action="update_record.php" method="post">
+<form action="update_record.php" method="post" enctype="multipart/form-data">
     <!-- Add a hidden input for id -->
     <input type="hidden" name="id" value="<?php echo htmlspecialchars($data['id']); ?>">
 
@@ -206,6 +206,9 @@ $conn->close();
 
     <label for="Sanction">Sanction:</label>
     <input type="text" name="Sanction" value="<?php echo htmlspecialchars($data['Sanction']); ?>" required>
+
+    <label for="Sanction_Proof">Sanction Proof (Image):</label>
+    <input type="file" name="Sanction_Proof" accept="image/*" style="margin-bottom: 20px;">
 
     <label for="Date">Date:</label>
     <input type="date" name="Date" value="<?php echo htmlspecialchars($data['Date']); ?>" required>

@@ -1,8 +1,8 @@
 <?php
 include 'dbconnection.php';
 
-// Check if id and other details are posted
-if (isset($_POST['id']) && isset($_POST['Student_Name']) && isset($_POST['Department']) && isset($_POST['Program']) && isset($_POST['Violation']) && isset($_POST['Offense']) && isset($_POST['Status']) && isset($_POST['Sanction']) && isset($_POST['Date'])) {
+// Get the 'id' from the URL
+if (isset($_POST['id']) && !empty($_POST['id'])) {
     $id = $_POST['id'];
     $studentName = $_POST['Student_Name'];
     $department = $_POST['Department'];
@@ -10,22 +10,54 @@ if (isset($_POST['id']) && isset($_POST['Student_Name']) && isset($_POST['Depart
     $violation = $_POST['Violation'];
     $offense = $_POST['Offense'];
     $status = $_POST['Status'];
-    $date = $_POST['Date'];
     $sanction = $_POST['Sanction'];
+    $date = $_POST['Date'];
+
+    // Handle image upload
+    $sanctionProofPath = '';
+    $uploadStatus = ''; // Default value for upload status
+    if (isset($_FILES['Sanction_Proof']) && $_FILES['Sanction_Proof']['error'] == 0) {
+        $fileTmpPath = $_FILES['Sanction_Proof']['tmp_name'];
+        $fileName = $_FILES['Sanction_Proof']['name'];
+        $fileSize = $_FILES['Sanction_Proof']['size'];
+        $fileType = $_FILES['Sanction_Proof']['type'];
+
+        // Generate unique file name based on date and time
+        $newFileName = date('Y-m-d_H-i-s') . '_' . $fileName;
+        
+        // Define the folder path to store the images
+        $uploadFolder = 'sanctionsproof/' . htmlspecialchars($studentName) . '/';
+        if (!is_dir($uploadFolder)) {
+            mkdir($uploadFolder, 0777, true); // Create directory if it doesn't exist
+        }
+
+        // Define the full path to store the file
+        $dest_path = $uploadFolder . $newFileName;
+
+        // Move the uploaded file to the destination folder
+        if (move_uploaded_file($fileTmpPath, $dest_path)) {
+            $sanctionProofPath = $dest_path; // Store the file path
+            $uploadStatus = 'File uploaded successfully!';
+        } else {
+            $uploadStatus = 'Error uploading the file!';
+        }
+    } else {
+        $uploadStatus = 'No file uploaded or error with file upload!';
+    }
 
     // Update query using the unique id to target the exact record
-    $sql = "UPDATE student_info SET Student_Name=?, Department=?, Program=?, Violation=?, Offense=?, Status=?, Sanction=?, Date=? WHERE id=?";
+    $sql = "UPDATE student_info SET Student_Name=?, Department=?, Program=?, Violation=?, Offense=?, Status=?, Sanction=?, Date=?, Sanction_Proof=? WHERE id=?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssssssi", $studentName, $department, $program, $violation, $offense, $status, $sanction, $date, $id);
+    $stmt->bind_param("sssssssssi", $studentName, $department, $program, $violation, $offense, $status, $sanction, $date, $sanctionProofPath, $id);
 
     if ($stmt->execute()) {
         echo "<script>
-                alert('Record updated successfully');
+                alert('Record updated successfully. $uploadStatus');
                 window.location.href = 'students_page.php';
               </script>";
     } else {
         echo "<script>
-                alert('Error updating record: " . $stmt->error . "');
+                alert('Error updating record: " . $stmt->error . ". $uploadStatus');
                 window.location.href = 'students_page.php';
               </script>";
     }
@@ -33,7 +65,7 @@ if (isset($_POST['id']) && isset($_POST['Student_Name']) && isset($_POST['Depart
     $stmt->close();
 } else {
     echo "<script>
-            alert('Incomplete data provided for update.');
+            alert('No ID provided.');
             window.location.href = 'students_page.php';
           </script>";
 }
