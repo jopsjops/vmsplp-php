@@ -10,6 +10,7 @@ $violation = $_POST['violation'];
 $offense = $_POST['offense'];
 $status = $_POST['status'];
 $date = $_POST['date'];
+$time = $_POST['time'];
 
 // Check if the student ID already exists
 $sql_check = "SELECT Violation, Offense FROM student_info WHERE Student_ID = ?";
@@ -38,17 +39,21 @@ if ($result->num_rows > 0) {
     $stmt_update->close();
 } else {
     // Insert a new record
-    $sql_insert = "INSERT INTO student_info (Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Date) 
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql_insert = "INSERT INTO student_info (Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Date, Time) 
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt_insert = $conn->prepare($sql_insert);
-    $stmt_insert->bind_param("ssssssss", $student_id, $student_name, $department, $program, $violation, $offense, $status, $date);
+    $stmt_insert->bind_param("sssssssss", $student_id, $student_name, $department, $program, $violation, $offense, $status, $date, $time);
 
-    if ($stmt_insert->execute()) {
-        header("Location: students_page.php?message=Record+added+successfully");
-        exit();
-    } else {
-        echo "Error inserting record: " . $stmt_insert->error;
-    }
+   if ($stmt_insert->execute()) {
+    echo "<script>
+        alert('Record has been added successfully!');
+        window.location.href = 'students_page.php';
+    </script>";
+    exit();
+} else {
+    echo "Error inserting record: " . $stmt_insert->error;
+}
+
 
     $stmt_insert->close();
 }

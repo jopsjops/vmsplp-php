@@ -110,6 +110,52 @@ $conn->close();
             font-size: 16px;
         }
     }
+
+        /* Toggle Switch */
+    .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 25px;
+    margin-left: 10px;
+    }
+
+    .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    }
+
+    .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0;
+    right: 0; bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 25px;
+    }
+
+    .slider:before {
+    position: absolute;
+    content: "";
+    height: 19px;
+    width: 19px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+    }
+
+    input:checked + .slider {
+    background-color: #059212;
+    }
+
+    input:checked + .slider:before {
+    transform: translateX(25px);
+    }
+
 </style>
 
 <!-- HTML Form to Edit the Record -->
@@ -199,13 +245,13 @@ $conn->close();
     </select>
 
     <label for="Status">Status:</label>
-    <select name="Status" required>
+    <select name="Status">
         <option><?php echo htmlspecialchars($data['Status']); ?></option>
         <!-- Add other status options if needed -->
     </select>
 
     <label for="Sanction">Sanction:</label>
-    <input type="text" name="Sanction" value="<?php echo htmlspecialchars($data['Sanction']); ?>" required>
+    <input type="text" name="Sanction" value="<?php echo htmlspecialchars($data['Sanction']); ?>">
 
     <label for="Sanction_Proof">Sanction Proof (Image):</label>
     <input type="file" name="Sanction_Proof" accept="image/*" style="margin-bottom: 20px;">
@@ -213,6 +259,29 @@ $conn->close();
     <label for="Date">Date:</label>
     <input type="date" name="Date" value="<?php echo htmlspecialchars($data['Date']); ?>" required>
 
+    <label for="toggleSwitch">Active Violation:</label>
+    <label class="switch">
+        <input type="checkbox" id="toggleSwitch">
+        <span class="slider round"></span>
+    </label>
     <button type="submit">Update Record</button>
 </form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggle = document.getElementById('toggleSwitch');
+
+        // Load saved state
+        const saved = localStorage.getItem('toggleSwitch');
+        if (saved === 'on') {
+            toggle.checked = true;
+        }
+
+        // Save state on change
+        toggle.addEventListener('change', function () {
+            localStorage.setItem('toggleSwitch', toggle.checked ? 'on' : 'off');
+        });
+    });
+</script>
+
 

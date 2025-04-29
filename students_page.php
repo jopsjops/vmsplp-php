@@ -556,8 +556,8 @@
                 <label for="sortDropdown">Sort By:</label>
                 <select id="sortDropdown">
                     <option value="">Select Type</option>
-                    <option value="department">Department (Alphabetical)</option>
                     <option value="name">Name (Alphabetical)</option>
+                    <option value="department">Department (Alphabetical)</option>
                     <option value="date">Date</option>
                     <option value="violation">Violation</option>
                 </select>
@@ -632,10 +632,10 @@
                         <thead>
                             <tr>    
                                 <th>Student ID</th>
-                                <th onclick="sortTable(0)">Name</th>
-                                <th onclick="sortTable(1)">Department</th>
-                                <th onclick="sortTable(2)">Program</th>
-                                <th onclick="sortTable(3)">Violation</th>
+                                <th>Name</th>
+                                <th>Department</th>
+                                <th>Program</th>
+                                <th>Violation</th>
                                 <th>Offense</th>
                                 <th>Status</th>
                                 <th>Personnel</th>
@@ -656,15 +656,7 @@
                                     <td><?php echo htmlspecialchars($row['Program']); ?></td>
                                     <td><?php echo htmlspecialchars($row['Violation']); ?></td>
                                     <td><?php echo htmlspecialchars($row['Offense']); ?></td>
-                                    <td>
-                                        <label class="switch">
-                                            <input type="checkbox" onchange="toggleStatus(this)" <?php echo ($row['Status'] == 'Official Violation') ? 'checked' : ''; ?>>
-                                            <span class="slider"></span>
-                                        </label>
-                                        <div class="status-text">
-                                            <?php echo ($row['Status'] == 'Official Violation') ? 'Official Violation' : 'Under Investigation'; ?>
-                                        </div>
-                                    </td>
+                                    <td><?php echo htmlspecialchars($row['Status']); ?></td>
                                     <td><?php echo htmlspecialchars($row['Personnel']); ?></td>
                                     <td><?php echo htmlspecialchars(date('M d, Y h:i A', strtotime($row['Date'] . ' ' . $row['Time']))); ?>
                                     </td>
@@ -789,6 +781,9 @@
                 <option value="Minor">Minor</option>
             </select>
 
+            <!-- <label for="status">Status:</label>
+            <input type="text" id="status" name="status" required> -->
+
             <label for="sanction">Sanction:</label>
             <input type="text" id="sanction" name="sanction" required>
 
@@ -802,8 +797,6 @@
         </form>
     </div>
 </div>
-
-
     <script>
         function confirmLogout() {
             return confirm("Are you sure you want to log out?");
@@ -1025,58 +1018,65 @@ document.getElementById("violation").addEventListener("change", function() {
     doc.save("Student_Violation_Records.pdf");
 }
 
-function toggleStatus(checkbox) {
-            const statusDiv = checkbox.parentElement.nextElementSibling;
-            if (checkbox.checked) {
-                statusDiv.textContent = "Official Violation";
-            } else {
-                statusDiv.textContent = "Under Investigation";
-            }
-}
-
-<script>
-function sortTable(columnIndex) {
+    document.addEventListener("DOMContentLoaded", function () {
+    const sortDropdown = document.getElementById("sortDropdown");
     const table = document.getElementById("violationTable");
-    let switching = true;
-    let dir = "asc"; 
-    let switchcount = 0;
 
-    while (switching) {
-        switching = false;
-        let rows = table.rows;
+    sortDropdown.addEventListener("change", function () {
+        const sortType = this.value;
 
-        for (let i = 1; i < (rows.length - 1); i++) { 
-            let shouldSwitch = false;
-            let x = rows[i].getElementsByTagName("TD")[columnIndex];
-            let y = rows[i + 1].getElementsByTagName("TD")[columnIndex];
-
-            if (dir === "asc") {
-                if (x.innerText.toLowerCase() > y.innerText.toLowerCase()) {
-                    shouldSwitch = true;
-                    break;
-                }
-            } else if (dir === "desc") {
-                if (x.innerText.toLowerCase() < y.innerText.toLowerCase()) {
-                    shouldSwitch = true;
-                    break;
-                }
-            }
+        // Match dropdown value to table column index
+        let columnIndex;
+        switch (sortType) {
+            case "department":
+                columnIndex = 2;
+                break;
+            case "name":
+                columnIndex = 1;
+                break;
+            case "violation":
+                columnIndex = 4;
+                break;
+            case "date":
+                columnIndex = 8;
+                break;
+            default:
+                return; // Do nothing if no valid option is selected
         }
 
-        if (shouldSwitch) {
-            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-            switching = true;
-            switchcount++;
-        } else {
-            if (switchcount === 0 && dir === "asc") {
-                dir = "desc";
-                switching = true;
+        const tbody = table.querySelector("tbody");
+        
+        // Always get FRESH visible rows
+        const rows = Array.from(tbody.querySelectorAll("tr"));
+        const visibleRows = rows.filter(row => row.style.display !== "none");
+
+        // Sort visible rows
+        visibleRows.sort((a, b) => {
+            const aText = a.querySelectorAll("td")[columnIndex]?.innerText.trim() || "";
+            const bText = b.querySelectorAll("td")[columnIndex]?.innerText.trim() || "";
+
+            if (sortType === "date") {
+                return new Date(aText) - new Date(bText);
+            } else {
+                return aText.localeCompare(bText);
             }
-        }
-    }
-}
+        });
+
+        // Remove ALL rows (visible and hidden)
+        rows.forEach(row => tbody.removeChild(row));
+
+        // Re-append sorted visible rows
+        visibleRows.forEach(row => tbody.appendChild(row));
+
+        // Then re-append hidden rows (still hidden)
+        const hiddenRows = rows.filter(row => row.style.display === "none");
+        hiddenRows.forEach(row => tbody.appendChild(row));
+    });
+});
+
+
+
+
 </script>
-
-    </script>
 </body>
 </html>
