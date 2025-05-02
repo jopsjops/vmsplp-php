@@ -564,6 +564,11 @@
             cursor: pointer;
         }
 
+        .highlighted {
+    background-color:rgb(142, 255, 181) !important; /* Light green */
+    transition: background-color 0.3s ease;
+}
+
     </style>
 </head>
 
@@ -661,12 +666,12 @@
                                 <th>Department</th>
                                 <th>Program</th>
                                 <th>Violation</th>
-                                <th>Offense</th>
-                                <th>Status</th>
+                                <th>Offense & Status</th>
                                 <th>Personnel</th>
                                 <th>Date & Time</th>
                                 <th>Sanction</th>
-                                <th>Actions</th>                  
+                                <th>Actions</th>
+                                <th>Buttons</th>                  
                             </tr>
                         </thead>
                         <tbody>
@@ -674,14 +679,16 @@
                         if ($result->num_rows > 0) {
                             while ($row = $result->fetch_assoc()) {
                                 ?>
-                                <tr>
+                                <tr id="row-<?php echo $row['id']; ?>">
                                     <td><?php echo htmlspecialchars($row['Student_ID']); ?></td>
                                     <td><?php echo htmlspecialchars($row['Student_Name']); ?></td>
                                     <td><?php echo htmlspecialchars($row['Department']); ?></td>
                                     <td><?php echo htmlspecialchars($row['Program']); ?></td>
                                     <td><?php echo htmlspecialchars($row['Violation']); ?></td>
-                                    <td><?php echo htmlspecialchars($row['Offense']); ?></td>
-                                    <td><?php echo htmlspecialchars($row['Status']); ?></td>
+                                    <td>
+                                        <?php echo htmlspecialchars($row['Offense']) . ' - ' . htmlspecialchars($row['Status']); ?>
+                                    </td>
+
                                     <td><?php echo htmlspecialchars($row['Personnel']); ?></td>
                                     <td><?php echo htmlspecialchars(date('M d, Y h:i A', strtotime($row['Date'] . ' ' . $row['Time']))); ?>
                                     </td>
@@ -693,8 +700,20 @@
                                         <button class="archive" onclick="openArchiveModal(<?php echo $row['id']; ?>)">
                                             <i class="fa-solid fa-folder-plus"></i>
                                         </button>
+                                    </td>
+                                    <td>
+                                        <!-- Send Email Button -->
+                                        <button class="send-email" onclick="sendEmail(<?php echo $row['id']; ?>)">
+                                            <i class="fas fa-envelope"></i>
+                                        </button>
+
+                                    <!-- Activator Toggle Button -->
+                                    <button class="activate-btn" onclick="toggleActiveViolation(this)" data-row-id="row-<?php echo $row['id']; ?>">
+                                        <i class="fas fa-toggle-on"></i>
+                                    </button>
 
                                     </td>
+
                                 </tr>
                                 <?php
                             }
@@ -1131,8 +1150,16 @@ document.getElementById("violation").addEventListener("change", function() {
     });
 });
 
+function toggleActiveViolation(button) {
+    const rowId = button.getAttribute('data-row-id');
+    const row = document.getElementById(rowId);
 
-
+    if (row.classList.contains('highlighted')) {
+        row.classList.remove('highlighted');
+    } else {
+        row.classList.add('highlighted');
+    }
+}
 
 </script>
 </body>
