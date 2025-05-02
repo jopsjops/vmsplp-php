@@ -718,8 +718,9 @@
                                     <td>
                                         <!-- Send Email Button -->
                                         <button class="send-email" onclick="sendEmail(<?php echo $row['id']; ?>)">
-                                            <i class="fas fa-envelope"></i>
-                                        </button>
+                                        <i class="fas fa-envelope"></i>
+                                    </button>
+
 
                                     <!-- Activator Toggle Button -->
                                     <button class="activate-btn" onclick="toggleActiveViolation(this)" data-row-id="row-<?php echo $row['id']; ?>">
@@ -1173,6 +1174,13 @@ function toggleActiveViolation(button) {
         row.classList.add('highlighted');
     }
 }
+
+    function sendEmail(userId) {
+        fetch('send_email.php?id=' + userId)
+            .then(response => response.text())
+            .then(data => alert(data))
+            .catch(error => console.error('Error:', error));
+    }
 
 </script>
 </body>
