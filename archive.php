@@ -268,9 +268,15 @@
         }
 
         .main-content .table-container {
-            flex: 2;
-            display: flex;
-            flex-direction: column;
+            position: absolute; /* Make the table fixed in place */
+            top: 110px; /* Adjust top position to ensure it's below the top bar */
+            left: 20px;
+            right: 0;
+            width: 100%; /* Ensure the table takes the full width */
+            border-collapse: collapse;
+            margin-top: 20px; /* Adjust top margin if needed */
+            background-color: #fff; /* White background for the table */
+            border-radius: 5px;
         }
 
         .main-content #charts {
