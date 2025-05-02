@@ -653,7 +653,7 @@
                     include 'dbconnection.php';
 
                     // Fetch data from the database
-                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Personnel, Date, Time, Sanction
+                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Personnel, Date, Time, Sanction, Evidence
                              FROM student_info ORDER BY Date DESC";
 
                     $result = $conn->query($sql);
@@ -670,6 +670,7 @@
                                 <th>Personnel</th>
                                 <th>Date & Time</th>
                                 <th>Sanction</th>
+                                <th>Proof</th>
                                 <th>Actions</th>
                                 <th>Buttons</th>                  
                             </tr>
@@ -693,6 +694,19 @@
                                     <td><?php echo htmlspecialchars(date('M d, Y h:i A', strtotime($row['Date'] . ' ' . $row['Time']))); ?>
                                     </td>
                                     <td><?php echo htmlspecialchars($row['Sanction']); ?></td>
+                                    <td>
+                                        <?php if (!empty($row['Evidence']) && file_exists('evidence/' . $row['Evidence'])): ?>
+                                            <img src="evidence/<?php echo htmlspecialchars($row['Evidence']); ?>" alt="Evidence" style="width: 80px; height: auto; margin-top: 5px;">
+                                        <?php else: ?>
+                                            <form action="upload_evidence.php" method="POST" enctype="multipart/form-data" style="display: inline;">
+                                                <input type="hidden" name="student_id" value="<?php echo $row['id']; ?>">
+                                                <input type="file" name="evidence" accept="image/*" style="display:none;" onchange="this.form.submit()">
+                                                <button type="button" onclick="this.previousElementSibling.click();">Upload</button>
+                                            </form>
+                                            <span>No evidence</span>
+                                        <?php endif; ?>
+                                    </td>
+
                                     <td>
                                         <button class='edit' onclick='editRow(<?php echo $row['id']; ?>)'>
                                             <i class='fas fa-pencil-alt'></i>
@@ -848,7 +862,6 @@
     <div class="modal-content">
             <span class="close" onclick="closeArchiveModal()">&times;</span>
             <h3>Archive Violation</h3>
-            <!-- ✅ enctype moved here -->
             <form id="archiveForm" method="POST" action="transfer_student.php" enctype="multipart/form-data">
                 <input type="hidden" name="student_id" id="modalStudentId">
 
