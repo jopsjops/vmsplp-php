@@ -539,6 +539,10 @@
             font-size: 0.9em;
         }
 
+        .highlight-row {
+    background-color: #ffeaa7 !important; /* Light yellow */
+}
+
     </style>
 </head>
 
@@ -1072,6 +1076,18 @@ document.getElementById("violation").addEventListener("change", function() {
         const hiddenRows = rows.filter(row => row.style.display === "none");
         hiddenRows.forEach(row => tbody.appendChild(row));
     });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const toggleState = localStorage.getItem('toggleSwitch');
+    const activeStudentId = localStorage.getItem('activeStudentId');
+
+    if (toggleState === 'on' && activeStudentId) {
+        const targetRow = document.querySelector(`tr[data-student-id='${activeStudentId}']`);
+        if (targetRow) {
+            targetRow.classList.add('highlight-row');
+        }
+    }
 });
 
 

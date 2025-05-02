@@ -1,7 +1,6 @@
 <?php
 include 'dbconnection.php';
 
-
 // Get the 'id' from the URL
 if (isset($_GET['id']) && !empty($_GET['id'])) {
     $id = $_GET['id'];
@@ -21,9 +20,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 $conn->close();
 ?>
 
-
 <style>
-    /* General styles for the form */
     * {
         font-family: 'Poppins', sans-serif;
     }
@@ -31,23 +28,19 @@ $conn->close();
     form {
         width: 100%;
         max-width: 600px;
-        /* Limits the form width on larger screens */
         margin: 50px auto;
-        /* Centers the form */
         padding: 20px;
         background-color: #f7f7f7;
         border-radius: 10px;
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     }
 
-    /* Form title */
     h2 {
         text-align: center;
         color: #333;
         margin-bottom: 20px;
     }
 
-    /* Label styles */
     label {
         display: block;
         font-size: 16px;
@@ -55,9 +48,9 @@ $conn->close();
         color: #555;
     }
 
-    /* Input and select fields */
     input[type="text"],
-    input[type="date"] {
+    input[type="date"],
+    input[type="time"] {
         width: 100%;
         padding: 10px;
         margin-bottom: 20px;
@@ -68,9 +61,9 @@ $conn->close();
         transition: border-color 0.3s ease;
     }
 
-    /* Focus state for inputs */
     input[type="text"]:focus,
-    input[type="date"]:focus {
+    input[type="date"]:focus,
+    input[type="time"]:focus {
         border-color: #3498db;
         outline: none;
         box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
@@ -87,7 +80,6 @@ $conn->close();
         transition: border-color 0.3s ease;
     }
 
-    /* Submit button */
     button[type="submit"] {
         width: 100%;
         padding: 10px;
@@ -100,7 +92,6 @@ $conn->close();
         transition: background-color 0.3s ease;
     }
 
-    /* Adjusting form layout for smaller screens */
     @media (max-width: 768px) {
         form {
             padding: 15px;
@@ -111,60 +102,57 @@ $conn->close();
         }
     }
 
-        /* Toggle Switch */
     .switch {
-    position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 25px;
-    margin-left: 10px;
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 25px;
+        margin-left: 10px;
     }
 
     .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
+        opacity: 0;
+        width: 0;
+        height: 0;
     }
 
     .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0; left: 0;
-    right: 0; bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-    border-radius: 25px;
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 25px;
     }
 
     .slider:before {
-    position: absolute;
-    content: "";
-    height: 19px;
-    width: 19px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
+        position: absolute;
+        content: "";
+        height: 19px;
+        width: 19px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
     }
 
     input:checked + .slider {
-    background-color: #059212;
+        background-color: #059212;
     }
 
     input:checked + .slider:before {
-    transform: translateX(25px);
+        transform: translateX(25px);
     }
-
 </style>
 
-<!-- HTML Form to Edit the Record -->
 <h2>Edit Student Record</h2>
 <form action="update_record.php" method="post" enctype="multipart/form-data">
-    <!-- Add a hidden input for id -->
-    <input type="hidden" name="id" value="<?php echo htmlspecialchars($data['id']); ?>">
+    <input type="hidden" name="id" id="studentIdInput" value="<?php echo htmlspecialchars($data['id']); ?>">
 
-    <!-- Other form fields as before -->
     <label for="Student_Name">Student Name:</label>
     <input type="text" name="Student_Name" value="<?php echo htmlspecialchars($data['Student_Name']); ?>" required>
 
@@ -186,56 +174,56 @@ $conn->close();
     </select>
 
     <label for="Violation">Violation:</label>
-<select name="Violation" required>
-    <option value="<?php echo htmlspecialchars($data['Violation']); ?>"><?php echo htmlspecialchars($data['Violation']); ?></option>
-    <optgroup label="Major Offense Violations">
-        <option value="Cheating">Cheating</option>
-        <option value="Forgery & Plagiarism">Forgery & Plagiarism</option>
-        <option value="False Representation">False Representation</option>
-        <option value="Defamation">Defamation</option>
-        <option value="Substance Influence">Substance Influence</option>
-        <option value="Unauthorized Entry">Unauthorized Entry</option>
-        <option value="Theft">Theft</option>
-        <option value="Drug Possession/Use">Drug Possession/Use</option>
-        <option value="Insubordination">Insubordination</option>
-        <option value="Physical Injury">Physical Injury</option>
-        <option value="Threats & Bullying">Threats & Bullying</option>
-        <option value="Gambling">Gambling</option>
-        <option value="Hazing">Hazing</option>
-        <option value="Unauthorized Name Use">Unauthorized Name Use</option>
-        <option value="Financial Misconduct">Financial Misconduct</option>
-        <option value="Unauthorized Sales">Unauthorized Sales</option>
-        <option value="Extortion">Extortion</option>
-        <option value="Vandalism">Vandalism</option>
-        <option value="Degrading Treatment">Degrading Treatment</option>
-        <option value="Deadly Weapons">Deadly Weapons</option>
-        <option value="Abusive Behavior">Abusive Behavior</option>
-    </optgroup>
-    <optgroup label="Minor Offense Violations">
-        <option value="Policy Violation">Policy Violation</option>
-        <option value="Violating dress protocol">Violating dress protocol</option>
-        <option value="Incomplete uniform">Incomplete uniform</option>
-        <option value="Littering">Littering</option>
-        <option value="Loitering in hallways">Loitering in hallways</option>
-        <option value="Class disturbance">Class disturbance</option>
-        <option value="Shouting">Shouting</option>
-        <option value="Eating in class">Eating in class</option>
-        <option value="Public affection">Public affection</option>
-        <option value="Kissing">Kissing</option>
-        <option value="Suggestive poses">Suggestive poses</option>
-        <option value="Inappropriate touching">Inappropriate touching</option>
-        <option value="No ID card">No ID card</option>
-        <option value="Using others' ID">Using others' ID</option>
-        <option value="Caps indoors">Caps indoors</option>
-        <option value="Noise in quiet areas">Noise in quiet areas</option>
-        <option value="Discourtesy">Discourtesy</option>
-        <option value="Malicious calls">Malicious calls</option>
-        <option value="Refusing ID check">Refusing ID check</option>
-        <option value="Blocking passageways">Blocking passageways</option>
-        <option value="Unauthorized charging">Unauthorized charging</option>
-        <option value="Academic non-compliance">Academic non-compliance</option>
-    </optgroup>
-</select>
+    <select name="Violation" required>
+        <option value="<?php echo htmlspecialchars($data['Violation']); ?>"><?php echo htmlspecialchars($data['Violation']); ?></option>
+        <optgroup label="Major Offense Violations">
+            <option value="Cheating">Cheating</option>
+            <option value="Forgery & Plagiarism">Forgery & Plagiarism</option>
+            <option value="False Representation">False Representation</option>
+            <option value="Defamation">Defamation</option>
+            <option value="Substance Influence">Substance Influence</option>
+            <option value="Unauthorized Entry">Unauthorized Entry</option>
+            <option value="Theft">Theft</option>
+            <option value="Drug Possession/Use">Drug Possession/Use</option>
+            <option value="Insubordination">Insubordination</option>
+            <option value="Physical Injury">Physical Injury</option>
+            <option value="Threats & Bullying">Threats & Bullying</option>
+            <option value="Gambling">Gambling</option>
+            <option value="Hazing">Hazing</option>
+            <option value="Unauthorized Name Use">Unauthorized Name Use</option>
+            <option value="Financial Misconduct">Financial Misconduct</option>
+            <option value="Unauthorized Sales">Unauthorized Sales</option>
+            <option value="Extortion">Extortion</option>
+            <option value="Vandalism">Vandalism</option>
+            <option value="Degrading Treatment">Degrading Treatment</option>
+            <option value="Deadly Weapons">Deadly Weapons</option>
+            <option value="Abusive Behavior">Abusive Behavior</option>
+        </optgroup>
+        <optgroup label="Minor Offense Violations">
+            <option value="Policy Violation">Policy Violation</option>
+            <option value="Violating dress protocol">Violating dress protocol</option>
+            <option value="Incomplete uniform">Incomplete uniform</option>
+            <option value="Littering">Littering</option>
+            <option value="Loitering in hallways">Loitering in hallways</option>
+            <option value="Class disturbance">Class disturbance</option>
+            <option value="Shouting">Shouting</option>
+            <option value="Eating in class">Eating in class</option>
+            <option value="Public affection">Public affection</option>
+            <option value="Kissing">Kissing</option>
+            <option value="Suggestive poses">Suggestive poses</option>
+            <option value="Inappropriate touching">Inappropriate touching</option>
+            <option value="No ID card">No ID card</option>
+            <option value="Using others' ID">Using others' ID</option>
+            <option value="Caps indoors">Caps indoors</option>
+            <option value="Noise in quiet areas">Noise in quiet areas</option>
+            <option value="Discourtesy">Discourtesy</option>
+            <option value="Malicious calls">Malicious calls</option>
+            <option value="Refusing ID check">Refusing ID check</option>
+            <option value="Blocking passageways">Blocking passageways</option>
+            <option value="Unauthorized charging">Unauthorized charging</option>
+            <option value="Academic non-compliance">Academic non-compliance</option>
+        </optgroup>
+    </select>
 
     <label for="Offense">Offense:</label>
     <select name="Offense" required>
@@ -247,41 +235,48 @@ $conn->close();
     <label for="Status">Status:</label>
     <select name="Status">
         <option><?php echo htmlspecialchars($data['Status']); ?></option>
-        <!-- Add other status options if needed -->
+    </select>
+
+    <label for="Personnel">Personnel:</label>
+    <select name="Personnel">
+        <option><?php echo htmlspecialchars($data['Personnel']); ?></option>
     </select>
 
     <label for="Sanction">Sanction:</label>
     <input type="text" name="Sanction" value="<?php echo htmlspecialchars($data['Sanction']); ?>">
 
-    <label for="Sanction_Proof">Sanction Proof (Image):</label>
-    <input type="file" name="Sanction_Proof" accept="image/*" style="margin-bottom: 20px;">
+    <label for="Time">Time:</label>
+    <input type="time" name="Time" value="<?php echo htmlspecialchars($data['Time']); ?>" required>
 
     <label for="Date">Date:</label>
     <input type="date" name="Date" value="<?php echo htmlspecialchars($data['Date']); ?>" required>
+
+    <label for="Sanction_Proof">Sanction Proof (Image):</label>
+    <input type="file" name="Sanction_Proof" accept="image/*" style="margin-bottom: 20px;">
 
     <label for="toggleSwitch">Active Violation:</label>
     <label class="switch">
         <input type="checkbox" id="toggleSwitch">
         <span class="slider round"></span>
     </label>
+
     <button type="submit">Update Record</button>
 </form>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const toggle = document.getElementById('toggleSwitch');
+document.addEventListener("DOMContentLoaded", function () {
+    const toggle = document.getElementById('toggleSwitch');
 
-        // Load saved state
-        const saved = localStorage.getItem('toggleSwitch');
-        if (saved === 'on') {
-            toggle.checked = true;
-        }
+    const saved = localStorage.getItem('toggleSwitch');
+    if (saved === 'on') {
+        toggle.checked = true;
+    }
 
-        // Save state on change
-        toggle.addEventListener('change', function () {
-            localStorage.setItem('toggleSwitch', toggle.checked ? 'on' : 'off');
-        });
+    toggle.addEventListener('change', function () {
+        localStorage.setItem('toggleSwitch', toggle.checked ? 'on' : 'off');
+
+        const studentId = document.getElementById('studentIdInput').value;
+        localStorage.setItem('activeStudentId', toggle.checked ? studentId : '');
     });
+});
 </script>
-
-
