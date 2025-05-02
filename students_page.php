@@ -826,19 +826,25 @@
 
         <!-- Archive Modal -->
         <div id="archiveModal" class="modal" style="display:none;">
-            <div class="modal-content">
-                <span class="close" onclick="closeArchiveModal()">&times;</span>
-                <h3>Archive Violation</h3>
-                <form id="archiveForm" method="POST" action="transfer_student.php">
-                    <input type="hidden" name="student_id" id="modalStudentId">
-                    <label for="date_accomplished">Date Accomplished:</label>
-                    <input type="date" name="date_accomplished" id="dateAccomplished" required>
-                    
-                    <br><br>
-                    <button type="submit">Submit</button>
-                </form>
-            </div>
+    <div class="modal-content">
+            <span class="close" onclick="closeArchiveModal()">&times;</span>
+            <h3>Archive Violation</h3>
+            <!-- ✅ enctype moved here -->
+            <form id="archiveForm" method="POST" action="transfer_student.php" enctype="multipart/form-data">
+                <input type="hidden" name="student_id" id="modalStudentId">
+
+                <label for="date_accomplished">Date Accomplished:</label>
+                <input type="date" name="date_accomplished" id="dateAccomplished" required>
+
+                <label for="proof">Upload Proof:</label>
+                <input type="file" name="proof" id="proof" accept="image/*" required>
+
+                <br><br>
+                <button type="submit">Submit</button>
+            </form>
         </div>
+    </div>
+
     <script>
         function confirmLogout() {
             return confirm("Are you sure you want to log out?");

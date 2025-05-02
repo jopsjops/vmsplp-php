@@ -5,11 +5,42 @@ include 'dbconnection.php';
 $id = $_POST['student_id'] ?? null;
 $accomplished = $_POST['date_accomplished'] ?? null;
 
+$proofFileName = null;
+
+// Debugging: Show file upload details
+if (isset($_FILES['proof'])) {
+    echo '<pre>';
+    print_r($_FILES['proof']);
+    echo '</pre>';
+
+    if ($_FILES['proof']['error'] !== UPLOAD_ERR_OK) {
+        echo "Upload Error: " . $_FILES['proof']['error'];
+        exit;
+    }
+}
+
+if (isset($_FILES['proof']) && $_FILES['proof']['error'] === UPLOAD_ERR_OK) {
+    $uploadDir = 'proof/';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
+    }
+
+    $proofFileName = time() . '_' . basename($_FILES['proof']['name']);
+    $proofFilePath = $uploadDir . $proofFileName;
+
+    if (!move_uploaded_file($_FILES['proof']['tmp_name'], $proofFilePath)) {
+        echo json_encode(['success' => false, 'message' => 'Failed to move uploaded file.']);
+        exit;
+    }
+} else {
+    echo json_encode(['success' => false, 'message' => 'No file uploaded or file upload error.']);
+    exit;
+}
+
 if (!empty($id) && !empty($accomplished)) {
     $conn->begin_transaction();
 
     try {
-        // Step 1: Select the student record from the student_info table
         $selectQuery = "SELECT * FROM student_info WHERE id = ?";
         $stmt = $conn->prepare($selectQuery);
         $stmt->bind_param("s", $id);
@@ -19,12 +50,11 @@ if (!empty($id) && !empty($accomplished)) {
         if ($result->num_rows > 0) {
             $student = $result->fetch_assoc();
 
-            // Step 2: Insert the student record into the archive_info table
-            $insertQuery = "INSERT INTO archive_info (Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Date, Sanction, Accomplished)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $insertQuery = "INSERT INTO archive_info (Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Date, Sanction, Accomplished, Sanction_Proof)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $insertStmt = $conn->prepare($insertQuery);
             $insertStmt->bind_param(
-                "ssssssssss",
+                "sssssssssss",
                 $student['Student_ID'],
                 $student['Student_Name'],
                 $student['Department'],
@@ -34,11 +64,11 @@ if (!empty($id) && !empty($accomplished)) {
                 $student['Status'],
                 $student['Date'],
                 $student['Sanction'],
-                $accomplished
+                $accomplished,
+                $proofFileName
             );
 
             if ($insertStmt->execute()) {
-                // Step 3: Delete from student_info
                 $deleteQuery = "DELETE FROM student_info WHERE id = ?";
                 $deleteStmt = $conn->prepare($deleteQuery);
                 $deleteStmt->bind_param("s", $id);
@@ -46,7 +76,6 @@ if (!empty($id) && !empty($accomplished)) {
 
                 $conn->commit();
 
-                // ✅ Display alert and redirect
                 echo "<script>alert('Student record transferred to archive successfully!'); window.location.href='students_page.php';</script>";
                 exit;
             } else {
