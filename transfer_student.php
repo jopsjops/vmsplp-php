@@ -1,13 +1,11 @@
 <?php
-header('Content-Type: application/json');
 ob_clean();
-
-
 include 'dbconnection.php';
-$data = json_decode(file_get_contents("php://input"), true);
-$id = $data['id'];  // The ID of the student to be transferred
 
-if (!empty($id)) {
+$id = $_POST['student_id'] ?? null;
+$accomplished = $_POST['date_accomplished'] ?? null;
+
+if (!empty($id) && !empty($accomplished)) {
     $conn->begin_transaction();
 
     try {
@@ -22,11 +20,11 @@ if (!empty($id)) {
             $student = $result->fetch_assoc();
 
             // Step 2: Insert the student record into the archive_info table
-            $insertQuery = "INSERT INTO archive_info (Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Date)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $insertQuery = "INSERT INTO archive_info (Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Date, Sanction, Accomplished)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $insertStmt = $conn->prepare($insertQuery);
             $insertStmt->bind_param(
-                "ssssssss",
+                "ssssssssss",
                 $student['Student_ID'],
                 $student['Student_Name'],
                 $student['Department'],
@@ -34,21 +32,25 @@ if (!empty($id)) {
                 $student['Violation'],
                 $student['Offense'],
                 $student['Status'],
-                $student['Date']
+                $student['Date'],
+                $student['Sanction'],
+                $accomplished
             );
 
             if ($insertStmt->execute()) {
-                // Step 3: Delete the student record from the student_info table
+                // Step 3: Delete from student_info
                 $deleteQuery = "DELETE FROM student_info WHERE id = ?";
                 $deleteStmt = $conn->prepare($deleteQuery);
                 $deleteStmt->bind_param("s", $id);
                 $deleteStmt->execute();
 
-                // Commit the transaction after successful insert and delete
                 $conn->commit();
-                echo json_encode(['success' => true, 'message' => 'Student record transferred to archive successfully!']);
+
+                // ✅ Display alert and redirect
+                echo "<script>alert('Student record transferred to archive successfully!'); window.location.href='students_page.php';</script>";
+                exit;
             } else {
-                throw new Exception("Failed to insert into archive_info: " . $insertStmt->error); // Display specific error
+                throw new Exception("Failed to insert into archive_info: " . $insertStmt->error);
             }
 
             $insertStmt->close();
@@ -60,10 +62,12 @@ if (!empty($id)) {
         $stmt->close();
     } catch (Exception $e) {
         $conn->rollback();
-        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        echo "<script>alert('Error: " . addslashes($e->getMessage()) . "'); window.location.href='students_page.php';</script>";
+        exit;
     }
 } else {
-    echo json_encode(['success' => false, 'message' => 'Invalid student ID.']);
+    echo "<script>alert('Invalid student ID or date accomplished.'); window.location.href='students_page.php';</script>";
+    exit;
 }
 
 $conn->close();
