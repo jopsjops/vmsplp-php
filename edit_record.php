@@ -251,9 +251,6 @@ $conn->close();
     <label for="Date">Date:</label>
     <input type="date" name="Date" value="<?php echo htmlspecialchars($data['Date']); ?>" required>
 
-    <label for="Sanction_Proof">Sanction Proof (Image):</label>
-    <input type="file" name="Sanction_Proof" accept="image/*" style="margin-bottom: 20px;">
-
     <label for="toggleSwitch">Active Violation:</label>
     <label class="switch">
         <input type="checkbox" id="toggleSwitch">
