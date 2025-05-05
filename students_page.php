@@ -468,22 +468,25 @@ button {
             left: 0;
             top: 0;
             width: 100%;
-            height: 100%; /* Changed from 125% to 100% */
-            overflow: auto; /* Changed from hidden to auto */
+            height: 100%; /* Keep this */
+            overflow: hidden; /* Make outer modal non-scrollable */
             background-color: rgba(0, 0, 0, 0.4);
         }
 
         #modalContent {
             background-color: #fff;
-            position: relative; /* Add this so the close button is positioned relative to it */
-            margin: 5% auto;
+            position: relative;
+            margin: 2% auto;
             padding: 20px;
             border: 1px solid #ddd;
             width: 90%;
             max-width: 700px;
+            max-height: 90vh; /* Make modal content height-limited */
+            overflow-y: auto;  /* Allow vertical scroll inside only */
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
 
         .close {
             color: #aaa;

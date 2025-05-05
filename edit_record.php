@@ -153,6 +153,9 @@ $conn->close();
 <form action="update_record.php" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" id="studentIdInput" value="<?php echo htmlspecialchars($data['id']); ?>">
 
+    <label for="Student_ID">Student ID:</label>
+    <input type="text" name="Student_ID" value="<?php echo htmlspecialchars($data['Student_ID']); ?>" required>
+
     <label for="Student_Name">Student Name:</label>
     <input type="text" name="Student_Name" value="<?php echo htmlspecialchars($data['Student_Name']); ?>" required>
 

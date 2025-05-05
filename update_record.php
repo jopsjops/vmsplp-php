@@ -4,6 +4,7 @@ include 'dbconnection.php';
 // Get the 'id' from the URL
 if (isset($_POST['id']) && !empty($_POST['id'])) {
     $id = $_POST['id'];
+    $studentId = $_POST['Student_ID'];
     $studentName = $_POST['Student_Name'];
     $department = $_POST['Department'];
     $program = $_POST['Program'];
@@ -49,9 +50,9 @@ if (isset($_POST['id']) && !empty($_POST['id'])) {
     }
 
     // Update query using the unique id to target the exact record
-    $sql = "UPDATE student_info SET Student_Name=?, Department=?, Program=?, Violation=?, Offense=?, Status=?, Personnel=?, Sanction=?, Date=?, Time=? WHERE id=?";
+    $sql = "UPDATE student_info SET Student_ID=?, Student_Name=?, Department=?, Program=?, Violation=?, Offense=?, Status=?, Personnel=?, Sanction=?, Date=?, Time=? WHERE id=?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssssssssi", $studentName, $department, $program, $violation, $offense, $status, $personnel, $sanction, $date, $time, $id);
+    $stmt->bind_param("sssssssssssi", $studentId, $studentName, $department, $program, $violation, $offense, $status, $personnel, $sanction, $date, $time, $id);
 
     if ($stmt->execute()) {
         echo "<script>
