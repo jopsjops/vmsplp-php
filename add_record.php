@@ -9,8 +9,10 @@ $program = $_POST['course'];
 $violation = $_POST['violation'];
 $offense = $_POST['offense'];
 $status = $_POST['status'];
+$personnel = $_POST['personnel'];
 $date = $_POST['date'];
 $time = $_POST['time'];
+$sanction = $_POST['sanction'];
 
 // Check if the student ID already exists
 $sql_check = "SELECT Violation, Offense FROM student_info WHERE Student_ID = ?";
@@ -39,10 +41,10 @@ if ($result->num_rows > 0) {
     $stmt_update->close();
 } else {
     // Insert a new record
-    $sql_insert = "INSERT INTO student_info (Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Date, Time) 
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql_insert = "INSERT INTO student_info (Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Personnel, Date, Time, Sanction) 
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt_insert = $conn->prepare($sql_insert);
-    $stmt_insert->bind_param("sssssssss", $student_id, $student_name, $department, $program, $violation, $offense, $status, $date, $time);
+    $stmt_insert->bind_param("sssssssssss", $student_id, $student_name, $department, $program, $violation, $offense, $status, $personnel, $date, $time, $sanction);
 
    if ($stmt_insert->execute()) {
     echo "<script>
