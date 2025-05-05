@@ -337,40 +337,46 @@
             color: #333; /* Dark text color for the data */
         }
 
-/* Ensure the buttons are arranged in rows */
-.button-group {
+        .button-group {
     display: flex;
-    flex-direction: column; /* Stack rows vertically */
-    gap: 10px; /* Adds spacing between rows */
-    justify-content: center; /* Center buttons horizontally */
-    align-items: center; /* Center the buttons within each row */
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
 }
 
-/* Top row buttons (Email and Activate) */
+/* First row: Send Email + Activate */
 .top-row {
     display: flex;
-    justify-content: space-between;
+    gap: 10px;
     width: 100%;
-    gap: 10px; /* Adds spacing between buttons */
+    justify-content: space-between;
 }
 
 .top-row button {
-    width: 48%; /* Each button will take almost half of the width */
+    width: 48%;
 }
 
-/* Bottom row buttons (Edit and Archive) */
+/* Middle row: Upload centered */
+.middle-row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Bottom row: Edit + Archive */
 .bottom-row {
     display: flex;
-    justify-content: space-between;
+    gap: 10px;
     width: 100%;
-    gap: 10px; /* Adds spacing between buttons */
+    justify-content: space-between;
 }
 
 .bottom-row button {
-    width: 48%; /* Each button will take almost half of the width */
+    width: 48%;
 }
 
-/* Style for individual buttons */
+/* Button styling */
 button {
     padding: 8px 15px;
     border: none;
@@ -382,11 +388,20 @@ button {
     transition: background-color 0.3s ease;
 }
 
-/* Hover effect for buttons */
 button:hover {
     background-color: #f1f1f1;
     opacity: 0.9;
 }
+
+/* Upload icon button */
+.middle-row form button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #333;
+}
+
 
 
         button.archive {
@@ -693,14 +708,12 @@ button:hover {
                             <tr>    
                                 <th>Student ID</th>
                                 <th>Name</th>
-                                <th>Department</th>
-                                <th>Program</th>
+                                <th>Department & Program</th>
                                 <th>Violation</th>
                                 <th>Offense & Status</th>
                                 <th>Personnel</th>
                                 <th>Date & Time</th>
                                 <th>Sanction</th>
-                                <th>Proof</th>
                                 <th>Actions</th>               
                             </tr>
                         </thead>
@@ -712,8 +725,10 @@ button:hover {
                                 <tr id="row-<?php echo $row['id']; ?>">
                                     <td><?php echo htmlspecialchars($row['Student_ID']); ?></td>
                                     <td><?php echo htmlspecialchars($row['Student_Name']); ?></td>
-                                    <td><?php echo htmlspecialchars($row['Department']); ?></td>
-                                    <td><?php echo htmlspecialchars($row['Program']); ?></td>
+                                    <td>
+                                        <?php echo htmlspecialchars($row['Department'] . ' - ' . $row['Program']); ?>
+                                    </td>
+
                                     <td><?php echo htmlspecialchars($row['Violation']); ?></td>
                                     <td>
                                         <?php echo htmlspecialchars($row['Offense']) . ' - ' . htmlspecialchars($row['Status']); ?>
@@ -724,21 +739,8 @@ button:hover {
                                     </td>
                                     <td><?php echo htmlspecialchars($row['Sanction']); ?></td>
                                     <td>
-                                        <?php if (!empty($row['Evidence']) && file_exists('evidence/' . $row['Evidence'])): ?>
-                                            <img src="evidence/<?php echo htmlspecialchars($row['Evidence']); ?>" alt="Evidence" style="width: 80px; height: auto; margin-top: 5px;">
-                                        <?php else: ?>
-                                            <form action="upload_evidence.php" method="POST" enctype="multipart/form-data" style="display: inline;">
-                                                <input type="hidden" name="student_id" value="<?php echo $row['id']; ?>">
-                                                <input type="file" name="evidence" accept="image/*" style="display:none;" onchange="this.form.submit()">
-                                                <button type="button" onclick="this.previousElementSibling.click();">Upload</button>
-                                            </form>
-                                            
-                                        <?php endif; ?>
-                                    </td>
-
-                                    <td>
     <div class="button-group">
-        <!-- Top Row: Send Email and Activate Buttons -->
+        <!-- Row 1: Send Email & Activate -->
         <div class="top-row">
             <button class="send-email" onclick="sendEmail(<?php echo $row['id']; ?>)">
                 <i class="fas fa-envelope"></i>
@@ -749,7 +751,18 @@ button:hover {
             </button>
         </div>
 
-        <!-- Bottom Row: Edit and Archive Buttons -->
+        <!-- Row 2: Upload (centered) -->
+        <div class="middle-row">
+            <form action="upload_evidence.php" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="student_id" value="<?php echo $row['id']; ?>">
+                <input type="file" name="evidence" accept="image/*" style="display: none;" onchange="this.form.submit()">
+                <button type="button" onclick="this.previousElementSibling.click()" title="Upload Evidence">
+                    <i class="fas fa-upload"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Row 3: Edit & Archive -->
         <div class="bottom-row">
             <button class="edit" onclick="editRow(<?php echo $row['id']; ?>)">
                 <i class="fas fa-pencil-alt"></i>
@@ -761,6 +774,8 @@ button:hover {
         </div>
     </div>
 </td>
+
+
 
 
                                 </tr>
@@ -1202,12 +1217,43 @@ function toggleActiveViolation(button) {
     const rowId = button.getAttribute('data-row-id');
     const row = document.getElementById(rowId);
 
+    // Toggle highlight
     if (row.classList.contains('highlighted')) {
         row.classList.remove('highlighted');
+        removeActiveRow(rowId);
     } else {
         row.classList.add('highlighted');
+        saveActiveRow(rowId);
     }
 }
+
+// Save to localStorage
+function saveActiveRow(rowId) {
+    let activeRows = JSON.parse(localStorage.getItem('activeRows')) || [];
+    if (!activeRows.includes(rowId)) {
+        activeRows.push(rowId);
+        localStorage.setItem('activeRows', JSON.stringify(activeRows));
+    }
+}
+
+// Remove from localStorage
+function removeActiveRow(rowId) {
+    let activeRows = JSON.parse(localStorage.getItem('activeRows')) || [];
+    activeRows = activeRows.filter(id => id !== rowId);
+    localStorage.setItem('activeRows', JSON.stringify(activeRows));
+}
+
+// On page load, highlight saved rows
+document.addEventListener('DOMContentLoaded', function () {
+    let activeRows = JSON.parse(localStorage.getItem('activeRows')) || [];
+    activeRows.forEach(rowId => {
+        const row = document.getElementById(rowId);
+        if (row) {
+            row.classList.add('highlighted');
+        }
+    });
+});
+
 
     function sendEmail(userId) {
         fetch('send_email.php?id=' + userId)
