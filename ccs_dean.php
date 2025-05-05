@@ -34,7 +34,7 @@
         }
 
         .logo h2 {
-            color: #059212;
+            color: rgba(97, 99, 99, 1);
         }
 
         .search {
@@ -172,7 +172,7 @@
             top: 10px;
             width: 5px;
             height: 40px;
-            background-color: #059212;
+            background-color: rgba(97, 99, 99, 1);
             border-radius: 5px;
             opacity: 0;
             transform: scaleY(0);
@@ -193,7 +193,7 @@
             top: 10px;
             width: 5px;
             height: 40px;
-            background-color: #059212;
+            background-color: rgba(97, 99, 99, 1);
             border-radius: 5px;
         }
 
@@ -259,7 +259,7 @@
         .main h1 {
             margin-top: 70px;
             margin-bottom: 20px;
-            color: #059212;
+            color: rgba(97, 99, 99, 1);
         }
 
         .main-content {
@@ -643,7 +643,7 @@
 
                     // Fetch data from the database
                     $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Personnel, Date, Time, Sanction, Evidence
-                             FROM student_info ORDER BY Date DESC";
+                             FROM student_info WHERE Department = 'CCS' ORDER BY Date DESC";
 
                     $result = $conn->query($sql);
                     ?>
