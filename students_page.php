@@ -337,27 +337,57 @@
             color: #333; /* Dark text color for the data */
         }
 
-        button {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 5px;
-            color: #333;
-            background-color: transparent;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s ease;
-        }
+/* Ensure the buttons are arranged in rows */
+.button-group {
+    display: flex;
+    flex-direction: column; /* Stack rows vertically */
+    gap: 10px; /* Adds spacing between rows */
+    justify-content: center; /* Center buttons horizontally */
+    align-items: center; /* Center the buttons within each row */
+}
 
-        button:hover {
-            background-color: #f1f1f1; /* Hover effect for buttons */
-            opacity: 0.9;
-        }
+/* Top row buttons (Email and Activate) */
+.top-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 10px; /* Adds spacing between buttons */
+}
 
+.top-row button {
+    width: 48%; /* Each button will take almost half of the width */
+}
 
-        button.edit {
-            color: #333;
-            background-color: transparent;
-        }
+/* Bottom row buttons (Edit and Archive) */
+.bottom-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 10px; /* Adds spacing between buttons */
+}
+
+.bottom-row button {
+    width: 48%; /* Each button will take almost half of the width */
+}
+
+/* Style for individual buttons */
+button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    color: #333;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect for buttons */
+button:hover {
+    background-color: #f1f1f1;
+    opacity: 0.9;
+}
+
 
         button.archive {
             color: #333;
@@ -671,8 +701,7 @@
                                 <th>Date & Time</th>
                                 <th>Sanction</th>
                                 <th>Proof</th>
-                                <th>Actions</th>
-                                <th>Buttons</th>                  
+                                <th>Actions</th>               
                             </tr>
                         </thead>
                         <tbody>
@@ -708,26 +737,31 @@
                                     </td>
 
                                     <td>
-                                        <button class='edit' onclick='editRow(<?php echo $row['id']; ?>)'>
-                                            <i class='fas fa-pencil-alt'></i>
-                                        </button>
-                                        <button class="archive" onclick="openArchiveModal(<?php echo $row['id']; ?>)">
-                                            <i class="fa-solid fa-folder-plus"></i>
-                                        </button>
-                                    </td>
-                                    <td>
-                                        <!-- Send Email Button -->
-                                        <button class="send-email" onclick="sendEmail(<?php echo $row['id']; ?>)">
-                                        <i class="fas fa-envelope"></i>
-                                    </button>
+    <div class="button-group">
+        <!-- Top Row: Send Email and Activate Buttons -->
+        <div class="top-row">
+            <button class="send-email" onclick="sendEmail(<?php echo $row['id']; ?>)">
+                <i class="fas fa-envelope"></i>
+            </button>
 
+            <button class="activate-btn" onclick="toggleActiveViolation(this)" data-row-id="row-<?php echo $row['id']; ?>">
+                <i class="fas fa-toggle-on"></i>
+            </button>
+        </div>
 
-                                    <!-- Activator Toggle Button -->
-                                    <button class="activate-btn" onclick="toggleActiveViolation(this)" data-row-id="row-<?php echo $row['id']; ?>">
-                                        <i class="fas fa-toggle-on"></i>
-                                    </button>
+        <!-- Bottom Row: Edit and Archive Buttons -->
+        <div class="bottom-row">
+            <button class="edit" onclick="editRow(<?php echo $row['id']; ?>)">
+                <i class="fas fa-pencil-alt"></i>
+            </button>
 
-                                    </td>
+            <button class="archive" onclick="openArchiveModal(<?php echo $row['id']; ?>)">
+                <i class="fa-solid fa-folder-plus"></i>
+            </button>
+        </div>
+    </div>
+</td>
+
 
                                 </tr>
                                 <?php
