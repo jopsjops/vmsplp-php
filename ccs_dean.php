@@ -365,7 +365,7 @@
         }
 
 
-        button.add {
+        button.print-pdf {
             width: 50px;              /* Set the width of the circle */
             height: 50px;             /* Set the height to be the same as the width */
             border-radius: 50%;       /* This makes the button round */
@@ -382,25 +382,6 @@
             right: 20px;              /* Distance from the right of the viewport */
             z-index: 1000;            /* Ensure it stays on top of other elements */
         }
-
-        button.print-pdf {
-            width: 50px;              /* Set the width of the circle */
-            height: 50px;             /* Set the height to be the same as the width */
-            border-radius: 50%;       /* This makes the button round */
-            background-color: #333; /* Background color of the button */
-            color: white;             /* Icon color */
-            border: none;             /* Remove border */
-            display: flex;            /* Center icon inside the button */
-            justify-content: center;  /* Horizontally center the icon */
-            align-items: center;      /* Vertically center the icon */
-            cursor: pointer;          /* Add a pointer on hover */
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
-            position: fixed;          /* Make the button fixed to the viewport */
-            bottom: 90px;             /* Distance from the bottom of the viewport */
-            right: 20px;              /* Distance from the right of the viewport */
-            z-index: 1000;            /* Ensure it stays on top of other elements */
-        }
-
 
         #addModal {
             display: none;
@@ -652,16 +633,14 @@
                             <tr>    
                                 <th>Student ID</th>
                                 <th>Name</th>
-                                <th>Department</th>
                                 <th>Program</th>
                                 <th>Violation</th>
                                 <th>Offense & Status</th>
                                 <th>Personnel</th>
                                 <th>Date & Time</th>
                                 <th>Sanction</th>
-                                <th>Proof</th>
-                                <th>Actions</th>
-                                <th>Buttons</th>                  
+                                <th>Evidence</th>
+                                                  
                             </tr>
                         </thead>
                         <tbody>
@@ -672,7 +651,6 @@
                                 <tr id="row-<?php echo $row['id']; ?>">
                                     <td><?php echo htmlspecialchars($row['Student_ID']); ?></td>
                                     <td><?php echo htmlspecialchars($row['Student_Name']); ?></td>
-                                    <td><?php echo htmlspecialchars($row['Department']); ?></td>
                                     <td><?php echo htmlspecialchars($row['Program']); ?></td>
                                     <td><?php echo htmlspecialchars($row['Violation']); ?></td>
                                     <td>
@@ -680,44 +658,19 @@
                                     </td>
 
                                     <td><?php echo htmlspecialchars($row['Personnel']); ?></td>
-                                    <td><?php echo htmlspecialchars(date('M d, Y h:i A', strtotime($row['Date'] . ' ' . $row['Time']))); ?>
+                                    <td>
+                                        <?php
+                                        $date = date('M d, Y', strtotime($row['Date']));
+                                        $time = date('h:i A', strtotime($row['Time']));
+                                        echo htmlspecialchars($date) . '<br>' . htmlspecialchars($time);
+                                        ?>
                                     </td>
                                     <td><?php echo htmlspecialchars($row['Sanction']); ?></td>
                                     <td>
                                         <?php if (!empty($row['Evidence']) && file_exists('evidence/' . $row['Evidence'])): ?>
                                             <img src="evidence/<?php echo htmlspecialchars($row['Evidence']); ?>" alt="Evidence" style="width: 80px; height: auto; margin-top: 5px;">
-                                        <?php else: ?>
-                                            <form action="upload_evidence.php" method="POST" enctype="multipart/form-data" style="display: inline;">
-                                                <input type="hidden" name="student_id" value="<?php echo $row['id']; ?>">
-                                                <input type="file" name="evidence" accept="image/*" style="display:none;" onchange="this.form.submit()">
-                                                <button type="button" onclick="this.previousElementSibling.click();">Upload</button>
-                                            </form>
-                                            
-                                        <?php endif; ?>
+                                        <?php endif;?>
                                     </td>
-
-                                    <td>
-                                        <button class='edit' onclick='editRow(<?php echo $row['id']; ?>)'>
-                                            <i class='fas fa-pencil-alt'></i>
-                                        </button>
-                                        <button class="archive" onclick="openArchiveModal(<?php echo $row['id']; ?>)">
-                                            <i class="fa-solid fa-folder-plus"></i>
-                                        </button>
-                                    </td>
-                                    <td>
-                                        <!-- Send Email Button -->
-                                        <button class="send-email" onclick="sendEmail(<?php echo $row['id']; ?>)">
-                                        <i class="fas fa-envelope"></i>
-                                    </button>
-
-
-                                    <!-- Activator Toggle Button -->
-                                    <button class="activate-btn" onclick="toggleActiveViolation(this)" data-row-id="row-<?php echo $row['id']; ?>">
-                                        <i class="fas fa-toggle-on"></i>
-                                    </button>
-
-                                    </td>
-
                                 </tr>
                                 <?php
                             }
@@ -734,136 +687,8 @@
                     <button id="printPdfButton" class="print-pdf" onclick="printTableToPDF()">
                         <i class='bx bx-printer'></i>
                     </button>
-                    <button class="add" id="addButton" onclick="document.getElementById('addModal').style.display='block'">
-                        <i class='bx bxs-add-to-queue'></i>
-                    </button>
-
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div id="addModal">
-            <div id="modalContent">
-                <span class="close" onclick="document.getElementById('addModal').style.display='none'">&times;</span>
-                <form id="addForm" action="add_record.php" method="post">
-                    <label for="studentId">Student ID:</label>
-                    <input type="text" id="studentId" name="studentId" required>
-
-                    <label for="name">Student Name:</label>
-                    <input type="text" id="name" name="name" required>
-
-                    <label for="program">Department</label>
-                        <select id="program" name="program" required>
-                            <option value="">-- Select --</option>
-                            <option value="CCS">CCS</option>
-                            <option value="CAS">CAS</option>
-                            <option value="CBA">CBA</option>
-                            <option value="CON">CON</option>
-                            <option value="COE">COE</option>
-                            <option value="COED">COED</option>
-                            <option value="CIHM">CIHM</option>
-                        </select>
-
-                    <label for="course">Program</label>
-                        <select id="course" name="course" required>
-                            <option value="">-- Select --</option>
-                        </select>
-
-
-
-                    <label for="violation">Violation:</label>
-                    <select id="violation" name="violation" required>
-                    <optgroup label="Major Offense Violations">
-                            <option value="Cheating">Cheating</option>
-                            <option value="Forgery & Plagiarism">Forgery & Plagiarism</option>
-                            <option value="False Representation">False Representation</option>
-                            <option value="Defamation">Defamation</option>
-                            <option value="Substance Influence">Substance Influence</option>
-                            <option value="Unauthorized Entry">Unauthorized Entry</option>
-                            <option value="Theft">Theft</option>
-                            <option value="Drug Possession/Use">Drug Possession/Use</option>
-                            <option value="Insubordination">Insubordination</option>
-                            <option value="Physical Injury">Physical Injury</option>
-                            <option value="Threats & Bullying">Threats & Bullying</option>
-                            <option value="Gambling">Gambling</option>
-                            <option value="Hazing">Hazing</option>
-                            <option value="Unauthorized Name Use">Unauthorized Name Use</option>
-                            <option value="Financial Misconduct">Financial Misconduct</option>
-                            <option value="Unauthorized Sales">Unauthorized Sales</option>
-                            <option value="Extortion">Extortion</option>
-                            <option value="Vandalism">Vandalism</option>
-                            <option value="Degrading Treatment">Degrading Treatment</option>
-                            <option value="Deadly Weapons">Deadly Weapons</option>
-                            <option value="Abusive Behavior">Abusive Behavior</option>
-                        </optgroup>
-                        <optgroup label="Minor Offense Violations">
-                            <option value="Policy Violation">Policy Violation</option>
-                            <option value="Violating dress protocol">Violating dress protocol</option>
-                            <option value="Incomplete uniform">Incomplete uniform</option>
-                            <option value="Littering">Littering</option>
-                            <option value="Loitering in hallways">Loitering in hallways</option>
-                            <option value="Class disturbance">Class disturbance</option>
-                            <option value="Shouting">Shouting</option>
-                            <option value="Eating in class">Eating in class</option>
-                            <option value="Public affection">Public affection</option>
-                            <option value="Kissing">Kissing</option>
-                            <option value="Suggestive poses">Suggestive poses</option>
-                            <option value="Inappropriate touching">Inappropriate touching</option>
-                            <option value="No ID card">No ID card</option>
-                            <option value="Using others' ID">Using others' ID</option>
-                            <option value="Caps indoors">Caps indoors</option>
-                            <option value="Noise in quiet areas">Noise in quiet areas</option>
-                            <option value="Discourtesy">Discourtesy</option>
-                            <option value="Malicious calls">Malicious calls</option>
-                            <option value="Refusing ID check">Refusing ID check</option>
-                            <option value="Blocking passageways">Blocking passageways</option>
-                            <option value="Unauthorized charging">Unauthorized charging</option>
-                            <option value="Academic non-compliance">Academic non-compliance</option>
-                        </optgroup>
-                    </select>
-
-                    <label for="offense">Offense:</label>
-                    <select id="offense" name="offense" required>
-                        <option value="">--Select--</option>
-                        <option value="Major">Major</option>
-                        <option value="Minor">Minor</option>
-                    </select>
-
-                    <!-- <label for="status">Status:</label>
-                    <input type="text" id="status" name="status" required> -->
-
-                    <label for="sanction">Sanction:</label>
-                    <input type="text" id="sanction" name="sanction" required>
-
-                    <label for="date">Date:</label>
-                    <input type="date" id="date" name="date" required>
-
-                    <label for="time">Time:</label>
-                    <input type="time" id="time" name="time" required>
-
-                    <button type="submit" class="submit-btn">Submit</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Archive Modal -->
-        <div id="archiveModal" class="modal" style="display:none;">
-    <div class="modal-content">
-            <span class="close" onclick="closeArchiveModal()">&times;</span>
-            <h3>Archive Violation</h3>
-            <form id="archiveForm" method="POST" action="transfer_student.php" enctype="multipart/form-data">
-                <input type="hidden" name="student_id" id="modalStudentId">
-
-                <label for="date_accomplished">Date Accomplished:</label>
-                <input type="date" name="date_accomplished" id="dateAccomplished" required>
-
-                <label for="proof">Upload Proof:</label>
-                <input type="file" name="proof" id="proof" accept="image/*" required>
-
-                <br><br>
-                <button type="submit">Submit</button>
-            </form>
         </div>
     </div>
 
@@ -872,150 +697,8 @@
             return confirm("Are you sure you want to log out?");
         }
 
-        //Selection Process in add form by department and course
-        document.getElementById('program').addEventListener('change', function () {
-            const course = document.getElementById('course');
-            const selectedProgram = this.value;
-            
-            // Clear existing options
-            course.innerHTML = '';
+        
 
-            // Set options based on selected program
-            if (selectedProgram === 'CCS') {
-                const ccsOptions = ['BSCS', 'BSIT'];
-                ccsOptions.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option;
-                    opt.innerHTML = option;
-                    course.appendChild(opt);
-                });
-            } else if (selectedProgram === 'CAS') {
-                const casOptions = ['AB Psych'];
-                casOptions.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option;
-                    opt.innerHTML = option;
-                    course.appendChild(opt);
-                });
-            
-
-            } else if (selectedProgram ==='CBA') {
-                const cbaOptions = ['BSBA', 'BSENT', 'BSA'];
-                cbaOptions.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option;
-                    opt.innerHTML = option;
-                    course.appendChild(opt);
-                });
-            } else if (selectedProgram === 'CON') {
-                const conOptions = ['BSN'];
-                conOptions.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option;
-                    opt.innerHTML = option;
-                    course.appendChild(opt);
-                });
-            } else if (selectedProgram === 'COE') {
-                const coeOptions = ['BSECE'];
-                coeOptions.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option;
-                    opt.innerHTML = option;
-                    course.appendChild(opt);
-                });
-            } else if (selectedProgram === 'COED') {
-                const coedOptions = ['BEED', 'BSED'];
-                coedOptions.forEach(option =>{
-                    const opt = document.createElement('option');
-                    opt.value = option;
-                    opt.innerHTML = option;
-                    course.appendChild(opt);
-                });
-            } else if (selectedProgram === 'CIHM') {
-                const cihmOptions = ['BSHM'];
-                cihmOptions.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option;
-                    opt.innerHTML = option;
-                    course.appendChild(opt);
-                });
-            } else {
-                const defaultOption = document.createElement('option');
-                defaultOption.value = 'N/A';
-                defaultOption.innerHTML = 'Not Applicable';
-                course.appendChild(defaultOption);
-            }
-        });
-
-        function openArchiveModal(id) {
-            const confirmed = confirm("Has the student accomplished their sanction?");
-            if (confirmed) {
-                document.getElementById('modalStudentId').value = id;
-                document.getElementById('archiveModal').style.display = 'flex';
-            }
-        }
-
-        function closeArchiveModal() {
-            document.getElementById('archiveModal').style.display = 'none';
-        }
-
-       
-
-        function editRow(id) {
-            // Confirm if the user wants to edit the specific student record
-            const userConfirmed = confirm("Do you want to edit the data for this record?" + id);
-
-            // If confirmed, redirect to the edit page with the specific ID
-            if (userConfirmed) {
-                const url = 'edit_record.php?id=' + id;
-                window.location.href = url;
-            }
-        }
-
-    //     function transferRow(id) {
-    //     const userConfirmed = confirm("Are you sure this student is cleared?");
-
-    //     if (userConfirmed) {
-    //         fetch('transfer_student.php', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             },
-    //             body: JSON.stringify({ id: id })
-    //         })
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             if (data.success) {
-    //                 alert(data.message);  // Alert the user for successful archival
-    //                 window.location.reload();  // Reload the page to reflect changes
-    //             } else {
-    //                 alert("Error: " + data.message);  // Show error if there is any
-    //             }
-    //         })
-    //         .catch(error => console.error("Error:", error));  // Catch any potential errors
-    //     }
-    // }
-
-    // Listen for changes in the violation select
-document.getElementById("violation").addEventListener("change", function() {
-    const violationValue = this.value; // Get selected violation
-    const offenseSelect = document.getElementById("offense");
-
-    // Check if the violation is a major or minor offense based on the selection
-    const majorOffenses = [
-        "Cheating", "Forgery & Plagiarism", "False Representation", "Defamation", "Substance Influence", 
-        "Unauthorized Entry", "Theft", "Drug Possession/Use", "Insubordination", "Physical Injury", 
-        "Threats & Bullying", "Gambling", "Hazing", "Unauthorized Name Use", "Financial Misconduct", 
-        "Unauthorized Sales", "Extortion", "Vandalism", "Degrading Treatment", "Deadly Weapons", "Abusive Behavior"
-    ];
-
-    // If the violation is a major offense, set the offense field to "Major"
-    if (majorOffenses.includes(violationValue)) {
-        offenseSelect.value = "Major"; // Automatically select Major
-    } else {
-        offenseSelect.value = "Minor"; // Automatically select Minor if not a major offense
-    }
-});
 
    
 
@@ -1094,7 +777,7 @@ document.getElementById("violation").addEventListener("change", function() {
     });
 
     // Save the PDF
-    doc.save("Student_Violation_Records.pdf");
+    doc.save("Student_Violation_Records(CCS).pdf");
 }
 
     document.addEventListener("DOMContentLoaded", function () {
