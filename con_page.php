@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,7 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="icon" type="image/png" sizes="32x32" href="img/plp.png">
     <title>Admin</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
     <style>
         * {
             padding: 0;
@@ -33,7 +34,7 @@
         }
 
         .logo h2 {
-            color: #fa90d7;
+            color: #059212;
         }
 
         .search {
@@ -61,7 +62,7 @@
         }
 
         .logo a {
-            color: #fa90d7;
+            color: #059212;
             font-size: 24px;
             text-decoration: none;
             font-weight: bold;
@@ -82,6 +83,7 @@
             width: 100%;
             object-fit: cover;
         }
+
 
         .user:hover {
             cursor: pointer;
@@ -114,88 +116,150 @@
         }
 
         /*sidebar*/
-        .sidebar {
+         /* Sidebar */
+         .sidebar {
             position: fixed;
             top: 60px;
-            width: 60px;
+            width: 200px;
             height: calc(100% - 60px);
-            background: #fa90d7;
+            background: #fff;
             overflow-x: hidden;
             overflow-y: auto;
-            transition: width 0.3s;
             white-space: nowrap;
             z-index: 1;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
         }
 
-        .sidebar:hover {
-            width: 260px;
-        }
-
+        /* Sidebar list */
         .sidebar ul {
             margin-top: 20px;
             display: flex;
             flex-direction: column;
         }
 
+        /* Sidebar list items */
         .sidebar ul li {
             width: 100%;
             list-style: none;
             margin: 5px;
+            position: relative;
         }
 
-        .sidebar ul li a {
-            width: 100%;
-            text-decoration: none;
-            color: #fff;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            transition: color 0.2s, background-color 0.2s;
-            border-radius: 10px 0 0 10px;
-        }
-
+        /* Sidebar icons */
         .sidebar ul li a i {
             min-width: 60px;
             font-size: 24px;
             text-align: center;
         }
 
-        .sidebar ul li.stud a {
-            color: #fa90d7;
-            background: #fff;
+        /* Sidebar links */
+        .sidebar ul li a {
+            width: 100%;
+            text-decoration: none;
+            color: #333; /* Always dark font */
+            height: 60px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s;
+            border-radius: 10px 0 0 10px;
+            padding-left: 10px;
         }
 
-        .sidebar ul li a:hover {
-            color: #fa90d7;
-            background: #fff;
+        .sidebar ul li a::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 5px;
+            height: 40px;
+            background-color: #059212;
+            border-radius: 5px;
+            opacity: 0;
+            transform: scaleY(0);
+            transition: all 0.3s ease;
         }
 
-        .sidebar ul li span {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            transition: opacity 0.3s;
-        }
-
-        .sidebar:hover .sidebar-item-text {
+                /* Hover effect */
+        .sidebar ul li a:hover::before {
             opacity: 1;
+            transform: scaleY(1);
         }
 
-        .main {
-            margin-left: 60px;
+        /* ✅ Active tab: Only shows a green side bar */
+        .sidebar ul li.active::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 5px;
+            height: 40px;
+            background-color: #059212;
+            border-radius: 5px;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
             padding: 20px;
-            transition: margin-left 0.3s;
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #ddd;
         }
 
-        .sidebar:hover+.main {
-            margin-left: 260px;
+        .profile-logo img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%; /* Makes the logo circular */
+            object-fit: cover;
+        }
+
+        .profile-info span {
+            font-size: 12px;
+            color: #777;
+        }
+
+        .profile-info h4 {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+
+        .logout {
+            margin-top: 180px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .logout a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .logout i {
+            margin-right: 8px;
         }
 
         /*main content*/
+        .main {
+            position: absolute;
+            width: calc(100% - 260px);
+            min-height: calc(100vh - 60px);
+            margin-left: 200px;
+            padding: 20px;
+            transition: margin-left 0.3s, width 0.3s; /* Smooth transition */
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap; /* Allow content to wrap on smaller screens */
+        }
+
         .main h1 {
             margin-top: 70px;
             margin-bottom: 20px;
-            color: #fa90d7;
+            color: #059212;
         }
 
         .main-content {
@@ -222,109 +286,166 @@
             margin-right: 10px;
             border-radius: 10px 10px 0 0;
             background-color: transparent;
-            outline: #fa90d7;
+            outline: #059212;
             outline-style: auto;
         }
 
-        #charts div {
-            min-width: 250px;
-            max-width: 400px;
-            border-radius: 8px;
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        #charts h2 {
-            font-size: 18px;
-            color: #fa90d7;
-            margin-bottom: 10px;
-        }
-
-        #charts canvas {
-            width: 100% !important;
-            height: 200px;
-        }
-
+        
         table {
-            border-radius: 5px;
-            width: 100%;
+            position: absolute; /* Make the table fixed in place */
+            top: 110px; /* Adjust top position to ensure it's below the top bar */
+            left: 20px;
+            right: 0;
+            width: 100%; /* Ensure the table takes the full width */
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-top: 20px; /* Adjust top margin if needed */
+            background-color: #fff; /* White background for the table */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+            border-radius: 5px;
         }
+
 
         table,
         th,
         td {
-            border: 1px solid #ddd;
+            border: 1px solid #e0e0e0; /* Light gray border for a minimalistic look */
         }
 
         th,
         td {
-            padding: 12px;
-            text-align: center;
+            padding: 10px 15px; /* Reduced padding for a clean look */
+            text-align: center; /* Left align the text for a modern style */
+            font-size: 15px; /* Slightly smaller text for minimalism */
         }
 
         th {
-            background-color: #fa90d7;
-            color: #fff;
-            margin: 0;
+            background-color: #f7f7f7; /* Light gray background for table headers */
+            color: #333; /* Dark text color for readability */
+            font-weight: bold; /* Make headers bold */
+            text-transform: uppercase; /* All caps for headers for a minimalistic feel */
         }
 
         tr:nth-child(even) {
-            background-color: #f2f2f2;
+            background-color: #fafafa; /* Very light gray background for even rows */
         }
 
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            color: #fff;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
+        tr:hover {
+            background-color: #f1f1f1; /* Slight hover effect for rows */
         }
 
-        button:hover {
-            opacity: 0.9;
+        td {
+            color: #333; /* Dark text color for the data */
         }
 
-        button.edit {
-            color: #fa90d7;
-            background-color: transparent;
-        }
+        .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+}
+
+/* First row: Send Email + Activate */
+.top-row {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.top-row button {
+    width: 48%;
+}
+
+/* Middle row: Upload centered */
+.middle-row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Bottom row: Edit + Archive */
+.bottom-row {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.bottom-row button {
+    width: 48%;
+}
+
+/* Button styling */
+button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    color: #333;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #f1f1f1;
+    opacity: 0.9;
+}
+
+/* Upload icon button */
+.middle-row form button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #333;
+}
+
+
 
         button.archive {
-            color: #fa90d7;
+            color: #333;
             background-color: transparent;
         }
 
 
         button.add {
-            width: 50px;
-            /* Set the width of the circle */
-            height: 50px;
-            /* Set the height to be the same as the width */
-            border-radius: 50%;
-            /* This makes the button round */
-            background-color: #fa90d7;
-            /* Background color of the button */
-            color: white;
-            /* Icon color */
-            border: none;
-            /* Remove border */
-            display: flex;
-            /* Center icon inside the button */
-            justify-content: center;
-            /* Horizontally center the icon */
-            align-items: center;
-            /* Vertically center the icon */
-            cursor: pointer;
-            /* Add a pointer on hover */
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            /* Add a subtle shadow */
-            align-self: flex-end;
+            width: 50px;              /* Set the width of the circle */
+            height: 50px;             /* Set the height to be the same as the width */
+            border-radius: 50%;       /* This makes the button round */
+            background-color: #333; /* Background color of the button */
+            color: white;             /* Icon color */
+            border: none;             /* Remove border */
+            display: flex;            /* Center icon inside the button */
+            justify-content: center;  /* Horizontally center the icon */
+            align-items: center;      /* Vertically center the icon */
+            cursor: pointer;          /* Add a pointer on hover */
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+            position: fixed;          /* Make the button fixed to the viewport */
+            bottom: 20px;             /* Distance from the bottom of the viewport */
+            right: 20px;              /* Distance from the right of the viewport */
+            z-index: 1000;            /* Ensure it stays on top of other elements */
         }
+
+        button.print-pdf {
+            width: 50px;              /* Set the width of the circle */
+            height: 50px;             /* Set the height to be the same as the width */
+            border-radius: 50%;       /* This makes the button round */
+            background-color: #333; /* Background color of the button */
+            color: white;             /* Icon color */
+            border: none;             /* Remove border */
+            display: flex;            /* Center icon inside the button */
+            justify-content: center;  /* Horizontally center the icon */
+            align-items: center;      /* Vertically center the icon */
+            cursor: pointer;          /* Add a pointer on hover */
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+            position: fixed;          /* Make the button fixed to the viewport */
+            bottom: 90px;             /* Distance from the bottom of the viewport */
+            right: 20px;              /* Distance from the right of the viewport */
+            z-index: 1000;            /* Ensure it stays on top of other elements */
+        }
+
 
         #addModal {
             display: none;
@@ -353,6 +474,7 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
 
         .close {
             color: #aaa;
@@ -385,47 +507,165 @@
 
         form button {
             color: #fff;
-            background-color: #fa90d7;
+            background-color: #059212;
             width: 100%;
         }
+
+        .sorting-section {
+        display: flex;
+        align-items: center;
+        margin-left: 15px; /* slight space from the search bar */
+        font-size: 14px;
+        }
+
+        .sorting-section label {
+            margin-right: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .sorting-section select {
+            padding: 5px 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: #4CAF50;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
+
+        .status-text {
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            width: 320px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        .close {
+            position: absolute;
+            top: 10px; right: 15px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .highlighted {
+    background-color:rgb(142, 255, 181) !important; /* Light green */
+    transition: background-color 0.3s ease;
+}
+
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="topbar">
             <div class="logo">
-                <a href="dashboarddb.php">SSO.</a>
+                <h2>VMS.</h2>
             </div>
             <div class="search">
-                <input type="text" id="search" placeholder="Search by Student Number">
+                <input type="text" id="search" placeholder="Search">
             </div>
-
-            <div class="user">
-                <img src="img/plp.png" alt="Profile Image" id="profileImage">
-                <div class="dropdown-content" id="dropdownContent">
-                    <a href="admin_changepass.php" id="changePasswordButton"><i class='bx bx-lock'></i> Change Password</a>
-                    <a href="index.php" id="logoutButton"><i class='bx bx-log-out'></i> Log Out</a>
-                </div>
+            
+            <div class="sorting-section">
+                <label for="sortDropdown">Sort By:</label>
+                <select id="sortDropdown">
+                    <option value="">Select Type</option>
+                    <option value="name">Name (Alphabetical)</option>
+                    <option value="department">Department (Alphabetical)</option>
+                    <option value="date">Date</option>
+                    <option value="violation">Violation</option>
+                </select>
             </div>
+    </div>
         </div>
         <div class="sidebar">
+            <div class="profile">
+                <div class="profile-logo">
+                    <img src="img/plp.png" alt="Logo">
+                </div>
+                <div class="profile-info">
+                    <span>Welcome,</span>
+                    <h4>Admin</h4>
+                </div>
+            </div>
             <ul>
-                <li class="dash">
+                <li>
                     <a href="dashboarddb.php">
                         <i class='bx bxs-dashboard'></i>
                         <div>Dashboard</div>
                     </a>
                 </li>
-                <li class="stud">
+                <li class="active">
                     <a href="students_page.php">
                         <i class='bx bxs-group'></i>
-                        <div>Student</div>
+                        <div>Students</div>
                     </a>
                 </li>
-                <li class="pred">
+                <li>
                     <a href="prediction.php">
                         <i class='fas fa-chart-line'></i>
-                        <div>Prediction</div>
+                        <div>Predictions</div>
                     </a>
                 </li>
                 <li class="archive">
@@ -434,207 +674,356 @@
                         <div>Archive</div>
                     </a>
                 </li>
+                <li class="tables">
+                    <a href="view_semviolation.php">
+                        <i class='bx bx-table'></i>
+                        <div>View Tables</div>
+                    </a>
+                </li>
             </ul>
+            <div class="logout">
+                <a href="logout.php" onclick="return confirmLogout()">
+                    <i class='bx bx-log-out'></i>
+                    <span>Logout</span>
+                </a>
+            </div>
         </div>
+        
         <div class="main">
             <h1>STUDENT VIOLATION RECORDS (CON)</h1>
             <div class="main-content">
                 <div class="table-container">
                     <?php
-// Database connection
-$servername = "tj5iv8piornf713y.cbetxkdyhwsb.us-east-1.rds.amazonaws.com";
-$username = "vl9ieik1ttwerlmd"; // Your DB username
-$password = "dxn55zzkhyp5ek1e";     // Your DB password
-$dbname = "z6vet51amyrj9ci0"; // Your DB name
-
-                    $conn = new mysqli($servername, $username, $password, $dbname);
-
-                    // Check connection
-                    if ($conn->connect_error) {
-                        die("Connection failed: " . $conn->connect_error);
-                    }
+                    // Database connection
+                    include 'dbconnection.php';
 
                     // Fetch data from the database
-                    $sql = "SELECT * FROM student_info WHERE Department = 'CON'";
+                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Personnel, Date, Time, Sanction, Evidence
+                             FROM student_info WHERE Department = 'CON' ORDER BY Date DESC";
+
                     $result = $conn->query($sql);
                     ?>
                     <table id="violationTable">
                         <thead>
-                            <tr>
+                            <tr>    
                                 <th>Student ID</th>
                                 <th>Name</th>
-                                <th>Department</th>
-                                <th>Program</th>
+                                <th>Department & Program</th>
                                 <th>Violation</th>
-                                <th>Offense</th> <!-- Added Offense column -->
-                                <th>Status</th>
-                                <th>Date</th>
-                                <th>Actions</th>
+                                <th>Offense & Status</th>
+                                <th>Personnel</th>
+                                <th>Date & Time</th>
+                                <th>Sanction</th>
+                                <th>Actions</th>               
                             </tr>
                         </thead>
                         <tbody>
-                            <?php
-                            // Loop through the results and display them in the table
-                            if ($result->num_rows > 0) {
-                                while ($row = $result->fetch_assoc()) {
-                                    // Determine the background color based on the offense type
-                                    $offenseClass = '';
-                                    if (strpos(strtolower($row['Offense']), 'major') !== false) {
-                                        $offenseClass = 'offense-major';
-                                    } elseif (strpos(strtolower($row['Offense']), 'minor') !== false) {
-                                        $offenseClass = 'offense-minor';
-                                    } elseif (strpos(strtolower($row['Offense']), 'warning') !== false) {
-                                        $offenseClass = 'offense-warning';
-                                    }
+                        <?php
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                ?>
+                                <tr id="row-<?php echo $row['id']; ?>">
+                                    <td><?php echo htmlspecialchars($row['Student_ID']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['Student_Name']); ?></td>
+                                    <td>
+                                        <?php echo htmlspecialchars($row['Department'] . ' - ' . $row['Program']); ?>
+                                    </td>
 
-                                    echo "<tr>
-                                        <td>" . htmlspecialchars($row['Student_ID']) . "</td>
-                                        <td>" . htmlspecialchars($row['Student_Name']) . "</td>
-                                        <td>" . htmlspecialchars($row['Department']) . "</td>
-                                        <td>" . htmlspecialchars($row['Program']) . "</td>
-                                        <td>" . htmlspecialchars($row['Violation']) . "</td>
-                                        <td class='{$offenseClass}'>" . htmlspecialchars($row['Offense']) . "</td> <!-- Display Offense data -->
-                                        <td>" . htmlspecialchars($row['Status']) . "</td>
-                                        <td>" . htmlspecialchars($row['Date']) . "</td>
-                                        <td>
-                                            <button class='edit' onclick='editRow(\"" . htmlspecialchars($row['id']) . "\")'>
-                                                <i class='fas fa-pencil-alt'></i>
-                                            </button>
-                                            <button class='archive' onclick='transferRow(\"" . htmlspecialchars($row['id']) . "\")'>
-                                                <i class='fa-solid fa-folder-plus'></i>
-                                            </button>
-                                        </td>
-                                    </tr>";
-                                }
-                            } else {
-                                echo "<tr><td colspan='9'>No records found</td></tr>";
+                                    <td><?php echo htmlspecialchars($row['Violation']); ?></td>
+                                    <td>
+                                        <?php echo htmlspecialchars($row['Offense']) . ' - ' . htmlspecialchars($row['Status']); ?>
+                                    </td>
+
+                                    <td><?php echo htmlspecialchars($row['Personnel']); ?></td>
+                                    <td><?php echo htmlspecialchars(date('M d, Y h:i A', strtotime($row['Date'] . ' ' . $row['Time']))); ?>
+                                    </td>
+                                    <td><?php echo htmlspecialchars($row['Sanction']); ?></td>
+                                    <td>
+    <div class="button-group">
+        <!-- Row 1: Send Email & Activate -->
+        <div class="top-row">
+            <button class="send-email" onclick="sendEmail(<?php echo $row['id']; ?>)">
+                <i class="fas fa-envelope"></i>
+            </button>
+
+            <button class="activate-btn" onclick="toggleActiveViolation(this)" data-row-id="row-<?php echo $row['id']; ?>">
+                <i class="fas fa-toggle-on"></i>
+            </button>
+        </div>
+
+        <!-- Row 2: Upload (centered) -->
+        <div class="middle-row">
+            <form action="upload_evidence.php" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="student_id" value="<?php echo $row['id']; ?>">
+                <input type="file" name="evidence" accept="image/*" style="display: none;" onchange="this.form.submit()">
+                <button type="button" onclick="this.previousElementSibling.click()" title="Upload Evidence">
+                    <i class="fas fa-upload"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Row 3: Edit & Archive -->
+        <div class="bottom-row">
+            <button class="edit" onclick="editRow(<?php echo $row['id']; ?>)">
+                <i class="fas fa-pencil-alt"></i>
+            </button>
+
+            <button class="archive" onclick="openArchiveModal(<?php echo $row['id']; ?>)">
+                <i class="fa-solid fa-folder-plus"></i>
+            </button>
+        </div>
+    </div>
+</td>
+
+
+
+
+                                </tr>
+                                <?php
                             }
-                            ?>
+                        } else {
+                            echo "<tr><td colspan='11' style='text-align:center;'>No records found</td></tr>";
+                        }
+                        ?>
                             <tr id="noRecords" style="display:none;">
-                                <td colspan="9" style="text-align:center;">No records found</td>
+                                <td colspan="11" style="text-align:center;">No records found</td>
                             </tr>
                         </tbody>
                     </table>
-                    <button class="add" id="addButton"
-                        onclick="document.getElementById('addModal').style.display='block'">
+
+                    <button id="printPdfButton" class="print-pdf" onclick="printTableToPDF()">
+                        <i class='bx bx-printer'></i>
+                    </button>
+                    <button class="add" id="addButton" onclick="document.getElementById('addModal').style.display='block'">
                         <i class='bx bxs-add-to-queue'></i>
                     </button>
+
                 </div>
             </div>
         </div>
     </div>
 
-
     <div id="addModal">
-    <div id="modalContent">
-        <span class="close" onclick="document.getElementById('addModal').style.display='none'">&times;</span>
-        <form id="addForm" action="add_con.php" method="post">
-            <label for="studentId">Student ID:</label>
-            <input type="text" id="studentId" name="studentId" required>
+            <div id="modalContent">
+                <span class="close" onclick="document.getElementById('addModal').style.display='none'">&times;</span>
+                <form id="addForm" action="add_record.php" method="post">
+                    <label for="studentId">Student ID:</label>
+                    <input type="text" id="studentId" name="studentId" required>
 
-            <label for="name">Student Name:</label>
-            <input type="text" id="name" name="name" required>
+                    <label for="name">Student Name:</label>
+                    <input type="text" id="name" name="name" required>
 
-            <label for="program">Department:</label>
-            <select id="program" name="program" required>
-                <option value="CCS">CCS</option>
-                <option value="CAS">CAS</option>
-                <option value="CBA">CBA</option>
-                <option value="CON">CON</option>
-                <option value="COE">COE</option>
-                <option value="COED">COED</option>
-                <option value="CIHM">CIHM</option>
-            </select>
+                    <label for="program">Department</label>
+                        <select id="program" name="program" required>
+                            <option value="">-- Select --</option>
+                            <option value="CCS">CCS</option>
+                            <option value="CAS">CAS</option>
+                            <option value="CBA">CBA</option>
+                            <option value="CON">CON</option>
+                            <option value="COE">COE</option>
+                            <option value="COED">COED</option>
+                            <option value="CIHM">CIHM</option>
+                        </select>
 
-            <label for="course">Program</label>
-            <select id="course" name="course" required>
-                <option value="BEED">BEED</option>
-                <option value="BSED">BSED</option>
-                <option value="BSA">BSA</option>
-                <option value="BSBA">BSBA</option>
-                <option value="BSENT">BSENT</option>
-                <option value="BSHM">BSHM</option>
-                <option value="BSCS">BSCS</option>
-                <option value="BSIT">BSIT</option>
-                <option value="BSECE">BSECE</option>
-                <option value="BSN">BSN</option>
-            </select>
+                    <label for="course">Program</label>
+                        <select id="course" name="course" required>
+                            <option value="">-- Select --</option>
+                        </select>
 
 
 
-            <label for="violation">Violation:</label>
-            <select id="violation" name="violation" required>
-            <optgroup label="Major Offense Violations">
-                    <option value="Cheating">Cheating</option>
-                    <option value="Forgery & Plagiarism">Forgery & Plagiarism</option>
-                    <option value="False Representation">False Representation</option>
-                    <option value="Defamation">Defamation</option>
-                    <option value="Substance Influence">Substance Influence</option>
-                    <option value="Unauthorized Entry">Unauthorized Entry</option>
-                    <option value="Theft">Theft</option>
-                    <option value="Drug Possession/Use">Drug Possession/Use</option>
-                    <option value="Insubordination">Insubordination</option>
-                    <option value="Physical Injury">Physical Injury</option>
-                    <option value="Threats & Bullying">Threats & Bullying</option>
-                    <option value="Gambling">Gambling</option>
-                    <option value="Hazing">Hazing</option>
-                    <option value="Unauthorized Name Use">Unauthorized Name Use</option>
-                    <option value="Financial Misconduct">Financial Misconduct</option>
-                    <option value="Unauthorized Sales">Unauthorized Sales</option>
-                    <option value="Extortion">Extortion</option>
-                    <option value="Vandalism">Vandalism</option>
-                    <option value="Degrading Treatment">Degrading Treatment</option>
-                    <option value="Deadly Weapons">Deadly Weapons</option>
-                    <option value="Abusive Behavior">Abusive Behavior</option>
-                </optgroup>
-                <optgroup label="Minor Offense Violations">
-                    <option value="Policy Violation">Policy Violation</option>
-                    <option value="Violating dress protocol">Violating dress protocol</option>
-                    <option value="Incomplete uniform">Incomplete uniform</option>
-                    <option value="Littering">Littering</option>
-                    <option value="Loitering in hallways">Loitering in hallways</option>
-                    <option value="Class disturbance">Class disturbance</option>
-                    <option value="Shouting">Shouting</option>
-                    <option value="Eating in class">Eating in class</option>
-                    <option value="Public affection">Public affection</option>
-                    <option value="Kissing">Kissing</option>
-                    <option value="Suggestive poses">Suggestive poses</option>
-                    <option value="Inappropriate touching">Inappropriate touching</option>
-                    <option value="No ID card">No ID card</option>
-                    <option value="Using others' ID">Using others' ID</option>
-                    <option value="Caps indoors">Caps indoors</option>
-                    <option value="Noise in quiet areas">Noise in quiet areas</option>
-                    <option value="Discourtesy">Discourtesy</option>
-                    <option value="Malicious calls">Malicious calls</option>
-                    <option value="Refusing ID check">Refusing ID check</option>
-                    <option value="Blocking passageways">Blocking passageways</option>
-                    <option value="Unauthorized charging">Unauthorized charging</option>
-                    <option value="Academic non-compliance">Academic non-compliance</option>
-                </optgroup>
-            </select>
+                    <label for="violation">Violation:</label>
+                    <select id="violation" name="violation" required>
+                    <optgroup label="Major Offense Violations">
+                            <option value="Cheating">Cheating</option>
+                            <option value="Forgery & Plagiarism">Forgery & Plagiarism</option>
+                            <option value="False Representation">False Representation</option>
+                            <option value="Defamation">Defamation</option>
+                            <option value="Substance Influence">Substance Influence</option>
+                            <option value="Unauthorized Entry">Unauthorized Entry</option>
+                            <option value="Theft">Theft</option>
+                            <option value="Drug Possession/Use">Drug Possession/Use</option>
+                            <option value="Insubordination">Insubordination</option>
+                            <option value="Physical Injury">Physical Injury</option>
+                            <option value="Threats & Bullying">Threats & Bullying</option>
+                            <option value="Gambling">Gambling</option>
+                            <option value="Hazing">Hazing</option>
+                            <option value="Unauthorized Name Use">Unauthorized Name Use</option>
+                            <option value="Financial Misconduct">Financial Misconduct</option>
+                            <option value="Unauthorized Sales">Unauthorized Sales</option>
+                            <option value="Extortion">Extortion</option>
+                            <option value="Vandalism">Vandalism</option>
+                            <option value="Degrading Treatment">Degrading Treatment</option>
+                            <option value="Deadly Weapons">Deadly Weapons</option>
+                            <option value="Abusive Behavior">Abusive Behavior</option>
+                        </optgroup>
+                        <optgroup label="Minor Offense Violations">
+                            <option value="Policy Violation">Policy Violation</option>
+                            <option value="Violating dress protocol">Violating dress protocol</option>
+                            <option value="Incomplete uniform">Incomplete uniform</option>
+                            <option value="Littering">Littering</option>
+                            <option value="Loitering in hallways">Loitering in hallways</option>
+                            <option value="Class disturbance">Class disturbance</option>
+                            <option value="Shouting">Shouting</option>
+                            <option value="Eating in class">Eating in class</option>
+                            <option value="Public affection">Public affection</option>
+                            <option value="Kissing">Kissing</option>
+                            <option value="Suggestive poses">Suggestive poses</option>
+                            <option value="Inappropriate touching">Inappropriate touching</option>
+                            <option value="No ID card">No ID card</option>
+                            <option value="Using others' ID">Using others' ID</option>
+                            <option value="Caps indoors">Caps indoors</option>
+                            <option value="Noise in quiet areas">Noise in quiet areas</option>
+                            <option value="Discourtesy">Discourtesy</option>
+                            <option value="Malicious calls">Malicious calls</option>
+                            <option value="Refusing ID check">Refusing ID check</option>
+                            <option value="Blocking passageways">Blocking passageways</option>
+                            <option value="Unauthorized charging">Unauthorized charging</option>
+                            <option value="Academic non-compliance">Academic non-compliance</option>
+                        </optgroup>
+                    </select>
 
-            <label for="offense">Offense:</label>
-            <select id="offense" name="offense" required>
-                <option value="">Select Offense</option>
-                <option value="Major">Major</option>
-                <option value="Minor">Minor</option>
-            </select>
+                    <label for="offense">Offense:</label>
+                    <select id="offense" name="offense" required>
+                        <option value="">--Select--</option>
+                        <option value="Major">Major</option>
+                        <option value="Minor">Minor</option>
+                    </select>
 
-            <label for="status">Status</label>
-            <input type="text" id="status" name="status" required>
+                    <!-- <label for="status">Status:</label>
+                    <input type="text" id="status" name="status" required> -->
 
-            <label for="date">Date:</label>
-            <input type="date" id="date" name="date" required>
+                    <label for="sanction">Sanction:</label>
+                    <input type="text" id="sanction" name="sanction" required>
 
-            <button type="submit" class="submit-btn">Submit</button>
-        </form>
+                    <label for="date">Date:</label>
+                    <input type="date" id="date" name="date" required>
+
+                    <label for="time">Time:</label>
+                    <input type="time" id="time" name="time" required>
+
+                    <button type="submit" class="submit-btn">Submit</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Archive Modal -->
+        <div id="archiveModal" class="modal" style="display:none;">
+    <div class="modal-content">
+            <span class="close" onclick="closeArchiveModal()">&times;</span>
+            <h3>Archive Violation</h3>
+            <form id="archiveForm" method="POST" action="transfer_student.php" enctype="multipart/form-data">
+                <input type="hidden" name="student_id" id="modalStudentId">
+
+                <label for="date_accomplished">Date Accomplished:</label>
+                <input type="date" name="date_accomplished" id="dateAccomplished" required>
+
+                <label for="proof">Upload Proof:</label>
+                <input type="file" name="proof" id="proof" accept="image/*" required>
+
+                <br><br>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
     </div>
-</div>
 
     <script>
+        function confirmLogout() {
+            return confirm("Are you sure you want to log out?");
+        }
+
+        //Selection Process in add form by department and course
+        document.getElementById('program').addEventListener('change', function () {
+            const course = document.getElementById('course');
+            const selectedProgram = this.value;
+            
+            // Clear existing options
+            course.innerHTML = '';
+
+            // Set options based on selected program
+            if (selectedProgram === 'CCS') {
+                const ccsOptions = ['BSCS', 'BSIT'];
+                ccsOptions.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    course.appendChild(opt);
+                });
+            } else if (selectedProgram === 'CAS') {
+                const casOptions = ['AB Psych'];
+                casOptions.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    course.appendChild(opt);
+                });
+            
+
+            } else if (selectedProgram ==='CBA') {
+                const cbaOptions = ['BSBA', 'BSENT', 'BSA'];
+                cbaOptions.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    course.appendChild(opt);
+                });
+            } else if (selectedProgram === 'CON') {
+                const conOptions = ['BSN'];
+                conOptions.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    course.appendChild(opt);
+                });
+            } else if (selectedProgram === 'COE') {
+                const coeOptions = ['BSECE'];
+                coeOptions.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    course.appendChild(opt);
+                });
+            } else if (selectedProgram === 'COED') {
+                const coedOptions = ['BEED', 'BSED'];
+                coedOptions.forEach(option =>{
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    course.appendChild(opt);
+                });
+            } else if (selectedProgram === 'CIHM') {
+                const cihmOptions = ['BSHM'];
+                cihmOptions.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    course.appendChild(opt);
+                });
+            } else {
+                const defaultOption = document.createElement('option');
+                defaultOption.value = 'N/A';
+                defaultOption.innerHTML = 'Not Applicable';
+                course.appendChild(defaultOption);
+            }
+        });
+
+        function openArchiveModal(id) {
+            const confirmed = confirm("Has the student accomplished their sanction?");
+            if (confirmed) {
+                document.getElementById('modalStudentId').value = id;
+                document.getElementById('archiveModal').style.display = 'flex';
+            }
+        }
+
+        function closeArchiveModal() {
+            document.getElementById('archiveModal').style.display = 'none';
+        }
+
+       
+
         function editRow(id) {
             // Confirm if the user wants to edit the specific student record
-            const userConfirmed = confirm("Do you want to edit the data for this record?");
+            const userConfirmed = confirm("Do you want to edit the data for this record?" + id);
 
             // If confirmed, redirect to the edit page with the specific ID
             if (userConfirmed) {
@@ -643,69 +1032,236 @@ $dbname = "z6vet51amyrj9ci0"; // Your DB name
             }
         }
 
-        function transferRow(id) {
-    const userConfirmed = confirm("Are you sure you want to archive this student with ID: " + id + "?");
+    //     function transferRow(id) {
+    //     const userConfirmed = confirm("Are you sure this student is cleared?");
 
-    if (userConfirmed) {
-        fetch('transfer_student.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ id: id })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert(data.message);  // Alert the user for successful archival
-                window.location.reload();  // Reload the page to reflect changes
-            } else {
-                alert("Error: " + data.message);  // Show error if there is any
-            }
-        })
-        .catch(error => console.error("Error:", error));  // Catch any potential errors
+    //     if (userConfirmed) {
+    //         fetch('transfer_student.php', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             body: JSON.stringify({ id: id })
+    //         })
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             if (data.success) {
+    //                 alert(data.message);  // Alert the user for successful archival
+    //                 window.location.reload();  // Reload the page to reflect changes
+    //             } else {
+    //                 alert("Error: " + data.message);  // Show error if there is any
+    //             }
+    //         })
+    //         .catch(error => console.error("Error:", error));  // Catch any potential errors
+    //     }
+    // }
+
+    // Listen for changes in the violation select
+document.getElementById("violation").addEventListener("change", function() {
+    const violationValue = this.value; // Get selected violation
+    const offenseSelect = document.getElementById("offense");
+
+    // Check if the violation is a major or minor offense based on the selection
+    const majorOffenses = [
+        "Cheating", "Forgery & Plagiarism", "False Representation", "Defamation", "Substance Influence", 
+        "Unauthorized Entry", "Theft", "Drug Possession/Use", "Insubordination", "Physical Injury", 
+        "Threats & Bullying", "Gambling", "Hazing", "Unauthorized Name Use", "Financial Misconduct", 
+        "Unauthorized Sales", "Extortion", "Vandalism", "Degrading Treatment", "Deadly Weapons", "Abusive Behavior"
+    ];
+
+    // If the violation is a major offense, set the offense field to "Major"
+    if (majorOffenses.includes(violationValue)) {
+        offenseSelect.value = "Major"; // Automatically select Major
+    } else {
+        offenseSelect.value = "Minor"; // Automatically select Minor if not a major offense
     }
-}
+});
+
+   
 
 
-    document.getElementById("profileImage").onclick = function() {
-        var dropdown = document.getElementById("dropdownContent");
-        dropdown.style.display = (dropdown.style.display === "none" || dropdown.style.display === "") ? "block" : "none";
-    }
+    // Your search script
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("search"); // The search input
+        const rows = document.querySelectorAll("#violationTable tbody tr"); // All rows in the table
+        const noRecords = document.getElementById("noRecords"); // "No records found" row (hidden by default)
 
-    window.onclick = function(event) {
-        if (!event.target.matches('#profileImage')) {
-            var dropdowns = document.getElementsByClassName("dropdown-content");
-            for (var i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.style.display === "block") {
-                    openDropdown.style.display = "none";
+        // Listen for input in the search field
+        searchInput.addEventListener("input", function () {
+            const searchValue = this.value.toLowerCase(); // Get the input and make it lowercase
+            let found = false; // To check if any row matches
+
+            // Loop through each row in the table
+            rows.forEach(row => {
+                const rowText = row.innerText.toLowerCase(); // Get the row's text content and make it lowercase
+                if (rowText.includes(searchValue)) {
+                    row.style.display = ""; // If it matches, show the row
+                    found = true;
+                } else {
+                    row.style.display = "none"; // If it doesn't match, hide the row
                 }
-            }
-        }
-    }
+            });
 
-    document.getElementById("logoutButton").onclick = function(event) {
-        var confirmLogout = confirm("Are you sure you want to log out?");
-        if (!confirmLogout) {
-            event.preventDefault();
-        }
-    };
-
-     // Attach an event listener to the search input
-     document.getElementById("search").addEventListener("input", function () {
-        const searchValue = this.value.toLowerCase(); // Convert input to lowercase for case-insensitive search
-        const rows = document.querySelectorAll("#violationTable tbody tr"); // Select all table rows
-
-        rows.forEach(row => {
-            const studentId = row.querySelector("td:nth-child(1)").textContent.toLowerCase(); // Get the Student ID column
-            if (studentId.includes(searchValue)) {
-                row.style.display = ""; // Show the row if it matches
+            // Handle "No records found" row
+            if (searchValue && !found) {
+                noRecords.style.display = ""; // Show if no results are found
             } else {
-                row.style.display = "none"; // Hide the row if it doesn't match
+                noRecords.style.display = "none"; // Hide it when there are matches
             }
         });
     });
-    </script>
+
+
+
+
+    function printTableToPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Add a custom header
+    doc.setFontSize(12); // Set smaller font size for the header
+    doc.text("Student Violation Records (Active)", 105, 10, { align: "center" }); // Centered text at the top
+    doc.setFontSize(8); // Set smaller font size for the date
+    doc.text("Generated on: " + new Date().toLocaleDateString(), 105, 16, { align: "center" }); // Centered date below the main header
+
+    // Add a margin for the header
+    const marginTop = 20;
+
+    // Select the table
+    const table = document.getElementById("violationTable");
+
+    // Extract headers (excluding the Actions column)
+    const headers = Array.from(table.querySelectorAll("thead th"))
+        .map(th => th.textContent.trim())
+        .filter((_, index) => index !== table.querySelectorAll("thead th").length - 1); // Exclude "Actions"
+
+    // Extract rows (excluding the Actions column)
+    const rows = Array.from(table.querySelectorAll("tbody tr")).map(row =>
+        Array.from(row.querySelectorAll("td"))
+            .map(td => td.textContent.trim())
+            .filter((_, index) => index !== row.querySelectorAll("td").length - 1) // Exclude "Actions"
+    );
+
+    // Generate the PDF with 30 rows per page
+    doc.autoTable({
+        head: [headers],
+        body: rows,
+        styles: { fontSize: 8, cellPadding: 2 }, // Smaller font and adjusted padding for readability
+        margin: { top: marginTop, left: 10, right: 10 }, // Adjust margins
+        pageBreak: 'auto', // Automatically paginate
+        showHead: 'everyPage', // Show table headers on every page
+        theme: 'grid', // Simple grid theme for readability
+    });
+
+    // Save the PDF
+    doc.save("Student_Violation_Records.pdf");
+}
+
+    document.addEventListener("DOMContentLoaded", function () {
+    const sortDropdown = document.getElementById("sortDropdown");
+    const table = document.getElementById("violationTable");
+
+    sortDropdown.addEventListener("change", function () {
+        const sortType = this.value;
+
+        // Match dropdown value to table column index
+        let columnIndex;
+        switch (sortType) {
+            case "department":
+                columnIndex = 2;
+                break;
+            case "name":
+                columnIndex = 1;
+                break;
+            case "violation":
+                columnIndex = 4;
+                break;
+            case "date":
+                columnIndex = 8;
+                break;
+            default:
+                return; // Do nothing if no valid option is selected
+        }
+
+        const tbody = table.querySelector("tbody");
+        
+        // Always get FRESH visible rows
+        const rows = Array.from(tbody.querySelectorAll("tr"));
+        const visibleRows = rows.filter(row => row.style.display !== "none");
+
+        // Sort visible rows
+        visibleRows.sort((a, b) => {
+            const aText = a.querySelectorAll("td")[columnIndex]?.innerText.trim() || "";
+            const bText = b.querySelectorAll("td")[columnIndex]?.innerText.trim() || "";
+
+            if (sortType === "date") {
+                return new Date(aText) - new Date(bText);
+            } else {
+                return aText.localeCompare(bText);
+            }
+        });
+
+        // Remove ALL rows (visible and hidden)
+        rows.forEach(row => tbody.removeChild(row));
+
+        // Re-append sorted visible rows
+        visibleRows.forEach(row => tbody.appendChild(row));
+
+        // Then re-append hidden rows (still hidden)
+        const hiddenRows = rows.filter(row => row.style.display === "none");
+        hiddenRows.forEach(row => tbody.appendChild(row));
+    });
+});
+
+function toggleActiveViolation(button) {
+    const rowId = button.getAttribute('data-row-id');
+    const row = document.getElementById(rowId);
+
+    // Toggle highlight
+    if (row.classList.contains('highlighted')) {
+        row.classList.remove('highlighted');
+        removeActiveRow(rowId);
+    } else {
+        row.classList.add('highlighted');
+        saveActiveRow(rowId);
+    }
+}
+
+// Save to localStorage
+function saveActiveRow(rowId) {
+    let activeRows = JSON.parse(localStorage.getItem('activeRows')) || [];
+    if (!activeRows.includes(rowId)) {
+        activeRows.push(rowId);
+        localStorage.setItem('activeRows', JSON.stringify(activeRows));
+    }
+}
+
+// Remove from localStorage
+function removeActiveRow(rowId) {
+    let activeRows = JSON.parse(localStorage.getItem('activeRows')) || [];
+    activeRows = activeRows.filter(id => id !== rowId);
+    localStorage.setItem('activeRows', JSON.stringify(activeRows));
+}
+
+// On page load, highlight saved rows
+document.addEventListener('DOMContentLoaded', function () {
+    let activeRows = JSON.parse(localStorage.getItem('activeRows')) || [];
+    activeRows.forEach(rowId => {
+        const row = document.getElementById(rowId);
+        if (row) {
+            row.classList.add('highlighted');
+        }
+    });
+});
+
+
+    function sendEmail(userId) {
+        fetch('send_email.php?id=' + userId)
+            .then(response => response.text())
+            .then(data => alert(data))
+            .catch(error => console.error('Error:', error));
+    }
+
+</script>
 </body>
 </html>
