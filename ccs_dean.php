@@ -606,19 +606,19 @@
             </div>
             <ul>
                 <li class="active">
-                    <a href="students_page.php">
+                    <a href="ccs_dean.php">
                         <i class='bx bxs-group'></i>
                         <div>Students</div>
                     </a>
                 </li>
                 <li>
-                    <a href="prediction.php">
+                    <a href="#">
                         <i class='fas fa-chart-line'></i>
                         <div>Predictions</div>
                     </a>
                 </li>
                 <li class="archive">
-                    <a href="archive.php">
+                    <a href="archive_ccs.php">
                         <i class='bx bxs-archive'></i>
                         <div>Archive</div>
                     </a>
