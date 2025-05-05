@@ -411,21 +411,21 @@ button:hover {
 
 
         button.add {
-            width: 50px;              /* Set the width of the circle */
-            height: 50px;             /* Set the height to be the same as the width */
-            border-radius: 50%;       /* This makes the button round */
-            background-color: #333; /* Background color of the button */
-            color: white;             /* Icon color */
-            border: none;             /* Remove border */
-            display: flex;            /* Center icon inside the button */
-            justify-content: center;  /* Horizontally center the icon */
-            align-items: center;      /* Vertically center the icon */
-            cursor: pointer;          /* Add a pointer on hover */
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
-            position: fixed;          /* Make the button fixed to the viewport */
-            bottom: 20px;             /* Distance from the bottom of the viewport */
-            right: 20px;              /* Distance from the right of the viewport */
-            z-index: 1000;            /* Ensure it stays on top of other elements */
+            width: 50px;              
+            height: 50px;            
+            border-radius: 50%;       
+            background-color: #333; 
+            color: white;             
+            border: none;            
+            display: flex;            
+            justify-content: center;  
+            align-items: center;      
+            cursor: pointer;          
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); 
+            position: fixed;          
+            bottom: 20px;             
+            right: 20px;              
+            z-index: 1000;            
         }
 
         button.print-pdf {
@@ -454,27 +454,22 @@ button:hover {
             left: 0;
             top: 0;
             width: 100%;
-            height: 100%;
-            overflow: hidden;
-            /* Prevents scrolling inside the modal */
+            height: 100%; /* Changed from 125% to 100% */
+            overflow: auto; /* Changed from hidden to auto */
             background-color: rgba(0, 0, 0, 0.4);
         }
 
         #modalContent {
             background-color: #fff;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            /* Centers the modal content */
+            position: relative; /* Add this so the close button is positioned relative to it */
+            margin: 5% auto;
             padding: 20px;
             border: 1px solid #ddd;
-            width: 80%;
-            max-width: 500px;
+            width: 90%;
+            max-width: 700px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-
 
         .close {
             color: #aaa;
@@ -890,8 +885,11 @@ button:hover {
                         <option value="Minor">Minor</option>
                     </select>
 
-                    <!-- <label for="status">Status:</label>
-                    <input type="text" id="status" name="status" required> -->
+                    <label for="status">Status:</label>
+                    <input type="text" id="status" name="status" required>
+
+                    <label for="personnel">Personnel:</label>
+                    <input type="text" id="personnel" name="personnel" required>
 
                     <label for="sanction">Sanction:</label>
                     <input type="text" id="sanction" name="sanction" required>
