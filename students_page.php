@@ -714,7 +714,6 @@ button:hover {
                                 <th>Personnel</th>
                                 <th>Date & Time</th>
                                 <th>Sanction</th>
-                                <th>Proof</th>
                                 <th>Actions</th>               
                             </tr>
                         </thead>
