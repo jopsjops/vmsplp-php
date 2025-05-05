@@ -10,7 +10,7 @@ if (isset($_POST['id']) && !empty($_POST['id'])) {
     $violation = $_POST['Violation'];
     $offense = $_POST['Offense'];
     $status = $_POST['Status'];
-    $personnel = $POST['Personnel'];
+    $personnel = $_POST['Personnel'];
     $sanction = $_POST['Sanction'];
     $date = $_POST['Date'];
     $time = $_POST['Time']; 
@@ -49,9 +49,9 @@ if (isset($_POST['id']) && !empty($_POST['id'])) {
     }
 
     // Update query using the unique id to target the exact record
-    $sql = "UPDATE student_info SET Student_Name=?, Department=?, Program=?, Violation=?, Offense=?, Status=?, Personnel=?, Sanction=?, Date=?, Time=?, Sanction_Proof=? WHERE id=?";
+    $sql = "UPDATE student_info SET Student_Name=?, Department=?, Program=?, Violation=?, Offense=?, Status=?, Personnel=?, Sanction=?, Date=?, Time=? WHERE id=?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssssssssssi", $studentName, $department, $program, $violation, $offense, $status, $personnel, $sanction, $date, $time, $sanctionProofPath, $id);
+    $stmt->bind_param("ssssssssssi", $studentName, $department, $program, $violation, $offense, $status, $personnel, $sanction, $date, $time, $id);
 
     if ($stmt->execute()) {
         echo "<script>

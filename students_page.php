@@ -730,6 +730,7 @@ button:hover {
                                     </td>
 
                                     <td><?php echo htmlspecialchars($row['Personnel']); ?></td>
+                                    
                                     <td><?php echo htmlspecialchars(date('M d, Y h:i A', strtotime($row['Date'] . ' ' . $row['Time']))); ?>
                                     </td>
                                     <td><?php echo htmlspecialchars($row['Sanction']); ?></td>

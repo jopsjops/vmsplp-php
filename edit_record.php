@@ -233,14 +233,10 @@ $conn->close();
     </select>
 
     <label for="Status">Status:</label>
-    <select name="Status">
-        <option><?php echo htmlspecialchars($data['Status']); ?></option>
-    </select>
+    <input type="text" name="Status" value="<?php echo htmlspecialchars($data['Status']); ?>" required>
 
     <label for="Personnel">Personnel:</label>
-    <select name="Personnel">
-        <option><?php echo htmlspecialchars($data['Personnel']); ?></option>
-    </select>
+    <input type="text" name="Personnel" value="<?php echo htmlspecialchars($data['Personnel']); ?>" required>
 
     <label for="Sanction">Sanction:</label>
     <input type="text" name="Sanction" value="<?php echo htmlspecialchars($data['Sanction']); ?>">
@@ -251,29 +247,7 @@ $conn->close();
     <label for="Date">Date:</label>
     <input type="date" name="Date" value="<?php echo htmlspecialchars($data['Date']); ?>" required>
 
-    <label for="toggleSwitch">Active Violation:</label>
-    <label class="switch">
-        <input type="checkbox" id="toggleSwitch">
-        <span class="slider round"></span>
-    </label>
 
     <button type="submit">Update Record</button>
 </form>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const toggle = document.getElementById('toggleSwitch');
-
-    const saved = localStorage.getItem('toggleSwitch');
-    if (saved === 'on') {
-        toggle.checked = true;
-    }
-
-    toggle.addEventListener('change', function () {
-        localStorage.setItem('toggleSwitch', toggle.checked ? 'on' : 'off');
-
-        const studentId = document.getElementById('studentIdInput').value;
-        localStorage.setItem('activeStudentId', toggle.checked ? studentId : '');
-    });
-});
-</script>
