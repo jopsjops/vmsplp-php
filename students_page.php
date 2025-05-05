@@ -789,11 +789,11 @@ button {
                                     <td><?php echo htmlspecialchars($row['Personnel']); ?></td>
                                     
                                     <td>
-    <?php
-        $timestamp = strtotime($row['Date'] . ' ' . $row['Time']);
-        echo htmlspecialchars(date('m/d/Y', $timestamp)) . '<br>' . htmlspecialchars(date('h:i A', $timestamp));
-    ?>
-</td>
+                                        <?php
+                                            $timestamp = strtotime($row['Date'] . ' ' . $row['Time']);
+                                            echo htmlspecialchars(date('m/d/Y', $timestamp)) . '<br>' . htmlspecialchars(date('h:i A', $timestamp));
+                                        ?>
+                                    </td>
 
 
                                     <td><?php echo htmlspecialchars($row['Sanction']); ?></td>
@@ -941,11 +941,8 @@ button {
                     </select>
 
                     <label for="offense">Offense:</label>
-                    <select id="offense" name="offense" required>
-                        <option value="">--Select--</option>
-                        <option value="Major">Major</option>
-                        <option value="Minor">Minor</option>
-                    </select>
+                    <input type="text" id="offense" name="offense" readonly required>
+
 
                     <label for="status">Status:</label>
                     <input type="text" id="status" name="status" required>
@@ -954,7 +951,8 @@ button {
                     <input type="text" id="personnel" name="personnel" required>
 
                     <label for="sanction">Sanction:</label>
-                    <input type="text" id="sanction" name="sanction" required>
+                    <input type="text" id="sanction" name="sanction" readonly required>
+
 
                     <label for="date">Date:</label>
                     <input type="date" id="date" name="date" required>
