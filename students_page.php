@@ -460,6 +460,25 @@ button {
             z-index: 1000;            /* Ensure it stays on top of other elements */
         }
 
+        button.send {
+    width: 50px;              /* Set the width of the circle */
+    height: 50px;             /* Set the height to match the width */
+    border-radius: 50%;       /* Make the button round */
+    background-color: #333;   /* Background color */
+    color: white;             /* Icon color */
+    border: none;             /* Remove default border */
+    display: flex;            /* Center icon horizontally */
+    justify-content: center;  /* Center icon horizontally */
+    align-items: center;      /* Center icon vertically */
+    cursor: pointer;          /* Pointer cursor on hover */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Shadow effect */
+    position: fixed;          /* Fixed position on screen */
+    bottom: 160px;            /* Adjust position above print and add buttons */
+    right: 20px;              /* Align to the right like others */
+    z-index: 1000;            /* Keep above other elements */
+}
+
+
 
         #addModal {
             display: none;
@@ -666,6 +685,8 @@ button {
     transition: background-color 0.3s ease;
 }
 
+
+
     </style>
 </head>
 
@@ -854,6 +875,10 @@ button {
                     <button class="add" id="addButton" onclick="document.getElementById('addModal').style.display='block'">
                         <i class='bx bxs-add-to-queue'></i>
                     </button>
+
+                    <button class="send" id="sendEmailButton" onclick="sendEmailToAllStudents()">
+                    <i class='bx bx-mail-send'></i>
+                </button>
 
                 </div>
             </div>
@@ -1358,6 +1383,17 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => alert(data))
             .catch(error => console.error('Error:', error));
     }
+
+    function sendEmailToAllStudents() {
+            if (confirm("Send email to all students?")) {
+                fetch("send_email_all.php", {
+                    method: "POST"
+                })
+                    .then(response => response.text())
+                    .then(data => alert(data))
+                    .catch(error => alert("Error: " + error));
+            }
+        }
 
 </script>
 </body>
