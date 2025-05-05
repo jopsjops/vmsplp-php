@@ -1137,6 +1137,36 @@ document.getElementById("violation").addEventListener("change", function() {
     }
 });
 
+
+document.getElementById('status').addEventListener('input', updateSanction);
+    document.getElementById('offense').addEventListener('change', updateSanction);
+
+    function updateSanction() {
+        const status = parseInt(document.getElementById('status').value);
+        const offense = document.getElementById('offense').value;
+        const sanctionInput = document.getElementById('sanction');
+
+        let sanction = '';
+
+        if (offense === 'Major') {
+            if (status === 1) {
+                sanction = 'Suspension for 60 days';
+            } else if (status === 2) {
+                sanction = 'Dismissal';
+            } else if (status >= 3) {
+                sanction = 'Expulsion';
+            }
+        } else if (offense === 'Minor') {
+            if (status === 1) {
+                sanction = 'Non-Compliance Slip + Apology Letter';
+            } else if (status === 2) {
+                sanction = 'Community Service + Counseling';
+            }
+        }
+
+        sanctionInput.value = sanction;
+    }
+
    
 
 
