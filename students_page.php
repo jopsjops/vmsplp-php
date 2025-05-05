@@ -337,46 +337,75 @@
             color: #333; /* Dark text color for the data */
         }
 
-        .button-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    align-items: center;
-    justify-content: center;
+        .button-group button {
+    position: relative;
 }
 
-/* First row: Send Email + Activate */
-.top-row {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-    justify-content: space-between;
+.button-group button::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 5px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    font-size: 12px;
 }
 
-.top-row button {
-    width: 48%;
+.button-group button:hover::after {
+    opacity: 1;
 }
 
-/* Middle row: Upload centered */
-.middle-row {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
 
-/* Bottom row: Edit + Archive */
+/* Make both rows flex containers */
+.top-row,
 .bottom-row {
     display: flex;
-    gap: 10px;
-    width: 100%;
     justify-content: space-between;
+    gap: 4%;
+}
+
+/* Ensure forms and buttons in both rows align */
+.top-row form,
+.top-row button,
+.bottom-row button {
+    width: 48%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Icons centered inside buttons */
+.top-row i,
+.bottom-row i {
+    display: block;
+    margin: auto;
+}
+
+
+.top-row button {
+    width: 48%; /* Each button will take almost half of the width */
+}
+
+/* Bottom row buttons (Edit and Archive) */
+.bottom-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 1px; /* Adds spacing between buttons */
 }
 
 .bottom-row button {
-    width: 48%;
+    width: 48%; /* Each button will take almost half of the width */
 }
 
-/* Button styling */
+/* Style for individual buttons */
 button {
     padding: 8px 15px;
     border: none;
@@ -387,21 +416,6 @@ button {
     font-size: 14px;
     transition: background-color 0.3s ease;
 }
-
-button:hover {
-    background-color: #f1f1f1;
-    opacity: 0.9;
-}
-
-/* Upload icon button */
-.middle-row form button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
-    color: #333;
-}
-
 
 
         button.archive {
@@ -478,12 +492,58 @@ button:hover {
             font-weight: bold;
         }
 
+        .submit-btn {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background-color: #45a049;
+            transform: scale(1.02);
+        }
+
+        .submit-btn:active {
+            background-color: #3e8e41;
+        }
+
+
         .close:hover,
         .close:focus {
             color: #000;
             text-decoration: none;
             cursor: pointer;
         }
+
+        .submit-btn {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background-color: #45a049;
+            transform: scale(1.02);
+        }
+
+        .submit-btn:active {
+            background-color: #3e8e41;
+        }
+
 
         form label {
             display: block;
@@ -498,12 +558,6 @@ button:hover {
             border: 1px solid #ddd;
             border-radius: 5px;
             margin-bottom: 10px;
-        }
-
-        form button {
-            color: #fff;
-            background-color: #059212;
-            width: 100%;
         }
 
         .sorting-section {
@@ -731,47 +785,51 @@ button:hover {
 
                                     <td><?php echo htmlspecialchars($row['Personnel']); ?></td>
                                     
-                                    <td><?php echo htmlspecialchars(date('M d, Y h:i A', strtotime($row['Date'] . ' ' . $row['Time']))); ?>
-                                    </td>
-                                    <td><?php echo htmlspecialchars($row['Sanction']); ?></td>
                                     <td>
-    <div class="button-group">
-        <!-- Row 1: Send Email & Activate -->
-        <div class="top-row">
-            <button class="send-email" onclick="sendEmail(<?php echo $row['id']; ?>)">
-                <i class="fas fa-envelope"></i>
-            </button>
-
-            <button class="activate-btn" onclick="toggleActiveViolation(this)" data-row-id="row-<?php echo $row['id']; ?>">
-                <i class="fas fa-toggle-on"></i>
-            </button>
-        </div>
-
-        <!-- Row 2: Upload (centered) -->
-        <div class="middle-row">
-            <form action="upload_evidence.php" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="student_id" value="<?php echo $row['id']; ?>">
-                <input type="file" name="evidence" accept="image/*" style="display: none;" onchange="this.form.submit()">
-                <button type="button" onclick="this.previousElementSibling.click()" title="Upload Evidence">
-                    <i class="fas fa-upload"></i>
-                </button>
-            </form>
-        </div>
-
-        <!-- Row 3: Edit & Archive -->
-        <div class="bottom-row">
-            <button class="edit" onclick="editRow(<?php echo $row['id']; ?>)">
-                <i class="fas fa-pencil-alt"></i>
-            </button>
-
-            <button class="archive" onclick="openArchiveModal(<?php echo $row['id']; ?>)">
-                <i class="fa-solid fa-folder-plus"></i>
-            </button>
-        </div>
-    </div>
+    <?php
+        $timestamp = strtotime($row['Date'] . ' ' . $row['Time']);
+        echo htmlspecialchars(date('m/d/Y', $timestamp)) . '<br>' . htmlspecialchars(date('h:i A', $timestamp));
+    ?>
 </td>
 
 
+                                    <td><?php echo htmlspecialchars($row['Sanction']); ?></td>
+                                    <td>
+                                    <div class="button-group">
+                                        <!-- Top Row -->
+                                        <div class="top-row">
+                                        <?php if (!empty($row['Evidence']) && file_exists('evidence/' . $row['Evidence'])): ?>
+                                            <img src="evidence/<?php echo htmlspecialchars($row['Evidence']); ?>" alt="Evidence" style="width:48%;">
+                                        <?php else: ?>
+                                            <form action="upload_evidence.php" method="POST" enctype="multipart/form-data">
+                                            <input type="hidden" name="student_id" value="<?php echo $row['id']; ?>">
+                                            <input type="file" name="evidence" accept="image/*" style="display:none;" onchange="this.form.submit()">
+                                            <!-- Upload Evidence -->
+                                            <button type="button" onclick="this.previousElementSibling.click();" data-tooltip="Upload Evidence">
+                                                <i class="fas fa-upload"></i>
+                                            </button>
+                                            </form>
+                                        <?php endif; ?>
+
+                                            <!-- Activate Violation -->
+                                            <button class="activate-btn" onclick="toggleActiveViolation(this)" data-row-id="row-<?php echo $row['id']; ?>" data-tooltip="Activate Violation">
+                                                <i class="fas fa-toggle-on"></i>
+                                            </button>
+                                        </div>
+                                            <!-- Bottom Row: Edit and Archive Buttons -->
+                                            <div class="bottom-row">
+                                            <!-- Edit Button -->
+                                            <button class="edit" onclick="editRow(<?php echo $row['id']; ?>)" data-tooltip="Edit Row">
+                                                <i class="fas fa-pencil-alt"></i>
+                                            </button>
+                                            <!-- Archive Button -->
+                                            <button class="archive" onclick="openArchiveModal(<?php echo $row['id']; ?>)" data-tooltip="Archive Row">
+                                                <i class="fa-solid fa-folder-plus"></i>
+                                            </button>
+
+                                            </div>
+                                        </div>
+                                    </td>
 
 
                                 </tr>
@@ -1216,15 +1274,18 @@ function toggleActiveViolation(button) {
     const rowId = button.getAttribute('data-row-id');
     const row = document.getElementById(rowId);
 
-    // Toggle highlight
+    // Toggle highlight and tooltip
     if (row.classList.contains('highlighted')) {
         row.classList.remove('highlighted');
         removeActiveRow(rowId);
+        button.setAttribute('data-tooltip', 'Activate Violation');
     } else {
         row.classList.add('highlighted');
         saveActiveRow(rowId);
+        button.setAttribute('data-tooltip', 'Deactivate Violation');
     }
 }
+
 
 // Save to localStorage
 function saveActiveRow(rowId) {
@@ -1242,16 +1303,22 @@ function removeActiveRow(rowId) {
     localStorage.setItem('activeRows', JSON.stringify(activeRows));
 }
 
-// On page load, highlight saved rows
 document.addEventListener('DOMContentLoaded', function () {
     let activeRows = JSON.parse(localStorage.getItem('activeRows')) || [];
     activeRows.forEach(rowId => {
         const row = document.getElementById(rowId);
         if (row) {
             row.classList.add('highlighted');
+
+            // Also update the tooltip text on load
+            const button = document.querySelector(`button[data-row-id="${rowId}"]`);
+            if (button) {
+                button.setAttribute('data-tooltip', 'Deactivate Violation');
+            }
         }
     });
 });
+
 
 
     function sendEmail(userId) {
