@@ -703,7 +703,7 @@
                                                 <input type="file" name="evidence" accept="image/*" style="display:none;" onchange="this.form.submit()">
                                                 <button type="button" onclick="this.previousElementSibling.click();">Upload</button>
                                             </form>
-                                            <span>No evidence</span>
+                                            
                                         <?php endif; ?>
                                     </td>
 
