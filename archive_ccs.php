@@ -577,7 +577,7 @@
             </div>
             <ul>
                 <li>
-                    <a href="students_page.php">
+                    <a href="ccs_dean.php">
                         <i class='bx bxs-group'></i>
                         <div>Students</div>
                     </a>
