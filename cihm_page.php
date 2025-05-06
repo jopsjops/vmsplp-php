@@ -337,46 +337,75 @@
             color: #333; /* Dark text color for the data */
         }
 
-        .button-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    align-items: center;
-    justify-content: center;
+        .button-group button {
+    position: relative;
 }
 
-/* First row: Send Email + Activate */
-.top-row {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-    justify-content: space-between;
+.button-group button::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 5px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    font-size: 12px;
 }
 
-.top-row button {
-    width: 48%;
+.button-group button:hover::after {
+    opacity: 1;
 }
 
-/* Middle row: Upload centered */
-.middle-row {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
 
-/* Bottom row: Edit + Archive */
+/* Make both rows flex containers */
+.top-row,
 .bottom-row {
     display: flex;
-    gap: 10px;
-    width: 100%;
     justify-content: space-between;
+    gap: 4%;
+}
+
+/* Ensure forms and buttons in both rows align */
+.top-row form,
+.top-row button,
+.bottom-row button {
+    width: 48%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Icons centered inside buttons */
+.top-row i,
+.bottom-row i {
+    display: block;
+    margin: auto;
+}
+
+
+.top-row button {
+    width: 48%; /* Each button will take almost half of the width */
+}
+
+/* Bottom row buttons (Edit and Archive) */
+.bottom-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 1px; /* Adds spacing between buttons */
 }
 
 .bottom-row button {
-    width: 48%;
+    width: 48%; /* Each button will take almost half of the width */
 }
 
-/* Button styling */
+/* Style for individual buttons */
 button {
     padding: 8px 15px;
     border: none;
@@ -388,21 +417,6 @@ button {
     transition: background-color 0.3s ease;
 }
 
-button:hover {
-    background-color: #f1f1f1;
-    opacity: 0.9;
-}
-
-/* Upload icon button */
-.middle-row form button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
-    color: #333;
-}
-
-
 
         button.archive {
             color: #333;
@@ -411,21 +425,21 @@ button:hover {
 
 
         button.add {
-            width: 50px;              /* Set the width of the circle */
-            height: 50px;             /* Set the height to be the same as the width */
-            border-radius: 50%;       /* This makes the button round */
-            background-color: #333; /* Background color of the button */
-            color: white;             /* Icon color */
-            border: none;             /* Remove border */
-            display: flex;            /* Center icon inside the button */
-            justify-content: center;  /* Horizontally center the icon */
-            align-items: center;      /* Vertically center the icon */
-            cursor: pointer;          /* Add a pointer on hover */
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
-            position: fixed;          /* Make the button fixed to the viewport */
-            bottom: 20px;             /* Distance from the bottom of the viewport */
-            right: 20px;              /* Distance from the right of the viewport */
-            z-index: 1000;            /* Ensure it stays on top of other elements */
+            width: 50px;              
+            height: 50px;            
+            border-radius: 50%;       
+            background-color: #333; 
+            color: white;             
+            border: none;            
+            display: flex;            
+            justify-content: center;  
+            align-items: center;      
+            cursor: pointer;          
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); 
+            position: fixed;          
+            bottom: 20px;             
+            right: 20px;              
+            z-index: 1000;            
         }
 
         button.print-pdf {
@@ -446,6 +460,25 @@ button:hover {
             z-index: 1000;            /* Ensure it stays on top of other elements */
         }
 
+        button.send {
+    width: 50px;              /* Set the width of the circle */
+    height: 50px;             /* Set the height to match the width */
+    border-radius: 50%;       /* Make the button round */
+    background-color: #333;   /* Background color */
+    color: white;             /* Icon color */
+    border: none;             /* Remove default border */
+    display: flex;            /* Center icon horizontally */
+    justify-content: center;  /* Center icon horizontally */
+    align-items: center;      /* Center icon vertically */
+    cursor: pointer;          /* Pointer cursor on hover */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Shadow effect */
+    position: fixed;          /* Fixed position on screen */
+    bottom: 160px;            /* Adjust position above print and add buttons */
+    right: 20px;              /* Align to the right like others */
+    z-index: 1000;            /* Keep above other elements */
+}
+
+
 
         #addModal {
             display: none;
@@ -454,23 +487,21 @@ button:hover {
             left: 0;
             top: 0;
             width: 100%;
-            height: 100%;
-            overflow: hidden;
-            /* Prevents scrolling inside the modal */
+            height: 100%; /* Keep this */
+            overflow: hidden; /* Make outer modal non-scrollable */
             background-color: rgba(0, 0, 0, 0.4);
         }
 
         #modalContent {
             background-color: #fff;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            /* Centers the modal content */
+            position: relative;
+            margin: 2% auto;
             padding: 20px;
             border: 1px solid #ddd;
-            width: 80%;
-            max-width: 500px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh; /* Make modal content height-limited */
+            overflow-y: auto;  /* Allow vertical scroll inside only */
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
@@ -483,12 +514,58 @@ button:hover {
             font-weight: bold;
         }
 
+        .submit-btn {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background-color: #45a049;
+            transform: scale(1.02);
+        }
+
+        .submit-btn:active {
+            background-color: #3e8e41;
+        }
+
+
         .close:hover,
         .close:focus {
             color: #000;
             text-decoration: none;
             cursor: pointer;
         }
+
+        .submit-btn {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background-color: #45a049;
+            transform: scale(1.02);
+        }
+
+        .submit-btn:active {
+            background-color: #3e8e41;
+        }
+
 
         form label {
             display: block;
@@ -503,12 +580,6 @@ button:hover {
             border: 1px solid #ddd;
             border-radius: 5px;
             margin-bottom: 10px;
-        }
-
-        form button {
-            color: #fff;
-            background-color: #059212;
-            width: 100%;
         }
 
         .sorting-section {
@@ -613,6 +684,8 @@ button:hover {
     background-color:rgb(142, 255, 181) !important; /* Light green */
     transition: background-color 0.3s ease;
 }
+
+
 
     </style>
 </head>
@@ -735,47 +808,52 @@ button:hover {
                                     </td>
 
                                     <td><?php echo htmlspecialchars($row['Personnel']); ?></td>
-                                    <td><?php echo htmlspecialchars(date('M d, Y h:i A', strtotime($row['Date'] . ' ' . $row['Time']))); ?>
+                                    
+                                    <td>
+                                        <?php
+                                            $timestamp = strtotime($row['Date'] . ' ' . $row['Time']);
+                                            echo htmlspecialchars(date('m/d/Y', $timestamp)) . '<br>' . htmlspecialchars(date('h:i A', $timestamp));
+                                        ?>
                                     </td>
+
+
                                     <td><?php echo htmlspecialchars($row['Sanction']); ?></td>
                                     <td>
-    <div class="button-group">
-        <!-- Row 1: Send Email & Activate -->
-        <div class="top-row">
-            <button class="send-email" onclick="sendEmail(<?php echo $row['id']; ?>)">
-                <i class="fas fa-envelope"></i>
-            </button>
+                                    <div class="button-group">
+                                        <!-- Top Row -->
+                                        <div class="top-row">
+                                        <?php if (!empty($row['Evidence']) && file_exists('evidence/' . $row['Evidence'])): ?>
+                                            <img src="evidence/<?php echo htmlspecialchars($row['Evidence']); ?>" alt="Evidence" style="width:48%;">
+                                        <?php else: ?>
+                                            <form action="upload_evidence.php" method="POST" enctype="multipart/form-data">
+                                            <input type="hidden" name="student_id" value="<?php echo $row['id']; ?>">
+                                            <input type="file" name="evidence" accept="image/*" style="display:none;" onchange="this.form.submit()">
+                                            <!-- Upload Evidence -->
+                                            <button type="button" onclick="this.previousElementSibling.click();" data-tooltip="Upload Evidence">
+                                                <i class="fas fa-upload"></i>
+                                            </button>
+                                            </form>
+                                        <?php endif; ?>
 
-            <button class="activate-btn" onclick="toggleActiveViolation(this)" data-row-id="row-<?php echo $row['id']; ?>">
-                <i class="fas fa-toggle-on"></i>
-            </button>
-        </div>
+                                            <!-- Activate Violation -->
+                                            <button class="activate-btn" onclick="toggleActiveViolation(this)" data-row-id="row-<?php echo $row['id']; ?>" data-tooltip="Activate Violation">
+                                                <i class="fas fa-toggle-on"></i>
+                                            </button>
+                                        </div>
+                                            <!-- Bottom Row: Edit and Archive Buttons -->
+                                            <div class="bottom-row">
+                                            <!-- Edit Button -->
+                                            <button class="edit" onclick="editRow(<?php echo $row['id']; ?>)" data-tooltip="Edit Row">
+                                                <i class="fas fa-pencil-alt"></i>
+                                            </button>
+                                            <!-- Archive Button -->
+                                            <button class="archive" onclick="openArchiveModal(<?php echo $row['id']; ?>)" data-tooltip="Archive Row">
+                                                <i class="fa-solid fa-folder-plus"></i>
+                                            </button>
 
-        <!-- Row 2: Upload (centered) -->
-        <div class="middle-row">
-            <form action="upload_evidence.php" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="student_id" value="<?php echo $row['id']; ?>">
-                <input type="file" name="evidence" accept="image/*" style="display: none;" onchange="this.form.submit()">
-                <button type="button" onclick="this.previousElementSibling.click()" title="Upload Evidence">
-                    <i class="fas fa-upload"></i>
-                </button>
-            </form>
-        </div>
-
-        <!-- Row 3: Edit & Archive -->
-        <div class="bottom-row">
-            <button class="edit" onclick="editRow(<?php echo $row['id']; ?>)">
-                <i class="fas fa-pencil-alt"></i>
-            </button>
-
-            <button class="archive" onclick="openArchiveModal(<?php echo $row['id']; ?>)">
-                <i class="fa-solid fa-folder-plus"></i>
-            </button>
-        </div>
-    </div>
-</td>
-
-
+                                            </div>
+                                        </div>
+                                    </td>
 
 
                                 </tr>
@@ -797,6 +875,10 @@ button:hover {
                     <button class="add" id="addButton" onclick="document.getElementById('addModal').style.display='block'">
                         <i class='bx bxs-add-to-queue'></i>
                     </button>
+
+                    <button class="send" id="sendEmailButton" onclick="sendEmailToAllStudents()">
+                    <i class='bx bx-mail-send'></i>
+                </button>
 
                 </div>
             </div>
@@ -884,17 +966,18 @@ button:hover {
                     </select>
 
                     <label for="offense">Offense:</label>
-                    <select id="offense" name="offense" required>
-                        <option value="">--Select--</option>
-                        <option value="Major">Major</option>
-                        <option value="Minor">Minor</option>
-                    </select>
+                    <input type="text" id="offense" name="offense" readonly required>
 
-                    <!-- <label for="status">Status:</label>
-                    <input type="text" id="status" name="status" required> -->
+
+                    <label for="status">Status:</label>
+                    <input type="text" id="status" name="status" required>
+
+                    <label for="personnel">Personnel:</label>
+                    <input type="text" id="personnel" name="personnel" required>
 
                     <label for="sanction">Sanction:</label>
-                    <input type="text" id="sanction" name="sanction" required>
+                    <input type="text" id="sanction" name="sanction" readonly required>
+
 
                     <label for="date">Date:</label>
                     <input type="date" id="date" name="date" required>
@@ -1077,6 +1160,36 @@ document.getElementById("violation").addEventListener("change", function() {
     }
 });
 
+
+document.getElementById('status').addEventListener('input', updateSanction);
+    document.getElementById('offense').addEventListener('change', updateSanction);
+
+    function updateSanction() {
+        const status = parseInt(document.getElementById('status').value);
+        const offense = document.getElementById('offense').value;
+        const sanctionInput = document.getElementById('sanction');
+
+        let sanction = '';
+
+        if (offense === 'Major') {
+            if (status === 1) {
+                sanction = 'Suspension for 60 days';
+            } else if (status === 2) {
+                sanction = 'Dismissal';
+            } else if (status >= 3) {
+                sanction = 'Expulsion';
+            }
+        } else if (offense === 'Minor') {
+            if (status === 1) {
+                sanction = 'Non-Compliance Slip + Apology Letter';
+            } else if (status === 2) {
+                sanction = 'Community Service + Counseling';
+            }
+        }
+
+        sanctionInput.value = sanction;
+    }
+
    
 
 
@@ -1217,15 +1330,18 @@ function toggleActiveViolation(button) {
     const rowId = button.getAttribute('data-row-id');
     const row = document.getElementById(rowId);
 
-    // Toggle highlight
+    // Toggle highlight and tooltip
     if (row.classList.contains('highlighted')) {
         row.classList.remove('highlighted');
         removeActiveRow(rowId);
+        button.setAttribute('data-tooltip', 'Activate Violation');
     } else {
         row.classList.add('highlighted');
         saveActiveRow(rowId);
+        button.setAttribute('data-tooltip', 'Deactivate Violation');
     }
 }
+
 
 // Save to localStorage
 function saveActiveRow(rowId) {
@@ -1243,16 +1359,22 @@ function removeActiveRow(rowId) {
     localStorage.setItem('activeRows', JSON.stringify(activeRows));
 }
 
-// On page load, highlight saved rows
 document.addEventListener('DOMContentLoaded', function () {
     let activeRows = JSON.parse(localStorage.getItem('activeRows')) || [];
     activeRows.forEach(rowId => {
         const row = document.getElementById(rowId);
         if (row) {
             row.classList.add('highlighted');
+
+            // Also update the tooltip text on load
+            const button = document.querySelector(`button[data-row-id="${rowId}"]`);
+            if (button) {
+                button.setAttribute('data-tooltip', 'Deactivate Violation');
+            }
         }
     });
 });
+
 
 
     function sendEmail(userId) {
@@ -1261,6 +1383,17 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => alert(data))
             .catch(error => console.error('Error:', error));
     }
+
+    function sendEmailToAllStudents() {
+            if (confirm("Send email to all students?")) {
+                fetch("send_email_all.php", {
+                    method: "POST"
+                })
+                    .then(response => response.text())
+                    .then(data => alert(data))
+                    .catch(error => alert("Error: " + error));
+            }
+        }
 
 </script>
 </body>
