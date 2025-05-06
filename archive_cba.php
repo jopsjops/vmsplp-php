@@ -592,12 +592,6 @@
                         <div>Students</div>
                     </a>
                 </li>
-                <li>
-                    <a href="#">
-                        <i class='fas fa-chart-line'></i>
-                        <div>Predictions</div>
-                    </a>
-                </li>
                 <li class="active">
                     <a href="archive_cba.php">
                         <i class='bx bxs-archive'></i>

@@ -1115,29 +1115,6 @@ button {
             }
         }
 
-    //     function transferRow(id) {
-    //     const userConfirmed = confirm("Are you sure this student is cleared?");
-
-    //     if (userConfirmed) {
-    //         fetch('transfer_student.php', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             },
-    //             body: JSON.stringify({ id: id })
-    //         })
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             if (data.success) {
-    //                 alert(data.message);  // Alert the user for successful archival
-    //                 window.location.reload();  // Reload the page to reflect changes
-    //             } else {
-    //                 alert("Error: " + data.message);  // Show error if there is any
-    //             }
-    //         })
-    //         .catch(error => console.error("Error:", error));  // Catch any potential errors
-    //     }
-    // }
 
     // Listen for changes in the violation select
 document.getElementById("violation").addEventListener("change", function() {
@@ -1287,10 +1264,10 @@ document.getElementById('status').addEventListener('input', updateSanction);
                 columnIndex = 1;
                 break;
             case "violation":
-                columnIndex = 4;
+                columnIndex = 3;
                 break;
             case "date":
-                columnIndex = 8;
+                columnIndex = 6;
                 break;
             default:
                 return; // Do nothing if no valid option is selected
@@ -1308,11 +1285,12 @@ document.getElementById('status').addEventListener('input', updateSanction);
             const bText = b.querySelectorAll("td")[columnIndex]?.innerText.trim() || "";
 
             if (sortType === "date") {
-                return new Date(aText) - new Date(bText);
+                return new Date(bText) - new Date(aText); // 🔁 DESCENDING
             } else {
                 return aText.localeCompare(bText);
             }
         });
+
 
         // Remove ALL rows (visible and hidden)
         rows.forEach(row => tbody.removeChild(row));

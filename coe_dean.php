@@ -592,12 +592,6 @@
                         <div>Students</div>
                     </a>
                 </li>
-                <li>
-                    <a href="#">
-                        <i class='fas fa-chart-line'></i>
-                        <div>Predictions</div>
-                    </a>
-                </li>
                 <li class="archive">
                     <a href="archive_coe.php">
                         <i class='bx bxs-archive'></i>
@@ -660,9 +654,8 @@
                                     <td><?php echo htmlspecialchars($row['Personnel']); ?></td>
                                     <td>
                                         <?php
-                                        $date = date('M d, Y', strtotime($row['Date']));
-                                        $time = date('h:i A', strtotime($row['Time']));
-                                        echo htmlspecialchars($date) . '<br>' . htmlspecialchars($time);
+                                            $timestamp = strtotime($row['Date'] . ' ' . $row['Time']);
+                                            echo htmlspecialchars(date('m/d/Y', $timestamp)) . '<br>' . htmlspecialchars(date('h:i A', $timestamp));
                                         ?>
                                     </td>
                                     <td><?php echo htmlspecialchars($row['Sanction']); ?></td>
