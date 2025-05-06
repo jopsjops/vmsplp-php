@@ -479,6 +479,7 @@ json_encode($departmentCounts);
             display: flex;
             justify-content: center;
             align-items: center;
+            margin-top: 10px;
         }
 
         .logo-overlay img {
@@ -583,12 +584,12 @@ json_encode($departmentCounts);
                             </canvas>
 
                             <!-- Department Logo -->
-                            <!-- <div class="logo-overlay">
+                            <div class="logo-overlay">
                                 <?php
                                 $imageFile = strtolower($dept) === 'con' ? 'con_con.png' : strtolower($dept) . '.png'; 
                                 ?>
                                 <img src="img/<?php echo $imageFile; ?>" alt="<?php echo $dept; ?>">
-                            </div> -->
+                            </div>
 
                             <!-- Hover Text -->
                             <div class="hover-info">
