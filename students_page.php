@@ -686,6 +686,57 @@ button {
 }
 
 
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+
+  /* Remove unnecessary centering that affects all children */
+  position: relative;
+  text-align: left;
+}
+
+#deleteBtn {
+  display: block;              /* Allows margin auto to work */
+  margin-left: 65px;         /* Top margin and auto left/right to center */
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+#deleteBtn:hover {
+  background-color: #c0392b;
+  transform: scale(1.05);
+}
+
+#deleteBtn:active {
+  background-color: #a93226;
+  transform: scale(0.98);
+}
+
+
+
+
+
+
+
 
     </style>
 </head>
@@ -822,18 +873,12 @@ button {
                                     <div class="button-group">
                                         <!-- Top Row -->
                                         <div class="top-row">
-                                        <?php if (!empty($row['Evidence']) && file_exists('evidence/' . $row['Evidence'])): ?>
-                                            <img src="evidence/<?php echo htmlspecialchars($row['Evidence']); ?>" alt="Evidence" style="width:48%;">
-                                        <?php else: ?>
-                                            <form action="upload_evidence.php" method="POST" enctype="multipart/form-data">
-                                            <input type="hidden" name="student_id" value="<?php echo $row['id']; ?>">
-                                            <input type="file" name="evidence" accept="image/*" style="display:none;" onchange="this.form.submit()">
-                                            <!-- Upload Evidence -->
-                                            <button type="button" onclick="this.previousElementSibling.click();" data-tooltip="Upload Evidence">
-                                                <i class="fas fa-upload"></i>
-                                            </button>
-                                            </form>
-                                        <?php endif; ?>
+
+                                        <button type="button" onclick="openModal()" class="tooltip" data-tooltip="Upload Evidence">
+                                    <i class="fas fa-upload"></i>
+                                    </button>
+
+
 
                                             <!-- Activate Violation -->
                                             <button class="activate-btn" onclick="toggleActiveViolation(this)" data-row-id="row-<?php echo $row['id']; ?>" data-tooltip="Activate Violation">
@@ -884,6 +929,20 @@ button {
             </div>
         </div>
     </div>
+
+    <div id="uploadModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span onclick="closeModal()" style="float:right;cursor:pointer;">&times;</span>
+    <h3>Upload Evidence</h3>
+    <input type="file" id="evidenceInput" accept="image/*" onchange="previewImage(event)">
+    <br><br>
+    <img id="imagePreview" src="" style="max-width: 100%; display:none;" alt="Preview">
+    <br><br>
+    <button id="deleteBtn" style="display:none;" onclick="deleteImage()">Delete Image</button>
+  </div>
+</div>
+
+
 
     <div id="addModal">
             <div id="modalContent">
@@ -1372,6 +1431,62 @@ document.addEventListener('DOMContentLoaded', function () {
                     .catch(error => alert("Error: " + error));
             }
         }
+
+        function openModal() {
+    document.getElementById('uploadModal').style.display = 'flex';
+
+    // Load image from localStorage if available
+    const savedImage = localStorage.getItem('evidenceImage');
+    if (savedImage) {
+      const img = document.getElementById('imagePreview');
+      img.src = savedImage;
+      img.style.display = 'block';
+      document.getElementById('deleteBtn').style.display = 'inline-block';
+    }
+  }
+
+  function closeModal() {
+    document.getElementById('uploadModal').style.display = 'none';
+  }
+
+  function previewImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = document.getElementById('imagePreview');
+        img.src = e.target.result;
+        img.style.display = 'block';
+        document.getElementById('deleteBtn').style.display = 'inline-block';
+
+        // Save to localStorage
+        localStorage.setItem('evidenceImage', e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function deleteImage() {
+    document.getElementById('imagePreview').src = '';
+    document.getElementById('imagePreview').style.display = 'none';
+    document.getElementById('evidenceInput').value = '';
+    document.getElementById('deleteBtn').style.display = 'none';
+
+    // Remove from localStorage
+    localStorage.removeItem('evidenceImage');
+  }
+
+  // Load image on first page load if exists
+  window.onload = function() {
+    const savedImage = localStorage.getItem('evidenceImage');
+    if (savedImage) {
+      const img = document.getElementById('imagePreview');
+      img.src = savedImage;
+      img.style.display = 'block';
+      document.getElementById('deleteBtn').style.display = 'inline-block';
+    }
+  };
+
 
 </script>
 </body>
