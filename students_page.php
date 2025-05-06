@@ -873,13 +873,10 @@ button {
                                     <div class="button-group">
                                         <!-- Top Row -->
                                         <div class="top-row">
-
-                                        <button type="button" onclick="openModal()" class="tooltip" data-tooltip="Upload Evidence">
-                                    <i class="fas fa-upload"></i>
-                                    </button>
-
-
-
+                                        <!-- In your loop for each row -->
+                                        <button class="upload-btn" onclick="openModal(this)" data-student-id="<?php echo $row['id']; ?>" data-tooltip="Upload Evidence">
+                                        <i class="fas fa-upload"></i>
+                                        </button>
                                             <!-- Activate Violation -->
                                             <button class="activate-btn" onclick="toggleActiveViolation(this)" data-row-id="row-<?php echo $row['id']; ?>" data-tooltip="Activate Violation">
                                                 <i class="fas fa-toggle-on"></i>
@@ -941,6 +938,7 @@ button {
     <button id="deleteBtn" style="display:none;" onclick="deleteImage()">Delete Image</button>
   </div>
 </div>
+
 
 
 
@@ -1432,60 +1430,70 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        function openModal() {
-    document.getElementById('uploadModal').style.display = 'flex';
 
-    // Load image from localStorage if available
-    const savedImage = localStorage.getItem('evidenceImage');
-    if (savedImage) {
-      const img = document.getElementById('imagePreview');
-      img.src = savedImage;
-      img.style.display = 'block';
-      document.getElementById('deleteBtn').style.display = 'inline-block';
-    }
-  }
 
-  function closeModal() {
-    document.getElementById('uploadModal').style.display = 'none';
-  }
+let currentStudentId = null;
 
-  function previewImage(event) {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = document.getElementById('imagePreview');
-        img.src = e.target.result;
-        img.style.display = 'block';
-        document.getElementById('deleteBtn').style.display = 'inline-block';
+// OPEN modal and load image for specific student
+function openModal(button) {
+  currentStudentId = button.getAttribute('data-student-id');
+  document.getElementById('uploadModal').style.display = 'flex';
 
-        // Save to localStorage
-        localStorage.setItem('evidenceImage', e.target.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  }
+  const savedImage = localStorage.getItem(`evidenceImage_${currentStudentId}`);
+  const img = document.getElementById('imagePreview');
 
-  function deleteImage() {
-    document.getElementById('imagePreview').src = '';
-    document.getElementById('imagePreview').style.display = 'none';
-    document.getElementById('evidenceInput').value = '';
+  if (savedImage) {
+    img.src = savedImage;
+    img.style.display = 'block';
+    document.getElementById('deleteBtn').style.display = 'inline-block';
+  } else {
+    img.src = '';
+    img.style.display = 'none';
     document.getElementById('deleteBtn').style.display = 'none';
-
-    // Remove from localStorage
-    localStorage.removeItem('evidenceImage');
   }
 
-  // Load image on first page load if exists
-  window.onload = function() {
-    const savedImage = localStorage.getItem('evidenceImage');
-    if (savedImage) {
+  document.getElementById('evidenceInput').value = '';
+}
+
+// CLOSE modal
+function closeModal() {
+  document.getElementById('uploadModal').style.display = 'none';
+}
+
+// PREVIEW selected image and save it with student ID
+function previewImage(event) {
+  const file = event.target.files[0];
+  if (file && currentStudentId) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
       const img = document.getElementById('imagePreview');
-      img.src = savedImage;
+      img.src = e.target.result;
       img.style.display = 'block';
       document.getElementById('deleteBtn').style.display = 'inline-block';
-    }
-  };
+
+      // Save to localStorage using student ID as key
+      localStorage.setItem(`evidenceImage_${currentStudentId}`, e.target.result);
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+// DELETE image
+function deleteImage() {
+  const img = document.getElementById('imagePreview');
+  img.src = '';
+  img.style.display = 'none';
+  document.getElementById('evidenceInput').value = '';
+  document.getElementById('deleteBtn').style.display = 'none';
+
+  if (currentStudentId) {
+    localStorage.removeItem(`evidenceImage_${currentStudentId}`);
+  }
+}
+
+
+
+
 
 
 </script>
