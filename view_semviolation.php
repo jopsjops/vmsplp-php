@@ -270,10 +270,11 @@
 
     /* Table styling */
     table {
-        width: 100%;
+        width: 80%;
         border-collapse: collapse;
         margin-top: 20px;
-        font-size: 16px;
+        margin-left:150px;
+        font-size: 13px;
         color: #333;
     }
 
@@ -438,10 +439,7 @@
                     <select id="tableName" name="tableName" required>
                         <?php
                         // Connect to MySQL
-                        $servername = "d6q8diwwdmy5c9k9.cbetxkdyhwsb.us-east-1.rds.amazonaws.com";
-                        $username = "roemju9ip7gqkgee8sot";
-                        $password = "fsouojc1790ia6th";
-                        $dbname = "jancl14mdl0z7ylv";
+                       include 'dbconnection.php';
                         $conn = new mysqli($servername, $username, $password);
 
                         // Check connection
