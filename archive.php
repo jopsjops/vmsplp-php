@@ -552,6 +552,42 @@
                 height: 70px;
             }
         } */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 500px;
+        }
+
+        .move-btn {
+            background: #28a745;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cancel-btn {
+            margin-top: 5px;
+            padding: 10px;
+            background:rgb(122, 122, 122);
+            border: none;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 
@@ -681,14 +717,27 @@
                     <button id="printPdfButton" class="print-pdf" onclick="printTableToPDF()">
                         <i class='bx bx-printer'></i>
                     </button>
-                    <button class="add" id="addButton" onclick="document.getElementById('moveDataModal').style.display='block'">
-                        <i class='bx bxs-data'></i>
+                    <button class="add" id="addButton" onclick="document.getElementById('moveDataModal').style.display='flex'">
+                        <i class='bx bxs-data'></i> 
                     </button>
 
                 </div>
             </div>
         </div>
     </div>
+
+    <div id="moveDataModal" class="modal">
+    <div class="modal-content">
+        <h3>Move Data to Semester</h3>
+        <form action="move_data.php" method="POST">
+            <label for="newTableName">Enter Semester Table Name:</label><br>
+            <input type="text" name="newTableName" id="newTableName" required><br><br>
+            <button type="submit" class="move-btn">Move</button>
+            <button type="button" class="cancel-btn" onclick="document.getElementById('moveDataModal').style.display='none'">Cancel</button>
+        </form>
+    </div>
+</div>
+
 
     <div id="addModal">
     <div id="modalContent">

@@ -656,9 +656,8 @@
                                     <td><?php echo htmlspecialchars($row['Personnel']); ?></td>
                                     <td>
                                         <?php
-                                        $date = ($row['Date']);
-                                        $time = date('h:i A', strtotime($row['Time']));
-                                        echo htmlspecialchars($date) . '<br>' . htmlspecialchars($time);
+                                            $timestamp = strtotime($row['Date'] . ' ' . $row['Time']);
+                                            echo htmlspecialchars(date('m/d/Y', $timestamp)) . '<br>' . htmlspecialchars(date('h:i A', $timestamp));
                                         ?>
                                     </td>
                                     <td><?php echo htmlspecialchars($row['Sanction']); ?></td>
