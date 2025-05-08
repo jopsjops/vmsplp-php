@@ -681,63 +681,84 @@ button {
         }
 
         .highlighted {
-    background-color:rgb(142, 255, 181) !important; /* Light green */
-    transition: background-color 0.3s ease;
-}
+            background-color:rgb(142, 255, 181) !important; /* Light green */
+            transition: background-color 0.3s ease;
+        }
 
 
-.modal {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+        .modal {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        }
 
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 300px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 300px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 
-  /* Remove unnecessary centering that affects all children */
-  position: relative;
-  text-align: left;
-}
+        /* Remove unnecessary centering that affects all children */
+        position: relative;
+        text-align: left;
+        }
 
-#deleteBtn {
-  display: block;              /* Allows margin auto to work */
-  margin-left: 65px;         /* Top margin and auto left/right to center */
-  background-color: #e74c3c;
-  color: #fff;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 6px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-}
+        #deleteBtn {
+        display: block;              /* Allows margin auto to work */
+        margin-left: 65px;         /* Top margin and auto left/right to center */
+        background-color: #e74c3c;
+        color: #fff;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.2s ease, transform 0.1s ease;
+        }
 
-#deleteBtn:hover {
-  background-color: #c0392b;
-  transform: scale(1.05);
-}
+        #deleteBtn:hover {
+        background-color: #c0392b;
+        transform: scale(1.05);
+        }
 
-#deleteBtn:active {
-  background-color: #a93226;
-  transform: scale(0.98);
-}
+        #deleteBtn:active {
+        background-color: #a93226;
+        transform: scale(0.98);
+        }
 
+        /* Basic styles for the button tooltips */
+        button {
+            position: relative;
+            padding: 10px;
+        }
 
+        /* Tooltip styles */
+        button[data-tooltip]::after {
+            content: attr(data-tooltip); /* Get the tooltip text from the data-tooltip attribute */
+            position: absolute;
+            bottom: 100%; /* Position the tooltip above the button */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            opacity: 0; /* Initially hidden */
+            pointer-events: none; /* Avoid interfering with button interaction */
+            transition: opacity 0.3s ease-in-out; /* Smooth fade-in effect */
+            white-space: nowrap; /* Prevent tooltip text from wrapping */
+        }
 
-
-
-
-
-
+        /* Show the tooltip on hover */
+        button:hover[data-tooltip]::after {
+            opacity: 1; /* Make the tooltip visible */
+        }
     </style>
 </head>
 
@@ -911,16 +932,18 @@ button {
                         </tbody>
                     </table>
 
-                    <button id="printPdfButton" class="print-pdf" onclick="printTableToPDF()">
+                    <button id="printPdfButton" class="print-pdf" onclick="printTableToPDF()" data-tooltip="Print PDF">
                         <i class='bx bx-printer'></i>
                     </button>
-                    <button class="add" id="addButton" onclick="document.getElementById('addModal').style.display='block'">
+
+                    <button class="add" id="addButton" onclick="document.getElementById('addModal').style.display='block'" data-tooltip="Add Student">
                         <i class='bx bxs-add-to-queue'></i>
                     </button>
 
-                    <button class="send" id="sendEmailButton" onclick="sendEmailToAllStudents()">
-                    <i class='bx bx-mail-send'></i>
-                </button>
+                    <button class="send" id="sendEmailButton" onclick="sendEmailToAllStudents()" data-tooltip="Send Email">
+                        <i class='bx bx-mail-send'></i>
+                    </button>
+
 
                 </div>
             </div>
