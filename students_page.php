@@ -1491,6 +1491,18 @@ function deleteImage() {
   }
 }
 
+document.querySelectorAll('.upload-btn').forEach(button => {
+  button.addEventListener('mouseenter', function () {
+    const studentId = this.getAttribute('data-student-id');
+    const hasImage = localStorage.getItem(`evidenceImage_${studentId}`);
+    if (hasImage) {
+      this.setAttribute('data-tooltip', 'View Image');
+    } else {
+      this.setAttribute('data-tooltip', 'Upload Evidence');
+    }
+  });
+});
+
 
 
 

@@ -659,24 +659,23 @@
                     include 'dbconnection.php';
 
                     // Fetch data from the database
-                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Date, Sanction
-                             FROM archive_info ORDER BY Date DESC";
+                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Personnel, Accomplished, Sanction
+                             FROM archive_info ORDER BY Accomplished DESC";
 
                     $result = $conn->query($sql);
                     ?>
                     <table id="violationTable">
                         <thead>
-                            <tr>
+                        <tr>    
                                 <th>Student ID</th>
                                 <th>Name</th>
-                                <th>Department</th>
-                                <th>Program</th>
+                                <th>Department & Program</th>
                                 <th>Violation</th>
-                                <th>Offense</th>
-                                <th>Status</th>
-                                <th>Date</th>
+                                <th>Offense & Status</th>
+                                <th>Personnel</th>
+                                <th>Date Accomplished</th>
                                 <th>Sanction</th>
-                                <th>Actions</th>
+                                <th>Actions</th>               
                             </tr>
                         </thead>
                         <tbody>
@@ -687,12 +686,12 @@
                                     echo "<tr>
                                         <td>" . htmlspecialchars($row['Student_ID']) . "</td>
                                         <td>" . htmlspecialchars($row['Student_Name']) . "</td>
-                                        <td>" . htmlspecialchars($row['Department']) . "</td>
-                                        <td>" . htmlspecialchars($row['Program']) . "</td>
+                                        <td>" . htmlspecialchars($row['Department']) . " - " . htmlspecialchars($row['Program']) . "</td>
                                         <td>" . htmlspecialchars($row['Violation']) . "</td>
-                                        <td>" . htmlspecialchars($row['Offense']) . "</td>
-                                        <td>" . htmlspecialchars($row['Status']) . "</td>
-                                        <td>" . htmlspecialchars($row['Date']) . "</td>
+                                        <td>" . htmlspecialchars($row['Offense']) . " - " . htmlspecialchars($row['Status']) . "</td>
+                                        <td>" . htmlspecialchars($row['Personnel']) . "</td>
+                                        <td>" . htmlspecialchars($row['Accomplished']) . "</td>
+
                                         <td>" . htmlspecialchars($row['Sanction']) . "</td>
                                         <td>
                                             <button class='edit' onclick='editRow(" . $row['id'] . ")'>

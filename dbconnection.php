@@ -5,7 +5,7 @@ $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "violationdb";
-$targetDb = "violationdb";
+// $targetDb = "violationdb";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
