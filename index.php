@@ -56,12 +56,13 @@ $conn->close();
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Animated Login Form</title>
+	<title>VMS.</title>
 	<link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 	<script src="https://kit.fontawesome.com/a81368914c.js"></script>
     <script src="https://unpkg.com/feather-icons"></script>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="img/plp.png" type="image/png">
 </head>
 <style>
 	* {
@@ -307,7 +308,7 @@ $conn->close();
 					</div>
 					<div class="div">
 						<h5>Username</h5>
-						<input type="text" class="input" id="username" name="username">
+						<input type="text" class="input" id="username" name="username" autocomplete="off">
 					</div>
 				</div>
 				<div class="input-div pass">
@@ -377,7 +378,11 @@ $conn->close();
             });
         });
     </script>
-
+    <?php if (!empty($login_error)) : ?>
+        <script>
+            alert("<?php echo $login_error; ?>");
+        </script>
+    <?php endif; ?>
 </body>
 
 </html>
