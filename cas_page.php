@@ -771,7 +771,7 @@ button {
                     include 'dbconnection.php';
 
                     // Fetch data from the database
-                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Personnel, Date, Time, Sanction, Evidence
+                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Personnel, Date, Time, Sanction
                              FROM student_info WHERE Department = 'CAS' ORDER BY Date DESC";
 
                     $result = $conn->query($sql);
