@@ -4,21 +4,9 @@ include 'dbconnection.php';
 
 $id = $_POST['student_id'] ?? null;
 $accomplished = $_POST['date_accomplished'] ?? null;
+$base64 = $_POST['evidence_base64'] ?? null;
 
-$proofFileName = null;
-
-// Debugging: Show file upload details
-if (isset($_FILES['proof'])) {
-    echo '<pre>';
-    print_r($_FILES['proof']);
-    echo '</pre>';
-
-    if ($_FILES['proof']['error'] !== UPLOAD_ERR_OK) {
-        echo "Upload Error: " . $_FILES['proof']['error'];
-        exit;
-    }
-}
-
+// Upload proof from archive modal
 if (isset($_FILES['proof']) && $_FILES['proof']['error'] === UPLOAD_ERR_OK) {
     $uploadDir = 'proof/';
     if (!is_dir($uploadDir)) {
@@ -26,17 +14,23 @@ if (isset($_FILES['proof']) && $_FILES['proof']['error'] === UPLOAD_ERR_OK) {
     }
 
     $proofFileName = time() . '_' . basename($_FILES['proof']['name']);
-    $proofFilePath = $uploadDir . $proofFileName;
-
-    if (!move_uploaded_file($_FILES['proof']['tmp_name'], $proofFilePath)) {
-        echo json_encode(['success' => false, 'message' => 'Failed to move uploaded file.']);
-        exit;
-    }
-} else {
-    echo json_encode(['success' => false, 'message' => 'No file uploaded or file upload error.']);
-    exit;
+    move_uploaded_file($_FILES['proof']['tmp_name'], $uploadDir . $proofFileName);
 }
 
+// Save base64 image from Upload button if available
+if (!empty($base64)) {
+    $uploadDir = 'proof/';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
+    }
+
+    $base64 = preg_replace('#^data:image/\w+;base64,#i', '', $base64);
+    $decoded = base64_decode($base64);
+    $uniqueName = $uploadDir . time() . '_upload_image.jpg';
+    file_put_contents($uniqueName, $decoded);
+}
+
+// Insert into archive_info WITHOUT image
 if (!empty($id) && !empty($accomplished)) {
     $conn->begin_transaction();
 
@@ -50,12 +44,12 @@ if (!empty($id) && !empty($accomplished)) {
         if ($result->num_rows > 0) {
             $student = $result->fetch_assoc();
 
-            $insertQuery = "INSERT INTO archive_info (Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Sanction, Personnel, Accomplished, Sanction_Proof)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $insertQuery = "INSERT INTO archive_info (Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Sanction, Personnel, Accomplished)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             $insertStmt = $conn->prepare($insertQuery);
             $insertStmt->bind_param(
-                "sssssssssss",
+                "ssssssssss",
                 $student['Student_ID'],
                 $student['Student_Name'],
                 $student['Department'],
@@ -65,10 +59,8 @@ if (!empty($id) && !empty($accomplished)) {
                 $student['Status'],
                 $student['Sanction'],
                 $student['Personnel'],
-                $accomplished,
-                $proofFileName
+                $accomplished
             );
-
 
             if ($insertStmt->execute()) {
                 $deleteQuery = "DELETE FROM student_info WHERE id = ?";
@@ -78,26 +70,21 @@ if (!empty($id) && !empty($accomplished)) {
 
                 $conn->commit();
 
-                echo "<script>alert('Student record transferred to archive successfully!'); window.location.href='students_page.php';</script>";
+                echo "<script>alert('Student record archived successfully!'); window.location.href='students_page.php';</script>";
                 exit;
             } else {
                 throw new Exception("Failed to insert into archive_info: " . $insertStmt->error);
             }
-
-            $insertStmt->close();
-            $deleteStmt->close();
         } else {
-            throw new Exception("Student record not found.");
+            throw new Exception("Student not found.");
         }
-
-        $stmt->close();
     } catch (Exception $e) {
         $conn->rollback();
         echo "<script>alert('Error: " . addslashes($e->getMessage()) . "'); window.location.href='students_page.php';</script>";
         exit;
     }
 } else {
-    echo "<script>alert('Invalid student ID or date accomplished.'); window.location.href='students_page.php';</script>";
+    echo "<script>alert('Invalid input.'); window.location.href='students_page.php';</script>";
     exit;
 }
 
