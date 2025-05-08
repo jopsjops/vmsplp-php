@@ -316,88 +316,6 @@
             color: white;
         } 
 
-        /* @media screen and (min-width: 1200px) {
-            .main {
-                flex-direction: row;
-                align-items: flex-start;
-                
-            }
-
-            .charts-container {
-                flex: 2;
-                margin-left: auto;
-            }
-
-            .logout {
-                margin-top: 380px;
-                
-            }
-
-            table{
-                width: 125%;;
-            }
-        } */
-
-        /* Medium screens (tablets) */
-        /* @media screen and (max-width: 1199px) and (min-width: 768px) {
-            .main {
-                flex-direction: column;
-            }
-
-            .cards {
-                grid-template-columns: repeat(2, 1fr);
-                justify-content: center;
-            }
-
-            .charts-container {
-                flex-direction: column;
-            }
-        } */
-
-        /* Small screens (phones) */
-        /* @media screen and (max-width: 767px) {
-            .topbar {
-                grid-template-columns: 1fr 1fr; 
-                padding: 0 10px;
-            }
-
-            .sidebar {
-                width: 160px;
-            }
-
-            .main {
-                margin-left: 160px;
-                padding: 10px;
-                flex-direction: column;
-            }
-
-            .cards {
-                grid-template-columns: repeat(1, 1fr);
-                margin-left: 0;
-                padding: 10px;
-            }
-
-            .charts-container {
-                padding: 10px;
-            }
-
-            .card {
-                width: 100%;
-                max-width: 300px;
-                height: auto;
-                margin: 0 auto;
-            }
-
-            .card .gauge {
-                width: 100px;
-                height: 100px;
-            }
-
-            .logo-overlay img {
-                width: 70px;
-                height: 70px;
-            }
-        } */
     </style>
    
 </head>
@@ -462,28 +380,59 @@
         <div class="main">    
             <div class="main-content">
                 <header>
-                    <h1>STUDENT VIOLATION PREDICTION</h1>
+                    <h1>STUDENT VIOLATION DATA ANALYSIS</h1>
                 </header>
                 <main>
-                <form method="POST" action="">
-                <button type="submit" name="run_python">Run Prediction</button>
-            </form>
+                    <div id="analysis-result">
+                        <?php
+                        include "dbconnection.php";
 
-            <div id="prediction-result">
-                <?php
-                if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['run_python'])) {
-                    // Run the Python script
-                    $command = escapeshellcmd('python C:\\xampp\\htdocs\\capstone_updated\\capstone\\logistic_regre.py');
+                        if ($conn->connect_error) {
+                            die("Connection failed: " . $conn->connect_error);
+                        }
 
-                    $output = shell_exec($command);
+                        // Get all distinct departments
+                        $deptSql = "SELECT DISTINCT Department FROM student_info";
+                        $deptResult = $conn->query($deptSql);
 
-                    // Display the Python script output
-                    echo "<pre>$output</pre>";
-                }
-                ?>
-            </div>
-                    <div id="table-container">
-                        <!-- Table will be displayed here -->
+                        if ($deptResult->num_rows > 0) {
+                            while ($deptRow = $deptResult->fetch_assoc()) {
+                                $department = $deptRow['Department'];
+                                echo "<h2>Department: $department</h2>";
+
+                                // Get total number of violations for this department
+                                $totalSql = "SELECT COUNT(*) as total FROM student_info WHERE Department = '$department'";
+                                $totalResult = $conn->query($totalSql);
+                                $total = $totalResult->fetch_assoc()['total'];
+                                echo "<p>Total Violations: <strong>$total</strong></p>";
+
+                                // Get breakdown of violation types
+                                $violationSql = "
+                                    SELECT Violation, COUNT(*) as count 
+                                    FROM student_info 
+                                    WHERE Department = '$department' 
+                                    GROUP BY Violation
+                                    ORDER BY count DESC
+                                ";
+                                $violationResult = $conn->query($violationSql);
+
+                                if ($violationResult->num_rows > 0) {
+                                    echo "<table border='1' cellpadding='6' cellspacing='0'>";
+                                    echo "<tr><th>Violation Type</th><th>Count</th></tr>";
+                                    while ($vRow = $violationResult->fetch_assoc()) {
+                                        echo "<tr><td>{$vRow['Violation']}</td><td>{$vRow['count']}</td></tr>";
+                                    }
+                                    echo "</table><br>";
+                                } else {
+                                    echo "<p>No specific violations found for this department.</p>";
+                                }
+                            }
+                        } else {
+                            echo "<p>No departments found in the data.</p>";
+                        }
+
+                        $conn->close();
+                        ?>
                     </div>
                 </main>
             </div>

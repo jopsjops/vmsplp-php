@@ -617,7 +617,7 @@
                     include 'dbconnection.php';
 
                     // Fetch data from the database
-                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Personnel, Date, Time, Sanction, Evidence
+                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Personnel, Date, Time, Sanction
                              FROM student_info WHERE Department = 'CIHM' ORDER BY Date DESC";
 
                     $result = $conn->query($sql);
@@ -633,8 +633,7 @@
                                 <th>Personnel</th>
                                 <th>Date & Time</th>
                                 <th>Sanction</th>
-                                <th>Evidence</th>
-                                                  
+                                
                             </tr>
                         </thead>
                         <tbody>
@@ -659,11 +658,7 @@
                                         ?>
                                     </td>
                                     <td><?php echo htmlspecialchars($row['Sanction']); ?></td>
-                                    <td>
-                                        <?php if (!empty($row['Evidence']) && file_exists('evidence/' . $row['Evidence'])): ?>
-                                            <img src="evidence/<?php echo htmlspecialchars($row['Evidence']); ?>" alt="Evidence" style="width: 80px; height: auto; margin-top: 5px;">
-                                        <?php endif;?>
-                                    </td>
+                                    
                                 </tr>
                                 <?php
                             }
