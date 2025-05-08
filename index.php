@@ -54,225 +54,330 @@ $conn->close();
 ?>
 
 <!DOCTYPE html>
-<style>
-    /* Variables for consistent theming */
-    :root {
-        --primary-color: #1c824a;
-        --secondary-color: #ffffff;
-        --text-color: #333;
-        --input-border-color: #ddd;
-        --button-hover-color: #145b31;
-        --font-family: 'Poppins', sans-serif;
-    }
-
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: var(--font-family);
-        background: url('img/plp_bg.png') no-repeat center center/cover;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
-
-    .container {
-        display: flex;
-        border-radius: 15px;
-        overflow: hidden;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        width: 900px;
-        height: 500px;
-    }
-
-    .login-section {
-        flex: 1;
-        padding: 40px;
-        background-color: var(--secondary-color);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        position: relative;
-        /* Added to anchor child absolute positioning */
-    }
-
-    .login-section h1 {
-        font-size: 40px;
-        margin-bottom: 20px;
-        margin-left: 150px;
-        color: var(--primary-color);
-    }
-
-    .login-section input {
-        width: 420px;
-        padding: 12px;
-        margin: 8px 0;
-        border: 1px solid var(--input-border-color);
-        border-radius: 5px;
-        font-size: 14px;
-        height: 30px;
-    }
-
-    .login-section button {
-        background-color: var(--primary-color);
-        color: var(--secondary-color);
-        border: none;
-        padding: 12px;
-        border-radius: 5px;
-        width: 160px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        font-weight: bold;
-        position: absolute;
-        margin-left: -70px;
-        /* Position the button absolutely within the login section */
-        z-index: 4;
-        /* Ensure button appears above images */
-        top: 320px;
-        /* Adjust top position as needed */
-        left: 50%;
-        /* Center horizontally */
-        transform: translateX(-50%);
-        /* Center the button */
-    }
-
-    .login-section button:hover {
-        background-color: var(--button-hover-color);
-    }
-
-    .welcome-section {
-        flex: 1.5;
-        background-color: var(--primary-color);
-        color: var(--secondary-color);
-        padding: 40px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        text-align: center;
-        margin-left: -90px;
-        z-index: 3;
-    }
-
-    .welcome-section h1 {
-        margin-bottom: 15px;
-        font-size: 24px;
-        font-weight: px;
-    }
-
-    .welcome-section p {
-        line-height: 1.5;
-        font-size: 14px;
-    }
-    
-
-    .illustrations {
-        position: relative;
-        display: flex;
-        justify-content: center;
-        z-index: 1;
-    }
-
-    .illustrations img {
-        position: relative;
-        bottom: -33px;
-        z-index: 1;
-        /* Adjust the vertical position as needed */
-    }
-
-    .illustrations img:first-child {
-        left: -100px;
-        /* Position the first image on the left */
-        height: 290px;
-        /* Adjust size as needed */
-        margin-top: -67px;
-    }
-
-    .illustrations img:last-child {
-        right: 40px;
-        /* Position the second image on the right */
-        height: 290px;
-        /* Adjust size as needed */
-        margin-top: -67px;
-        margin-left: -40px;
-    }
-
-    /* Accessibility */
-    .visually-hidden {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        border: 0;
-    }
-
-    
-</style>
-<html lang="en">
-
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PLP Violation Monitoring System</title>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+	<title>Animated Login Form</title>
+	<link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+	<script src="https://kit.fontawesome.com/a81368914c.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
+<style>
+	* {
+		padding: 0;
+		margin: 0;
+		box-sizing: border-box;
+	}
+
+	body {
+		font-family: 'Poppins', sans-serif;
+		overflow: hidden;
+	}
+
+	.wave {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		height: 100%;
+		z-index: -1;
+	}
+
+	.container {
+		width: 100vw;
+		height: 100vh;
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		grid-gap: 7rem;
+		padding: 0 2rem;
+	}
+
+	.img {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+	}
+
+	.login-content {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		text-align: center;
+	}
+
+	.img img {
+		width: 500px;
+	}
+
+	form {
+		width: 360px;
+	}
+
+	.login-content img {
+		height: 100px;
+	}
+
+	.login-content h2 {
+		margin: 15px 0;
+		color: #333;
+		text-transform: uppercase;
+		font-size: 2.9rem;
+	}
+
+	.login-content .input-div {
+		position: relative;
+		display: grid;
+		grid-template-columns: 7% 93%;
+		margin: 25px 0;
+		padding: 5px 0;
+		border-bottom: 2px solid #d9d9d9;
+	}
+
+	.login-content .input-div.one {
+		margin-top: 0;
+	}
+
+	.i {
+		color: #d9d9d9;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.i i {
+		transition: .3s;
+	}
+
+	.input-div>div {
+		position: relative;
+		height: 45px;
+	}
+
+	.input-div>div>h5 {
+		position: absolute;
+		left: 10px;
+		top: 50%;
+		transform: translateY(-50%);
+		color: #999;
+		font-size: 18px;
+		transition: .3s;
+	}
+
+	.input-div:before,
+	.input-div:after {
+		content: '';
+		position: absolute;
+		bottom: -2px;
+		width: 0%;
+		height: 2px;
+		background-color: #0f9845;
+		transition: .4s;
+	}
+
+	.input-div:before {
+		right: 50%;
+	}
+
+	.input-div:after {
+		left: 50%;
+	}
+
+	.input-div.focus:before,
+	.input-div.focus:after {
+		width: 50%;
+	}
+
+	.input-div.focus>div>h5 {
+		top: -5px;
+		font-size: 15px;
+	}
+
+	.input-div.focus>.i>i {
+		color: #0f9845;
+	}
+
+	.input-div>div>input {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		border: none;
+		outline: none;
+		background: none;
+		padding: 0.5rem 0.7rem;
+		font-size: 1.2rem;
+		color: #555;
+		font-family: 'poppins', sans-serif;
+	}
+
+	.input-div.pass {
+		margin-bottom: 4px;
+	}
+
+	a {
+		display: block;
+		text-align: right;
+		text-decoration: none;
+		color: #999;
+		font-size: 0.9rem;
+		transition: .3s;
+	}
+
+	a:hover {
+		color: #0f9845;
+	}
+
+	.btn {
+		display: block;
+		width: 100%;
+		height: 50px;
+		border-radius: 25px;
+		outline: none;
+		border: none;
+		background-image: linear-gradient(to right, #32be8f, #0f9845, #32be8f);
+		background-size: 200%;
+		font-size: 1.2rem;
+		color: #fff;
+		font-family: 'Poppins', sans-serif;
+		text-transform: uppercase;
+		margin: 1rem 0;
+		cursor: pointer;
+		transition: .5s;
+	}
+
+	.btn:hover {
+		background-position: right;
+	}
+
+
+	@media screen and (max-width: 1050px) {
+		.container {
+			grid-gap: 5rem;
+		}
+	}
+
+	@media screen and (max-width: 1000px) {
+		form {
+			width: 290px;
+		}
+
+		.login-content h2 {
+			font-size: 2.4rem;
+			margin: 8px 0;
+		}
+
+		.img img {
+			width: 400px;
+		}
+	}
+
+	@media screen and (max-width: 900px) {
+		.container {
+			grid-template-columns: 1fr;
+		}
+
+		.img {
+			display: none;
+		}
+
+		.wave {
+			display: none;
+		}
+
+		.login-content {
+			justify-content: center;
+		}
+	}
+</style>
 
 <body>
-    <main class="container">
-        <!-- Login Section -->
-        <section class="login-section">
-            <h1>LOGIN</h1>
-            <form method="post" action="">
-                <label for="username" class="visually-hidden">Username</label>
-                <input type="text" id="username" placeholder="username" name="username" required>
-                <label for="password" class="visually-hidden">Password</label>
-                <div class="password-container">
-                    <input type="password" id="password" placeholder="Password" name="password" required>
-                    <i class="fas fa-eye-slash" id="toggle-password" onclick="togglePassword()"></i>
-                </div>
+	<img class="wave" src="img/wave.png">
+	<div class="container">
+		<div class="img">
+			<img src="img/bg.svg">
+		</div>
+		<div class="login-content">
+			<form action="" method="POST">
+				<img src="img/plp.png">
+				<h2 class="title">Welcome!</h2>
+				<div class="input-div one">
+					<div class="i">
+						<i class="fas fa-user"></i>
+					</div>
+					<div class="div">
+						<h5>Username</h5>
+						<input type="text" class="input" id="username" name="username">
+					</div>
+				</div>
+				<div class="input-div pass">
+					<div class="i">
+						<i class="fas fa-lock"></i>
+					</div>
+					<div class="div">
+						<h5>Password</h5>
+						<input type="password" class="input" id="password" name="password">
+					</div>
+                    <i class="fa-regular fa-eye toggle-password" id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
+				</div>
+				<input type="submit" class="btn" value="Login">
+			</form>
+		</div>
+	</div>
 
-                <button type="submit">LOGIN</button>
-                <?php if (!empty($login_error)): ?>
-                    <p>
-                        <?php echo $login_error; ?>
-                    </p>
-                <?php endif; ?>
-            </form>
-            <div class="illustrations">
-                <img src="img/boy.png" alt="Student 1">
-                <img src="img/girl.png" alt="Student 2">
-            </div>
-        </section>
+	<script>
+		const inputs = document.querySelectorAll(".input");
 
-        <!-- Welcome Section -->
-        <section class="welcome-section">
-            <h1>Welcome to PLP Violation Monitoring System</h1>
-            <p>Welcome to the homepage of the Pamantasan ng Lungsod ng Pasig's Violation Monitoring System...</p>
-        </section>
-    </main>
 
-    <script>
-        // JavaScript to toggle the password visibility
-        function togglePassword() {
-    var passwordField = document.getElementById("password");
-    var eyeIcon = document.getElementById("toggle-password");
+		function addcl() {
+			let parent = this.parentNode.parentNode;
+			parent.classList.add("focus");
+		}
 
-    if (passwordField.type === "text") {
-        passwordField.type = "password"; // Hide the password
-        eyeIcon.classList.remove("fa-eye");
-        eyeIcon.classList.add("fa-eye-slash"); // Show slashed eye
-    } else {
-        passwordField.type = "text"; // Show the password
-        eyeIcon.classList.remove("fa-eye-slash");
-        eyeIcon.classList.add("fa-eye"); // Show regular eye
-    }
-}
+		function remcl() {
+			let parent = this.parentNode.parentNode;
+			if (this.value == "") {
+				parent.classList.remove("focus");
+			}
+		}
 
+
+		inputs.forEach(input => {
+			input.addEventListener("focus", addcl);
+			input.addEventListener("blur", remcl);
+		});
+
+
+        
+        document.addEventListener('DOMContentLoaded', function () {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('togglePassword');
+
+            // Hide the icon initially
+            toggleIcon.style.display = 'none';
+
+            // Listen for input changes
+            passwordInput.addEventListener('input', function () {
+                if (passwordInput.value.length > 0) {
+                    toggleIcon.style.display = 'block';
+                } else {
+                    toggleIcon.style.display = 'none';
+                    passwordInput.type = 'password'; // reset to hidden if cleared
+                    toggleIcon.classList.remove('fa-eye-slash');
+                    toggleIcon.classList.add('fa-eye');
+                }
+            });
+
+            // Toggle password visibility
+            toggleIcon.addEventListener('click', function () {
+                const isPassword = passwordInput.type === 'password';
+                passwordInput.type = isPassword ? 'text' : 'password';
+                toggleIcon.classList.toggle('fa-eye');
+                toggleIcon.classList.toggle('fa-eye-slash');
+            });
+        });
     </script>
+
 </body>
 
 </html>
