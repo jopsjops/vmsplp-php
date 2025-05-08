@@ -1047,25 +1047,31 @@ button {
             </div>
         </div>
 
-        <!-- Archive Modal -->
-        <div id="archiveModal" class="modal" style="display:none;">
-    <div class="modal-content">
-            <span class="close" onclick="closeArchiveModal()">&times;</span>
-            <h3>Archive Violation</h3>
-            <form id="archiveForm" method="POST" action="transfer_student.php" enctype="multipart/form-data">
-                <input type="hidden" name="student_id" id="modalStudentId">
+<!-- Archive Modal -->
+<div id="archiveModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span class="close" onclick="closeArchiveModal()">&times;</span>
+    <h3>Archive Violation</h3>
+    <form id="archiveForm" method="POST" action="transfer_student.php" enctype="multipart/form-data">
+      <input type="hidden" name="student_id" id="modalStudentId">
 
-                <label for="date_accomplished">Date Accomplished:</label>
-                <input type="date" name="date_accomplished" id="dateAccomplished" required>
+      <label for="date_accomplished">Date Accomplished:</label>
+      <input type="date" name="date_accomplished" id="dateAccomplished" required>
 
-                <label for="proof">Upload Proof:</label>
-                <input type="file" name="proof" id="proof" accept="image/*" required>
+      <!-- Upload from Archive Modal -->
+      <label for="proof">Upload Additional Proof:</label>
+      <input type="file" name="proof" id="proof" accept="image/*" required>
 
-                <br><br>
-                <button type="submit">Submit</button>
-            </form>
-        </div>
-    </div>
+      <!-- Hidden image from Upload Modal -->
+      <input type="hidden" name="evidence_base64" id="evidenceBase64">
+      <img id="archiveImagePreview" src="" style="max-width: 100%; display: none;" alt="Uploaded Proof">
+
+
+      <br><br>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+</div>
 
     <script>
         function confirmLogout() {
@@ -1148,16 +1154,27 @@ button {
         });
 
         function openArchiveModal(id) {
-            const confirmed = confirm("Has the student accomplished their sanction?");
-            if (confirmed) {
-                document.getElementById('modalStudentId').value = id;
-                document.getElementById('archiveModal').style.display = 'flex';
-            }
-        }
+  const confirmed = confirm("Has the student accomplished their sanction?");
+  if (!confirmed) return;
 
-        function closeArchiveModal() {
-            document.getElementById('archiveModal').style.display = 'none';
-        }
+  document.getElementById('modalStudentId').value = id;
+  document.getElementById('archiveModal').style.display = 'flex';
+
+  // Load saved image from localStorage
+  const savedImage = localStorage.getItem(`evidenceImage_${id}`);
+  document.getElementById('evidenceBase64').value = savedImage || '';
+
+  // (Optional) Preview it
+  const preview = document.getElementById('archiveImagePreview');
+  if (preview && savedImage) {
+    preview.src = savedImage;
+    preview.style.display = 'block';
+  }
+}
+
+function closeArchiveModal() {
+  document.getElementById('archiveModal').style.display = 'none';
+}
 
        
 
@@ -1432,10 +1449,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-let currentStudentId = null;
+        let currentStudentId = null;
 
-// OPEN modal and load image for specific student
-function openModal(button) {
+        function openModal(button) {
   currentStudentId = button.getAttribute('data-student-id');
   document.getElementById('uploadModal').style.display = 'flex';
 
@@ -1455,12 +1471,10 @@ function openModal(button) {
   document.getElementById('evidenceInput').value = '';
 }
 
-// CLOSE modal
 function closeModal() {
   document.getElementById('uploadModal').style.display = 'none';
 }
 
-// PREVIEW selected image and save it with student ID
 function previewImage(event) {
   const file = event.target.files[0];
   if (file && currentStudentId) {
@@ -1471,14 +1485,12 @@ function previewImage(event) {
       img.style.display = 'block';
       document.getElementById('deleteBtn').style.display = 'inline-block';
 
-      // Save to localStorage using student ID as key
       localStorage.setItem(`evidenceImage_${currentStudentId}`, e.target.result);
     };
     reader.readAsDataURL(file);
   }
 }
 
-// DELETE image
 function deleteImage() {
   const img = document.getElementById('imagePreview');
   img.src = '';
@@ -1491,18 +1503,14 @@ function deleteImage() {
   }
 }
 
+// Change tooltip on hover
 document.querySelectorAll('.upload-btn').forEach(button => {
   button.addEventListener('mouseenter', function () {
     const studentId = this.getAttribute('data-student-id');
     const hasImage = localStorage.getItem(`evidenceImage_${studentId}`);
-    if (hasImage) {
-      this.setAttribute('data-tooltip', 'View Image');
-    } else {
-      this.setAttribute('data-tooltip', 'Upload Evidence');
-    }
+    this.setAttribute('data-tooltip', hasImage ? 'View Image' : 'Upload Evidence');
   });
 });
-
 
 
 
