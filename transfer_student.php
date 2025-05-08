@@ -50,8 +50,9 @@ if (!empty($id) && !empty($accomplished)) {
         if ($result->num_rows > 0) {
             $student = $result->fetch_assoc();
 
-            $insertQuery = "INSERT INTO archive_info (Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Date, Sanction, Accomplished, Sanction_Proof)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $insertQuery = "INSERT INTO archive_info (Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Sanction, Personnel, Accomplished, Sanction_Proof)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
             $insertStmt = $conn->prepare($insertQuery);
             $insertStmt->bind_param(
                 "sssssssssss",
@@ -62,11 +63,12 @@ if (!empty($id) && !empty($accomplished)) {
                 $student['Violation'],
                 $student['Offense'],
                 $student['Status'],
-                $student['Date'],
                 $student['Sanction'],
+                $student['Personnel'],
                 $accomplished,
                 $proofFileName
             );
+
 
             if ($insertStmt->execute()) {
                 $deleteQuery = "DELETE FROM student_info WHERE id = ?";
