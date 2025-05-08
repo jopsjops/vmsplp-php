@@ -252,44 +252,30 @@ $conn->close();
 	}
 
 
-	@media screen and (max-width: 1050px) {
-		.container {
-			grid-gap: 5rem;
-		}
-	}
+	/* Tooltip styling */
+	.toggle-password[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    opacity: 0;
+    white-space: nowrap;
+    pointer-events: none;
+    transition: opacity 0.2s ease-in-out;
+    z-index: 10;
+}
 
-	@media screen and (max-width: 1000px) {
-		form {
-			width: 290px;
-		}
+.toggle-password:hover::after {
+    opacity: 1;
+}
 
-		.login-content h2 {
-			font-size: 2.4rem;
-			margin: 8px 0;
-		}
 
-		.img img {
-			width: 400px;
-		}
-	}
-
-	@media screen and (max-width: 900px) {
-		.container {
-			grid-template-columns: 1fr;
-		}
-
-		.img {
-			display: none;
-		}
-
-		.wave {
-			display: none;
-		}
-
-		.login-content {
-			justify-content: center;
-		}
-	}
 </style>
 
 <body>
@@ -319,7 +305,9 @@ $conn->close();
 						<h5>Password</h5>
 						<input type="password" class="input" id="password" name="password">
 					</div>
-                    <i class="fa-regular fa-eye toggle-password" id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
+                    <i class="fa-regular fa-eye toggle-password" id="togglePassword"
+					data-tooltip="Show Password"
+					style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
 				</div>
 				<input type="submit" class="btn" value="Login">
 			</form>
@@ -351,32 +339,38 @@ $conn->close();
 
         
         document.addEventListener('DOMContentLoaded', function () {
-            const passwordInput = document.getElementById('password');
-            const toggleIcon = document.getElementById('togglePassword');
+			const passwordInput = document.getElementById('password');
+			const toggleIcon = document.getElementById('togglePassword');
 
-            // Hide the icon initially
-            toggleIcon.style.display = 'none';
+			// Hide the icon initially
+			toggleIcon.style.display = 'none';
 
-            // Listen for input changes
-            passwordInput.addEventListener('input', function () {
-                if (passwordInput.value.length > 0) {
-                    toggleIcon.style.display = 'block';
-                } else {
-                    toggleIcon.style.display = 'none';
-                    passwordInput.type = 'password'; // reset to hidden if cleared
-                    toggleIcon.classList.remove('fa-eye-slash');
-                    toggleIcon.classList.add('fa-eye');
-                }
-            });
+			// Listen for input changes
+			passwordInput.addEventListener('input', function () {
+				if (passwordInput.value.length > 0) {
+					toggleIcon.style.display = 'block';
+					toggleIcon.setAttribute('data-tooltip', passwordInput.type === 'password' ? 'Show Password' : 'Hide Password');
+				} else {
+					toggleIcon.style.display = 'none';
+					passwordInput.type = 'password'; // reset to hidden if cleared
+					toggleIcon.classList.remove('fa-eye-slash');
+					toggleIcon.classList.add('fa-eye');
+					toggleIcon.setAttribute('data-tooltip', 'Show Password');
+				}
+			});
 
-            // Toggle password visibility
-            toggleIcon.addEventListener('click', function () {
-                const isPassword = passwordInput.type === 'password';
-                passwordInput.type = isPassword ? 'text' : 'password';
-                toggleIcon.classList.toggle('fa-eye');
-                toggleIcon.classList.toggle('fa-eye-slash');
-            });
-        });
+			// Toggle password visibility and update tooltip
+			toggleIcon.addEventListener('click', function () {
+				const isPassword = passwordInput.type === 'password';
+				passwordInput.type = isPassword ? 'text' : 'password';
+
+				toggleIcon.classList.toggle('fa-eye');
+				toggleIcon.classList.toggle('fa-eye-slash');
+
+				toggleIcon.setAttribute('data-tooltip', isPassword ? 'Hide Password' : 'Show Password');
+			});
+		});
+
     </script>
     <?php if (!empty($login_error)) : ?>
         <script>
