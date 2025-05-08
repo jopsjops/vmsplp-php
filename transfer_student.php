@@ -2,11 +2,12 @@
 ob_clean();
 include 'dbconnection.php';
 
-$id = $_POST['student_id'] ?? null;
-$accomplished = $_POST['date_accomplished'] ?? null;
-$base64 = $_POST['evidence_base64'] ?? null;
+$studentId = $_POST['student_id'];
+$accomplished = $_POST['date_accomplished'];
+$evidenceBase64 = $_POST['evidence_base64'];
+$proofFileName = null;
 
-// Upload proof from archive modal
+// Handle uploaded image
 if (isset($_FILES['proof']) && $_FILES['proof']['error'] === UPLOAD_ERR_OK) {
     $uploadDir = 'proof/';
     if (!is_dir($uploadDir)) {
@@ -16,40 +17,41 @@ if (isset($_FILES['proof']) && $_FILES['proof']['error'] === UPLOAD_ERR_OK) {
     $proofFileName = time() . '_' . basename($_FILES['proof']['name']);
     move_uploaded_file($_FILES['proof']['tmp_name'], $uploadDir . $proofFileName);
 }
-
-// Save base64 image from Upload button if available
-if (!empty($base64)) {
+// Handle base64 image (if image not uploaded using input[type=file])
+elseif (!empty($evidenceBase64)) {
     $uploadDir = 'proof/';
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0755, true);
     }
 
-    $base64 = preg_replace('#^data:image/\w+;base64,#i', '', $base64);
-    $decoded = base64_decode($base64);
-    $uniqueName = $uploadDir . time() . '_upload_image.jpg';
-    file_put_contents($uniqueName, $decoded);
+    $evidenceBase64 = preg_replace('#^data:image/\w+;base64,#i', '', $evidenceBase64);
+    $decoded = base64_decode($evidenceBase64);
+    $proofFileName = time() . '_upload_image.jpg';
+    file_put_contents($uploadDir . $proofFileName, $decoded);
 }
 
-// Insert into archive_info WITHOUT image
-if (!empty($id) && !empty($accomplished)) {
+if (!empty($studentId) && !empty($accomplished)) {
     $conn->begin_transaction();
 
     try {
+        // Get student details
         $selectQuery = "SELECT * FROM student_info WHERE id = ?";
         $stmt = $conn->prepare($selectQuery);
-        $stmt->bind_param("s", $id);
+        $stmt->bind_param("s", $studentId);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
             $student = $result->fetch_assoc();
 
-            $insertQuery = "INSERT INTO archive_info (Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Sanction, Personnel, Accomplished)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            // Insert into archive_info including proof image
+            $insertQuery = "INSERT INTO archive_info 
+                (Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Sanction, Personnel, Accomplished, Proof)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             $insertStmt = $conn->prepare($insertQuery);
             $insertStmt->bind_param(
-                "ssssssssss",
+                "sssssssssss",
                 $student['Student_ID'],
                 $student['Student_Name'],
                 $student['Department'],
@@ -59,13 +61,16 @@ if (!empty($id) && !empty($accomplished)) {
                 $student['Status'],
                 $student['Sanction'],
                 $student['Personnel'],
-                $accomplished
+                $accomplished,
+                $proofFileName
+                
             );
 
             if ($insertStmt->execute()) {
+                // Delete from student_info
                 $deleteQuery = "DELETE FROM student_info WHERE id = ?";
                 $deleteStmt = $conn->prepare($deleteQuery);
-                $deleteStmt->bind_param("s", $id);
+                $deleteStmt->bind_param("s", $studentId);
                 $deleteStmt->execute();
 
                 $conn->commit();
