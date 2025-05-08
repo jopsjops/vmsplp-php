@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="icon" type="image/png" sizes="32x32" href="img/plp.png">
     <title>Admin</title>
     <style>
@@ -15,6 +16,8 @@
             box-sizing: border-box;
             font-family: 'poppins', sans-serif;
         }
+
+        
 
         /*topbar*/
         .topbar {
@@ -289,32 +292,41 @@
             background: #046c1e;
         }
 
-        #prediction-result {
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+        #analysis-result {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 equal columns */
+            gap: 20px;
+            padding: 20px;
+            margin: 0 auto;
+            width: 1200px; /* limit width for better layout */
+        }
+
+        .department-card {
             background: #fff;
-            text-align: center;
-           
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+        .department-card h2 {
+            margin-top: 0;
+            font-size: 20px;
+            color: #2c3e50;
         }
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
+        .department-card p {
+            font-size: 16px;
+            margin-bottom: 10px;
         }
 
-        th {
-            background-color: #059212;
-            color: white;
-        } 
+        
 
     </style>
    
@@ -325,8 +337,6 @@
         <div class="logo">
                 <h2>VMS.</h2>
             </div>
-            
-            
         </div>
         <div class="sidebar">
             <div class="profile">
@@ -354,7 +364,7 @@
                 <li class="active">
                     <a href="prediction.php">
                         <i class='fas fa-chart-line'></i>
-                        <div>Predictions</div>
+                        <div>Data Analysis</div>
                     </a>
                 </li>
                 <li class="archive">
@@ -383,57 +393,118 @@
                     <h1>STUDENT VIOLATION DATA ANALYSIS</h1>
                 </header>
                 <main>
-                    <div id="analysis-result">
-                        <?php
-                        include "dbconnection.php";
+                <div id="analysis-result" class="grid-container">
+                    <script>
+                        const departmentColors = {
+                            CCS: 'rgba(162, 165, 165, 0.5)',
+                            CON: 'rgba(250, 144, 215, 0.5)',
+                            CBA: 'rgba(230, 213, 64, 0.5)',
+                            CIHM: 'rgba(149, 12, 0, 0.5)',
+                            CAS: 'rgba(171, 63, 188, 0.5)',
+                            COED: 'rgba(65, 105, 225, 0.5)',
+                            COE: 'rgba(222, 153, 63, 0.5)'
+                        };
+                    </script>
+                    <?php
+                    include "dbconnection.php";
 
-                        if ($conn->connect_error) {
-                            die("Connection failed: " . $conn->connect_error);
-                        }
+                    if ($conn->connect_error) {
+                        die("Connection failed: " . $conn->connect_error);
+                    }
 
-                        // Get all distinct departments
-                        $deptSql = "SELECT DISTINCT Department FROM student_info";
-                        $deptResult = $conn->query($deptSql);
+                    // Arrays to store data for overall chart
+                    $departments = [];
+                    $departmentTotals = [];
 
-                        if ($deptResult->num_rows > 0) {
-                            while ($deptRow = $deptResult->fetch_assoc()) {
-                                $department = $deptRow['Department'];
-                                echo "<h2>Department: $department</h2>";
+                    // For storing chart scripts to embed later
+                    $chartScripts = '';
 
-                                // Get total number of violations for this department
-                                $totalSql = "SELECT COUNT(*) as total FROM student_info WHERE Department = '$department'";
-                                $totalResult = $conn->query($totalSql);
-                                $total = $totalResult->fetch_assoc()['total'];
-                                echo "<p>Total Violations: <strong>$total</strong></p>";
+                    // Get all distinct departments
+                    $deptSql = "SELECT DISTINCT Department FROM student_info";
+                    $deptResult = $conn->query($deptSql);
 
-                                // Get breakdown of violation types
-                                $violationSql = "
-                                    SELECT Violation, COUNT(*) as count 
-                                    FROM student_info 
-                                    WHERE Department = '$department' 
-                                    GROUP BY Violation
-                                    ORDER BY count DESC
-                                ";
-                                $violationResult = $conn->query($violationSql);
-
-                                if ($violationResult->num_rows > 0) {
-                                    echo "<table border='1' cellpadding='6' cellspacing='0'>";
-                                    echo "<tr><th>Violation Type</th><th>Count</th></tr>";
-                                    while ($vRow = $violationResult->fetch_assoc()) {
-                                        echo "<tr><td>{$vRow['Violation']}</td><td>{$vRow['count']}</td></tr>";
-                                    }
-                                    echo "</table><br>";
-                                } else {
-                                    echo "<p>No specific violations found for this department.</p>";
+                    if ($deptResult->num_rows > 0) {
+                        while ($deptRow = $deptResult->fetch_assoc()) {
+                            $department = $deptRow['Department'];
+                            echo "<div class='department-card'>";
+                            echo "<h2>Department: $department</h2>";
+                    
+                            // Total violations
+                            $totalSql = "SELECT COUNT(*) as total FROM student_info WHERE Department = '$department'";
+                            $totalResult = $conn->query($totalSql);
+                            $total = $totalResult->fetch_assoc()['total'];
+                            echo "<p>Total Violations: <strong>$total</strong></p>";
+                    
+                            $departments[] = $department;
+                            $departmentTotals[] = $total;
+                    
+                            $violationSql = "
+                                SELECT Violation, COUNT(*) as count 
+                                FROM student_info 
+                                WHERE Department = '$department' 
+                                GROUP BY Violation
+                                ORDER BY count DESC
+                            ";
+                            $violationResult = $conn->query($violationSql);
+                            
+                            
+                            if ($violationResult->num_rows > 0) {
+                                echo "<canvas id='chart_$department' height='200'></canvas>";
+                    
+                                $violations = [];
+                                $violationCounts = [];
+                    
+                                while ($vRow = $violationResult->fetch_assoc()) {
+                                    $violations[] = $vRow['Violation'];
+                                    $violationCounts[] = $vRow['count'];
                                 }
+                    
+                                $chartScripts .= "
+                                    const ctx_$department = document.getElementById('chart_$department').getContext('2d');
+                                    new Chart(ctx_$department, {
+                                        type: 'bar',
+                                        data: {
+                                            labels: " . json_encode($violations) . ",
+                                            datasets: [{
+                                                label: 'Violation Count',
+                                                data: " . json_encode($violationCounts) . ",
+                                                backgroundColor: departmentColors['$department'] || 'rgba(100,100,100,0.5)',
+                                                borderColor: departmentColors['$department'] ? departmentColors['$department'].replace('0.5', '1') : 'rgba(100,100,100,1)',
+                                                borderWidth: 1
+                                            }]
+                                        },
+                                        options: {
+                                            responsive: true,
+                                            scales: {
+                                                y: {
+                                                    beginAtZero: true
+                                                }
+                                            }
+                                        }
+                                    });
+                                ";
+                            } else {
+                                echo "<p>No specific violations found for this department.</p>";
                             }
-                        } else {
-                            echo "<p>No departments found in the data.</p>";
+                            echo "</div>"; // Close department card
                         }
+                    
+                       
+                       
 
-                        $conn->close();
-                        ?>
-                    </div>
+                    } else {
+                        echo "<p>No departments found in the data.</p>";
+                    }
+
+                    $conn->close();
+                    ?>
+                </div>
+
+                <!-- Render all charts after the content -->
+                <script>
+                    <?php echo $chartScripts; ?>
+                </script>
+
                 </main>
             </div>
         </div>  
@@ -441,6 +512,8 @@
         function confirmLogout() {
             return confirm("Are you sure you want to log out?");
         }
+
+        
         </script>
     </div>
 </body>
