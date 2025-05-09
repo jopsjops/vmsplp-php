@@ -350,6 +350,119 @@
             border-top: 1px solid #ddd;
             padding-top: 15px;
         }
+
+        .vision-box p, .mission-box p {
+            margin-top: 0;
+            text-align: center;
+            line-height: 1.6;
+            margin:10px; 
+            color:rgb(0, 0, 0);
+        }
+        .accordion {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            padding: 18px 20px;
+            background-color: #f1f1f1;
+            cursor: pointer;
+            font-weight: 600;
+            color: #2c3e50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .accordion-content h3,
+        .accordion-content h4 {
+            color: #059212;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        .accordion-content p {
+            margin-bottom: 15px;
+            line-height: 1.7;
+            text-align: justify;
+        }
+
+        .accordion-content {
+            display: none;
+            padding: 20px;
+            background: #fff;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .accordion-content ul {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .accordion-content ul li {
+            margin-bottom: 6px;
+        }
+
+        .accordion-content .section-break {
+            margin-top: 30px;
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+        }
+
+        .accordion.active .accordion-content {
+            display: block;
+        }
+
+        .accordion-header i {
+            transition: transform 0.2s ease;
+        }
+
+        .accordion.active .accordion-header i {
+            transform: rotate(180deg);
+        }
+
+        @media (max-width: 768px) {
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .vision-mission-container {
+                flex-direction: column;
+            }
+        }
+
+        .violations-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .violation-box {
+            flex: 1;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            min-width: 280px;
+        }
+        .violation-box h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .violation-box ul {
+            padding-left: 20px;
+        }
+        .history-section {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
     </style>
 </head>
 
