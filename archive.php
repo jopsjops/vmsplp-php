@@ -513,7 +513,7 @@
                 <h2>VMS.</h2>
             </div>
             <div class="search">
-                <input type="text" id="search" placeholder="Search by Student Number">
+                <input type="text" id="search" placeholder="Search">
             </div>
         </div>
         <div class="sidebar">
@@ -810,20 +810,36 @@
     }
 
 
-     // Attach an event listener to the search input
-     document.getElementById("search").addEventListener("input", function () {
-        const searchValue = this.value.toLowerCase(); // Convert input to lowercase for case-insensitive search
-        const rows = document.querySelectorAll("#violationTable tbody tr"); // Select all table rows
+     // Your search script
+        document.addEventListener("DOMContentLoaded", function () {
+            const searchInput = document.getElementById("search"); // The search input
+            const rows = document.querySelectorAll("#violationTable tbody tr"); // All rows in the table
+            const noRecords = document.getElementById("noRecords"); // "No records found" row (hidden by default)
 
-        rows.forEach(row => {
-            const studentId = row.querySelector("td:nth-child(1)").textContent.toLowerCase(); // Get the Student ID column
-            if (studentId.includes(searchValue)) {
-                row.style.display = ""; // Show the row if it matches
-            } else {
-                row.style.display = "none"; // Hide the row if it doesn't match
-            }
+            // Listen for input in the search field
+            searchInput.addEventListener("input", function () {
+                const searchValue = this.value.toLowerCase(); // Get the input and make it lowercase
+                let found = false; // To check if any row matches
+
+                // Loop through each row in the table
+                rows.forEach(row => {
+                    const rowText = row.innerText.toLowerCase(); // Get the row's text content and make it lowercase
+                    if (rowText.includes(searchValue)) {
+                        row.style.display = ""; // If it matches, show the row
+                        found = true;
+                    } else {
+                        row.style.display = "none"; // If it doesn't match, hide the row
+                    }
+                });
+
+                // Handle "No records found" row
+                if (searchValue && !found) {
+                    noRecords.style.display = ""; // Show if no results are found
+                } else {
+                    noRecords.style.display = "none"; // Hide it when there are matches
+                }
+            });
         });
-    });
 
 
     function printTableToPDF() {
