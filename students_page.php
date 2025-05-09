@@ -893,6 +893,42 @@
             transform: scale(0.98);
             /* Press effect */
         }
+
+        /* Basic styles for the button tooltips */
+        button {
+            position: relative;
+            padding: 10px;
+        }
+
+        /* Tooltip styles */
+        button[data-tooltip]::after {
+            content: attr(data-tooltip);
+            /* Get the tooltip text from the data-tooltip attribute */
+            position: absolute;
+            bottom: 100%;
+            /* Position the tooltip above the button */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            opacity: 0;
+            /* Initially hidden */
+            pointer-events: none;
+            /* Avoid interfering with button interaction */
+            transition: opacity 0.3s ease-in-out;
+            /* Smooth fade-in effect */
+            white-space: nowrap;
+            /* Prevent tooltip text from wrapping */
+        }
+
+        /* Show the tooltip on hover */
+        button:hover[data-tooltip]::after {
+            opacity: 1;
+            /* Make the tooltip visible */
+        }
     </style>
 </head>
 
@@ -944,7 +980,7 @@
             <li>
                 <a href="prediction.php">
                     <i class='fas fa-chart-line'></i>
-                    <div>Predictions</div>
+                    <div>Data Analysis</div>
                 </a>
             </li>
             <li class="archive">
@@ -1069,14 +1105,16 @@
                     </tbody>
                 </table>
 
-                <button id="printPdfButton" class="print-pdf" onclick="printTableToPDF()">
+                <button id="printPdfButton" class="print-pdf" onclick="printTableToPDF()" data-tooltip="Print PDF">
                     <i class='bx bx-printer'></i>
                 </button>
-                <button class="add" id="addButton" onclick="document.getElementById('addModal').style.display='block'">
+
+                <button class="add" id="addButton" onclick="document.getElementById('addModal').style.display='block'"
+                    data-tooltip="Add Student">
                     <i class='bx bxs-add-to-queue'></i>
                 </button>
 
-                <button class="send" id="sendEmailButton" onclick="sendEmailToAllStudents()">
+                <button class="send" id="sendEmailButton" onclick="sendEmailToAllStudents()" data-tooltip="Send Email">
                     <i class='bx bx-mail-send'></i>
                 </button>
 
