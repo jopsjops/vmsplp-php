@@ -1281,7 +1281,7 @@
                     <input type="text" name="name" value="<?php echo htmlspecialchars($data['name']); ?>" required>
 
                     <label for="program">Department:</label>
-                    <select id="program" name="program" onchange="updatePrograms()">
+                    <select id="program2" name="program2" onchange="updatePrograms()">
                         <option value="">Select Department</option>
                         <option value="CON">CON</option>
                         <option value="COE">COE</option>
@@ -1294,7 +1294,7 @@
 
                     <!-- Program Dropdown -->
                     <label for="course">Program:</label>
-                    <select id="course" name="course">
+                    <select id="course2" name="course2">
                         <option value="">Select Program</option>
                     </select>
 
@@ -1456,6 +1456,84 @@
                 course.appendChild(defaultOption);
             }
         });
+
+
+        //Selection Process in edit form by department and course
+        document.getElementById('program2').addEventListener('change', function () {
+            const course = document.getElementById('course2');
+            const selectedProgram = this.value;
+
+            // Clear existing options
+            course.innerHTML = '';
+
+            // Set options based on selected program
+            if (selectedProgram === 'CCS') {
+                const ccsOptions = ['BSCS', 'BSIT'];
+                ccsOptions.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    course.appendChild(opt);
+                });
+            } else if (selectedProgram === 'CAS') {
+                const casOptions = ['AB Psych'];
+                casOptions.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    course.appendChild(opt);
+                });
+
+
+            } else if (selectedProgram === 'CBA') {
+                const cbaOptions = ['BSBA', 'BSENT', 'BSA'];
+                cbaOptions.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    course.appendChild(opt);
+                });
+            } else if (selectedProgram === 'CON') {
+                const conOptions = ['BSN'];
+                conOptions.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    course.appendChild(opt);
+                });
+            } else if (selectedProgram === 'COE') {
+                const coeOptions = ['BSECE'];
+                coeOptions.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    course.appendChild(opt);
+                });
+            } else if (selectedProgram === 'COED') {
+                const coedOptions = ['BEED', 'BSED'];
+                coedOptions.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    course.appendChild(opt);
+                });
+            } else if (selectedProgram === 'CIHM') {
+                const cihmOptions = ['BSHM'];
+                cihmOptions.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    course.appendChild(opt);
+                });
+            } else {
+                const defaultOption = document.createElement('option');
+                defaultOption.value = 'N/A';
+                defaultOption.innerHTML = 'Not Applicable';
+                course.appendChild(defaultOption);
+            }
+        });
+
+
 
         function openArchiveModal(id) {
             const confirmed = confirm("Has the student accomplished their sanction?");
