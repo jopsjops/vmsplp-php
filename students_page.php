@@ -736,13 +736,18 @@
         }
 
         .highlighted {
+<<<<<<< HEAD
             background-color: rgb(142, 255, 181) !important;
             /* Light green */
+=======
+            background-color:rgb(142, 255, 181) !important; /* Light green */
+>>>>>>> 7475cc525f746336c7781ae3a70539beb5d92e0d
             transition: background-color 0.3s ease;
         }
 
 
         .modal {
+<<<<<<< HEAD
             position: fixed;
             top: 0;
             left: 0;
@@ -892,6 +897,79 @@
         #editFormContent button[type="submit"]:active {
             transform: scale(0.98);
             /* Press effect */
+=======
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        }
+
+        .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 300px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+
+        /* Remove unnecessary centering that affects all children */
+        position: relative;
+        text-align: left;
+        }
+
+        #deleteBtn {
+        display: block;              /* Allows margin auto to work */
+        margin-left: 65px;         /* Top margin and auto left/right to center */
+        background-color: #e74c3c;
+        color: #fff;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        #deleteBtn:hover {
+        background-color: #c0392b;
+        transform: scale(1.05);
+        }
+
+        #deleteBtn:active {
+        background-color: #a93226;
+        transform: scale(0.98);
+        }
+
+        /* Basic styles for the button tooltips */
+        button {
+            position: relative;
+            padding: 10px;
+        }
+
+        /* Tooltip styles */
+        button[data-tooltip]::after {
+            content: attr(data-tooltip); /* Get the tooltip text from the data-tooltip attribute */
+            position: absolute;
+            bottom: 100%; /* Position the tooltip above the button */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            opacity: 0; /* Initially hidden */
+            pointer-events: none; /* Avoid interfering with button interaction */
+            transition: opacity 0.3s ease-in-out; /* Smooth fade-in effect */
+            white-space: nowrap; /* Prevent tooltip text from wrapping */
+        }
+
+        /* Show the tooltip on hover */
+        button:hover[data-tooltip]::after {
+            opacity: 1; /* Make the tooltip visible */
+>>>>>>> 7475cc525f746336c7781ae3a70539beb5d92e0d
         }
     </style>
 </head>
@@ -923,6 +1001,7 @@
             <div class="profile-logo">
                 <img src="img/plp.png" alt="Logo">
             </div>
+<<<<<<< HEAD
             <div class="profile-info">
                 <span>Welcome,</span>
                 <h4>Admin</h4>
@@ -933,6 +1012,44 @@
                 <a href="dashboarddb.php">
                     <i class='bx bxs-dashboard'></i>
                     <div>Dashboard</div>
+=======
+            <ul>
+                <li>
+                    <a href="dashboarddb.php">
+                        <i class='bx bxs-dashboard'></i>
+                        <div>Dashboard</div>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="students_page.php">
+                        <i class='bx bxs-group'></i>
+                        <div>Students</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="prediction.php">
+                        <i class='fas fa-chart-line'></i>
+                        <div>Data Analysis</div>
+                    </a>
+                </li>
+                <li class="archive">
+                    <a href="archive.php">
+                        <i class='bx bxs-archive'></i>
+                        <div>Archive</div>
+                    </a>
+                </li>
+                <li class="tables">
+                    <a href="view_semviolation.php">
+                        <i class='bx bx-table'></i>
+                        <div>View Tables</div>
+                    </a>
+                </li>
+            </ul>
+            <div class="logout">
+                <a href="logout.php" onclick="return confirmLogout()">
+                    <i class='bx bx-log-out'></i>
+                    <span>Logout</span>
+>>>>>>> 7475cc525f746336c7781ae3a70539beb5d92e0d
                 </a>
             </li>
             <li class="active">
@@ -1069,6 +1186,7 @@
                     </tbody>
                 </table>
 
+<<<<<<< HEAD
                 <button id="printPdfButton" class="print-pdf" onclick="printTableToPDF()">
                     <i class='bx bx-printer'></i>
                 </button>
@@ -1079,6 +1197,20 @@
                 <button class="send" id="sendEmailButton" onclick="sendEmailToAllStudents()">
                     <i class='bx bx-mail-send'></i>
                 </button>
+=======
+                    <button id="printPdfButton" class="print-pdf" onclick="printTableToPDF()" data-tooltip="Print PDF">
+                        <i class='bx bx-printer'></i>
+                    </button>
+
+                    <button class="add" id="addButton" onclick="document.getElementById('addModal').style.display='block'" data-tooltip="Add Student">
+                        <i class='bx bxs-add-to-queue'></i>
+                    </button>
+
+                    <button class="send" id="sendEmailButton" onclick="sendEmailToAllStudents()" data-tooltip="Send Email">
+                        <i class='bx bx-mail-send'></i>
+                    </button>
+
+>>>>>>> 7475cc525f746336c7781ae3a70539beb5d92e0d
 
             </div>
         </div>

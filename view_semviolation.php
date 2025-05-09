@@ -398,7 +398,7 @@
                 <li>
                     <a href="prediction.php">
                         <i class='fas fa-chart-line'></i>
-                        <div>Predictions</div>
+                        <div>Data Analysis</div>
                     </a>
                 </li>
                 <li>

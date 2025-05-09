@@ -627,7 +627,7 @@
                 <li>
                     <a href="prediction.php">
                         <i class='fas fa-chart-line'></i>
-                        <div>Predictions</div>
+                        <div>Data Analysis</div>
                     </a>
                 </li>
                 <li class="active">
@@ -659,7 +659,7 @@
                     include 'dbconnection.php';
 
                     // Fetch data from the database
-                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Personnel, Accomplished, Sanction
+                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Personnel, Accomplished, Sanction, Proof
                              FROM archive_info ORDER BY Accomplished DESC";
 
                     $result = $conn->query($sql);
@@ -675,6 +675,7 @@
                                 <th>Personnel</th>
                                 <th>Date Accomplished</th>
                                 <th>Sanction</th>
+                                <th>Proof</th>
                                 <th>Actions</th>               
                             </tr>
                         </thead>
@@ -693,6 +694,7 @@
                                         <td>" . htmlspecialchars($row['Accomplished']) . "</td>
 
                                         <td>" . htmlspecialchars($row['Sanction']) . "</td>
+                                        <td><img src='proof/" . htmlspecialchars($row['Proof']) . "' alt='Proof Image' width='80' height='80'></td>
                                         <td>
                                             <button class='edit' onclick='editRow(" . $row['id'] . ")'>
                                                 <i class='fas fa-pencil-alt'></i>
