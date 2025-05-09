@@ -568,7 +568,6 @@
                 <select id="sortDropdown">
                     <option value="">Select Type</option>
                     <option value="name">Name (Alphabetical)</option>
-                    <option value="department">Department (Alphabetical)</option>
                     <option value="date">Date</option>
                     <option value="violation">Violation</option>
                 </select>
@@ -617,74 +616,59 @@
                     include 'dbconnection.php';
 
                     // Fetch data from the database
-                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Personnel, Date, Time, Sanction, Evidence, Sanction_Proof, Accomplished
+                    $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Personnel, Accomplished, Sanction, Proof
                              FROM archive_info WHERE Department = 'CIHM' ORDER BY Date DESC";
 
                     $result = $conn->query($sql);
                     ?>
                     <table id="violationTable">
                         <thead>
-                            <tr>    
+                        <tr>    
                                 <th>Student ID</th>
                                 <th>Name</th>
-                                <th>Program</th>
+                                <th>Department & Program</th>
                                 <th>Violation</th>
                                 <th>Offense & Status</th>
                                 <th>Personnel</th>
-                                <th>Date & Time</th>
-                                <th>Sanction</th>
-                                <th>Evidence</th>
                                 <th>Date Accomplished</th>
+                                <th>Sanction</th>
                                 <th>Proof</th>
-                                                  
+                                <th>Actions</th>               
                             </tr>
                         </thead>
                         <tbody>
-                        <?php
-                        if ($result->num_rows > 0) {
-                            while ($row = $result->fetch_assoc()) {
-                                ?>
-                                <tr id="row-<?php echo $row['id']; ?>">
-                                    <td><?php echo htmlspecialchars($row['Student_ID']); ?></td>
-                                    <td><?php echo htmlspecialchars($row['Student_Name']); ?></td>
-                                    <td><?php echo htmlspecialchars($row['Program']); ?></td>
-                                    <td><?php echo htmlspecialchars($row['Violation']); ?></td>
-                                    <td>
-                                        <?php echo htmlspecialchars($row['Offense']) . ' - ' . htmlspecialchars($row['Status']); ?>
-                                    </td>
+                            <?php
+                            if ($result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
+                                    $sanctionText = "";
+                                    echo "<tr>
+                                        <td>" . htmlspecialchars($row['Student_ID']) . "</td>
+                                        <td>" . htmlspecialchars($row['Student_Name']) . "</td>
+                                        <td>" . htmlspecialchars($row['Department']) . " - " . htmlspecialchars($row['Program']) . "</td>
+                                        <td>" . htmlspecialchars($row['Violation']) . "</td>
+                                        <td>" . htmlspecialchars($row['Offense']) . " - " . htmlspecialchars($row['Status']) . "</td>
+                                        <td>" . htmlspecialchars($row['Personnel']) . "</td>
+                                        <td>" . htmlspecialchars($row['Accomplished']) . "</td>
 
-                                    <td><?php echo htmlspecialchars($row['Personnel']); ?></td>
-                                    <td>
-                                        <?php
-                                            $timestamp = strtotime($row['Date'] . ' ' . $row['Time']);
-                                            echo htmlspecialchars(date('m/d/Y', $timestamp)) . '<br>' . htmlspecialchars(date('h:i A', $timestamp));
-                                        ?>
-                                    </td>
-
-                                    <td><?php echo htmlspecialchars($row['Sanction']); ?></td>
-                                    <td>
-                                        <?php if (!empty($row['Evidence']) && file_exists('evidence/' . $row['Evidence'])): ?>
-                                            <img src="evidence/<?php echo htmlspecialchars($row['Evidence']); ?>" alt="Evidence" style="width: 80px; height: auto; margin-top: 5px;">
-                                        <?php endif; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo htmlspecialchars($row['Accomplished']);?>
-                                    </td>
-                                    <td>
-                                        <?php if (!empty($row['Sanction_Proof']) && file_exists('proof/' . $row['Sanction_Proof'])): ?>
-                                            <img src="proof/<?php echo htmlspecialchars($row['Sanction_Proof']); ?>" alt="Proof" style="width: 80px; height: auto; margin-top: 5px;">
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                                <?php
+                                        <td>" . htmlspecialchars($row['Sanction']) . "</td>
+                                        <td><img src='proof/" . htmlspecialchars($row['Proof']) . "' alt='Proof Image' width='80' height='80'></td>
+                                        <td>
+                                            <button class='edit' onclick='editRow(" . $row['id'] . ")'>
+                                                <i class='fas fa-pencil-alt'></i>
+                                            </button>
+                                            <button class='archive' onclick='transferRow(" . $row['id'] . ")'>
+                                                <i class='fa-solid fa-folder-plus'></i>
+                                            </button>
+                                        </td>
+                                    </tr>";
+                                }
+                            } else {
+                                echo "<tr><td colspan='9'>No records found</td></tr>";
                             }
-                        } else {
-                            echo "<tr><td colspan='11' style='text-align:center;'>No records found</td></tr>";
-                        }
-                        ?>
-                            <tr id="noRecords" style="display:none;">
-                                <td colspan="11" style="text-align:center;">No records found</td>
-                            </tr>
+                            ?>
+                                <tr id="noRecords" style="display:none;">
+                                    <td colspan="9" style="text-align:center;">No records found</td>
+                                </tr>
                         </tbody>
                     </table>
 
