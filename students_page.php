@@ -1795,6 +1795,12 @@
                 });
             }
         }
+
+        // Get today's date in YYYY-MM-DD format
+        const today = new Date().toISOString().split('T')[0];
+        // Set the max attribute to today
+        document.getElementById('date').setAttribute('max', today);
+        document.getElementById('dateAccomplished').setAttribute('max', today);
     </script>
 </body>
 
