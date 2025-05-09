@@ -379,6 +379,12 @@
                         <div>View Tables</div>
                     </a>
                 </li>
+                <li>
+                    <a href="reference_page.php">
+                        <i class='bx bx-book-open'></i>
+                        <div>Reference</div>
+                    </a>
+                </li>
             </ul>
             <div class="logout">
                 <a href="logout.php" onclick="return confirmLogout()">
