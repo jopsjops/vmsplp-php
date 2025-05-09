@@ -355,9 +355,6 @@
             opacity: 0.9;
         }
 
-
-       
-
         button.edit {
             color: #333;
             background-color: transparent;
@@ -470,88 +467,6 @@
             width: 100%;
         }
 
-        /* @media screen and (min-width: 1200px) {
-            .main {
-                flex-direction: row;
-                align-items: flex-start;
-                
-            }
-
-            .charts-container {
-                flex: 2;
-                margin-left: auto;
-            }
-
-            .logout {
-                margin-top: 380px;
-                
-            }
-
-            table{
-                width: 125%;;
-            }
-        } */
-
-        /* Medium screens (tablets) */
-        /* @media screen and (max-width: 1199px) and (min-width: 768px) {
-            .main {
-                flex-direction: column;
-            }
-
-            .cards {
-                grid-template-columns: repeat(2, 1fr);
-                justify-content: center;
-            }
-
-            .charts-container {
-                flex-direction: column;
-            }
-        } */
-
-        /* Small screens (phones) */
-        /* @media screen and (max-width: 767px) {
-            .topbar {
-                grid-template-columns: 1fr 1fr; 
-                padding: 0 10px;
-            }
-
-            .sidebar {
-                width: 160px;
-            }
-
-            .main {
-                margin-left: 160px;
-                padding: 10px;
-                flex-direction: column;
-            }
-
-            .cards {
-                grid-template-columns: repeat(1, 1fr);
-                margin-left: 0;
-                padding: 10px;
-            }
-
-            .charts-container {
-                padding: 10px;
-            }
-
-            .card {
-                width: 100%;
-                max-width: 300px;
-                height: auto;
-                margin: 0 auto;
-            }
-
-            .card .gauge {
-                width: 100px;
-                height: 100px;
-            }
-
-            .logo-overlay img {
-                width: 70px;
-                height: 70px;
-            }
-        } */
         .modal {
             display: none;
             position: fixed;
