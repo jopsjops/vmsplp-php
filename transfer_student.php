@@ -1,6 +1,6 @@
 <?php
 ob_clean();
-include 'semviolations.php';
+include 'dbconnection.php';
 
 $studentId = $_POST['student_id'];
 $accomplished = $_POST['date_accomplished'];
