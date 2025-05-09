@@ -1763,20 +1763,57 @@
         }
 
         function previewImage(event) {
-            const file = event.target.files[0];
-            if (file && currentStudentId) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const img = document.getElementById('imagePreview');
-                    img.src = e.target.result;
-                    img.style.display = 'block';
-                    document.getElementById('deleteBtn').style.display = 'inline-block';
+    const file = event.target.files[0];
 
-                    localStorage.setItem(`evidenceImage_${currentStudentId}`, e.target.result);
-                };
-                reader.readAsDataURL(file);
+    if (!file || !currentStudentId) return;
+
+    // Optional: Limit file size (e.g., 3MB)
+    const maxSizeMB = 3;
+    if (file.size / 1024 / 1024 > maxSizeMB) {
+        alert("Image too large. Please upload an image under 3MB.");
+        return;
+    }
+
+    // Optional: Allow only certain types
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+        alert("Invalid file type. Please upload a JPG, PNG, or WebP image.");
+        return;
+    }
+
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        img.onload = function () {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            const maxWidth = 600;
+            const scale = Math.min(maxWidth / img.width, 1);
+            canvas.width = img.width * scale;
+            canvas.height = img.height * scale;
+
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6); // More aggressive compression
+
+            if (compressedDataUrl.length > 1024 * 1024 * 4) {
+                alert("Compressed image still too large to store.");
+                return;
             }
-        }
+
+            document.getElementById('imagePreview').src = compressedDataUrl;
+            document.getElementById('imagePreview').style.display = 'block';
+            document.getElementById('deleteBtn').style.display = 'inline-block';
+
+            localStorage.setItem(`evidenceImage_${currentStudentId}`, compressedDataUrl);
+        };
+        img.src = e.target.result;
+    };
+
+    reader.readAsDataURL(file);
+}
+
 
         function deleteImage() {
             const img = document.getElementById('imagePreview');
