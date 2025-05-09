@@ -1269,111 +1269,7 @@
         <div class="modal-content">
             <span class="close" onclick="closeEditModal()">&times;</span>
             <div id="editFormContent">
-                <form action="update_record.php" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="id" id="studentIdInput"
-                        value="<?php echo htmlspecialchars($data['id']); ?>">
 
-                    <label for="studentId">Student ID:</label>
-                    <input type="text" name="studentId" value="<?php echo htmlspecialchars($data['Student_ID']); ?>"
-                        required>
-
-                    <label for="name">Student Name:</label>
-                    <input type="text" name="name" value="<?php echo htmlspecialchars($data['name']); ?>" required>
-
-                    <label for="program">Department:</label>
-                    <select id="program2" name="program2" onchange="updatePrograms()">
-                        <option value="">Select Department</option>
-                        <option value="CON">CON</option>
-                        <option value="COE">COE</option>
-                        <option value="CCS">CCS</option>
-                        <option value="CAS">CAS</option>
-                        <option value="COED">COED</option>
-                        <option value="CIHM">CIHM</option>
-                        <option value="CBA">CBA</option>
-                    </select>
-
-                    <!-- Program Dropdown -->
-                    <label for="course">Program:</label>
-                    <select id="course2" name="course2">
-                        <option value="">Select Program</option>
-                    </select>
-
-                    <label for="violation">Violation:</label>
-                    <select name="violation" required>
-                        <option value="<?php echo htmlspecialchars($data['Violation']); ?>">
-                            <?php echo htmlspecialchars($data['Violation']); ?>
-                        </option>
-                        <optgroup label="Major Offense Violations">
-                            <option value="Cheating">Cheating</option>
-                            <option value="Forgery & Plagiarism">Forgery & Plagiarism</option>
-                            <option value="False Representation">False Representation</option>
-                            <option value="Defamation">Defamation</option>
-                            <option value="Substance Influence">Substance Influence</option>
-                            <option value="Unauthorized Entry">Unauthorized Entry</option>
-                            <option value="Theft">Theft</option>
-                            <option value="Drug Possession/Use">Drug Possession/Use</option>
-                            <option value="Insubordination">Insubordination</option>
-                            <option value="Physical Injury">Physical Injury</option>
-                            <option value="Threats & Bullying">Threats & Bullying</option>
-                            <option value="Gambling">Gambling</option>
-                            <option value="Hazing">Hazing</option>
-                            <option value="Unauthorized Name Use">Unauthorized Name Use</option>
-                            <option value="Financial Misconduct">Financial Misconduct</option>
-                            <option value="Unauthorized Sales">Unauthorized Sales</option>
-                            <option value="Extortion">Extortion</option>
-                            <option value="Vandalism">Vandalism</option>
-                            <option value="Degrading Treatment">Degrading Treatment</option>
-                            <option value="Deadly Weapons">Deadly Weapons</option>
-                            <option value="Abusive Behavior">Abusive Behavior</option>
-                        </optgroup>
-                        <optgroup label="Minor Offense Violations">
-                            <option value="Policy Violation">Policy Violation</option>
-                            <option value="Violating dress protocol">Violating dress protocol</option>
-                            <option value="Incomplete uniform">Incomplete uniform</option>
-                            <option value="Littering">Littering</option>
-                            <option value="Loitering in hallways">Loitering in hallways</option>
-                            <option value="Class disturbance">Class disturbance</option>
-                            <option value="Shouting">Shouting</option>
-                            <option value="Eating in class">Eating in class</option>
-                            <option value="Public affection">Public affection</option>
-                            <option value="Kissing">Kissing</option>
-                            <option value="Suggestive poses">Suggestive poses</option>
-                            <option value="Inappropriate touching">Inappropriate touching</option>
-                            <option value="No ID card">No ID card</option>
-                            <option value="Using others' ID">Using others' ID</option>
-                            <option value="Caps indoors">Caps indoors</option>
-                            <option value="Noise in quiet areas">Noise in quiet areas</option>
-                            <option value="Discourtesy">Discourtesy</option>
-                            <option value="Malicious calls">Malicious calls</option>
-                            <option value="Refusing ID check">Refusing ID check</option>
-                            <option value="Blocking passageways">Blocking passageways</option>
-                            <option value="Unauthorized charging">Unauthorized charging</option>
-                            <option value="Academic non-compliance">Academic non-compliance</option>
-                        </optgroup>
-                    </select>
-
-                    <label for="offense">Offense:</label>
-                    <input type="offense" readonly required>
-
-
-                    <label for="status">Status:</label>
-                    <input type="text" name="status" value="<?php echo htmlspecialchars($data['Status']); ?>" required>
-
-                    <label for="personnel">Personnel:</label>
-                    <input type="text" name="personnel" value="<?php echo htmlspecialchars($data['Personnel']); ?>"
-                        required>
-
-                    <label for="sanction">Sanction:</label>
-                    <input type="text" name="sanction" value="<?php echo htmlspecialchars($data['Sanction']); ?>">
-
-                    <label for="date">Date:</label>
-                    <input type="date" name="Date" value="<?php echo $data ? htmlspecialchars($data['Date']) : ''; ?>">
-
-                    <label for="time">Time:</label>
-                    <input type="time" name="Time" value="<?php echo $data ? htmlspecialchars($data['Time']) : ''; ?>">
-
-                    <button type="submit">Update Record</button>
-                </form>
             </div>
         </div>
     </div>
@@ -1458,80 +1354,6 @@
         });
 
 
-        //Selection Process in edit form by department and course
-        document.getElementById('program2').addEventListener('change', function () {
-            const course = document.getElementById('course2');
-            const selectedProgram = this.value;
-
-            // Clear existing options
-            course.innerHTML = '';
-
-            // Set options based on selected program
-            if (selectedProgram === 'CCS') {
-                const ccsOptions = ['BSCS', 'BSIT'];
-                ccsOptions.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option;
-                    opt.innerHTML = option;
-                    course.appendChild(opt);
-                });
-            } else if (selectedProgram === 'CAS') {
-                const casOptions = ['AB Psych'];
-                casOptions.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option;
-                    opt.innerHTML = option;
-                    course.appendChild(opt);
-                });
-
-
-            } else if (selectedProgram === 'CBA') {
-                const cbaOptions = ['BSBA', 'BSENT', 'BSA'];
-                cbaOptions.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option;
-                    opt.innerHTML = option;
-                    course.appendChild(opt);
-                });
-            } else if (selectedProgram === 'CON') {
-                const conOptions = ['BSN'];
-                conOptions.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option;
-                    opt.innerHTML = option;
-                    course.appendChild(opt);
-                });
-            } else if (selectedProgram === 'COE') {
-                const coeOptions = ['BSECE'];
-                coeOptions.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option;
-                    opt.innerHTML = option;
-                    course.appendChild(opt);
-                });
-            } else if (selectedProgram === 'COED') {
-                const coedOptions = ['BEED', 'BSED'];
-                coedOptions.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option;
-                    opt.innerHTML = option;
-                    course.appendChild(opt);
-                });
-            } else if (selectedProgram === 'CIHM') {
-                const cihmOptions = ['BSHM'];
-                cihmOptions.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option;
-                    opt.innerHTML = option;
-                    course.appendChild(opt);
-                });
-            } else {
-                const defaultOption = document.createElement('option');
-                defaultOption.value = 'N/A';
-                defaultOption.innerHTML = 'Not Applicable';
-                course.appendChild(defaultOption);
-            }
-        });
 
 
 
@@ -1841,56 +1663,56 @@
         }
 
         function previewImage(event) {
-    const file = event.target.files[0];
+            const file = event.target.files[0];
 
-    if (!file || !currentStudentId) return;
+            if (!file || !currentStudentId) return;
 
-    // Optional: Limit file size (e.g., 3MB)
-    const maxSizeMB = 3;
-    if (file.size / 1024 / 1024 > maxSizeMB) {
-        alert("Image too large. Please upload an image under 3MB.");
-        return;
-    }
-
-    // Optional: Allow only certain types
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-    if (!allowedTypes.includes(file.type)) {
-        alert("Invalid file type. Please upload a JPG, PNG, or WebP image.");
-        return;
-    }
-
-    const img = new Image();
-    const reader = new FileReader();
-
-    reader.onload = function (e) {
-        img.onload = function () {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-
-            const maxWidth = 600;
-            const scale = Math.min(maxWidth / img.width, 1);
-            canvas.width = img.width * scale;
-            canvas.height = img.height * scale;
-
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6); // More aggressive compression
-
-            if (compressedDataUrl.length > 1024 * 1024 * 4) {
-                alert("Compressed image still too large to store.");
+            // Optional: Limit file size (e.g., 3MB)
+            const maxSizeMB = 3;
+            if (file.size / 1024 / 1024 > maxSizeMB) {
+                alert("Image too large. Please upload an image under 3MB.");
                 return;
             }
 
-            document.getElementById('imagePreview').src = compressedDataUrl;
-            document.getElementById('imagePreview').style.display = 'block';
-            document.getElementById('deleteBtn').style.display = 'inline-block';
+            // Optional: Allow only certain types
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+            if (!allowedTypes.includes(file.type)) {
+                alert("Invalid file type. Please upload a JPG, PNG, or WebP image.");
+                return;
+            }
 
-            localStorage.setItem(`evidenceImage_${currentStudentId}`, compressedDataUrl);
-        };
-        img.src = e.target.result;
-    };
+            const img = new Image();
+            const reader = new FileReader();
 
-    reader.readAsDataURL(file);
-}
+            reader.onload = function (e) {
+                img.onload = function () {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    const maxWidth = 600;
+                    const scale = Math.min(maxWidth / img.width, 1);
+                    canvas.width = img.width * scale;
+                    canvas.height = img.height * scale;
+
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6); // More aggressive compression
+
+                    if (compressedDataUrl.length > 1024 * 1024 * 4) {
+                        alert("Compressed image still too large to store.");
+                        return;
+                    }
+
+                    document.getElementById('imagePreview').src = compressedDataUrl;
+                    document.getElementById('imagePreview').style.display = 'block';
+                    document.getElementById('deleteBtn').style.display = 'inline-block';
+
+                    localStorage.setItem(`evidenceImage_${currentStudentId}`, compressedDataUrl);
+                };
+                img.src = e.target.result;
+            };
+
+            reader.readAsDataURL(file);
+        }
 
 
         function deleteImage() {
