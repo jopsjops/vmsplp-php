@@ -226,9 +226,11 @@
 
 
         .logout {
-            margin-top: 300px;
+            position: absolute;   /* Needed to use 'bottom' positioning */
+            bottom: 70px;        /* Replaces translateY(330px) */
             padding: 10px;
             text-align: center;
+            width: 100%;   
         }
 
         .logout a {
@@ -564,7 +566,9 @@
             </div>
             
             <div class="sorting-section">
-                <label for="sortDropdown">Sort By:</label>
+            <label for="sortDropdown" title="Sort By">
+                <i class="fa-solid fa-list"></i>
+            </label>
                 <select id="sortDropdown">
                     <option value="">Select Type</option>
                     <option value="name">Name (Alphabetical)</option>

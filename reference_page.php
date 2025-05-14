@@ -498,9 +498,9 @@
         </div>
     </div>    
     <div class="main">
-            <h1><i class="fas fa-book-open"></i> Student Handbook Reference</h1>
+            <h1><i class="fas fa-book-open"></i> STUDENT HANDBOOK REFERENCE</h1>
             <div class="history-section" >
-                <h2>History of PLP</h2>
+                <h2>HISTORY OF PLP</h2>
                 <p>
                     The Pamantasan ng Lungsod ng Pasig (PLP) was established on March 15, 1999, through the approval of City Ordinance No. 11, Series of 1999,
                     signed by then Mayor Vicente P. Eusebio. The founding of PLP was driven by a vision to provide accessible and affordable quality education to
@@ -519,12 +519,12 @@
 
         <div class="vision-mission-container">
             <div class="vision-box">
-                <h2>Vision</h2>
+                <h2>VISION</h2>
                 <p>PLP is the leading center for academic excellence among the locally funded colleges and universities that produces responsible and productive individuals who are responsive to the changing demands of development locally and globally.
 </p>
             </div>
             <div class="mission-box">
-                <h2>Mission</h2>
+                <h2>MISSION</h2>
                 <p>We, a community of service oriented individuals supported by the city government of Pasig, committed to lifelong learning and to produce graduates strong in their global outlook, cultural identity, and social responsibility through teaching strategies, methodologies, relevant research and dedicated public service.
 </p>
             </div>
@@ -532,13 +532,13 @@
 
         <div class="accordion">
             <div class="accordion-header" onclick="toggleAccordion(this)">
-                Violations and Sanctions
+                VIOLATIONS AND SANCTIONS
                 <i class="fas fa-chevron-down"></i>
             </div>
             <div class="accordion-content">
                 <div class="violations-container">
                                         <div class="violation-box">
-                        <h3>Minor Violations</h3>
+                        <h3>MINOR VIOLATIONS</h3>
                         <ul>
                             <li>Violating the dress protocol</li>
                             <li>Wearing incomplete uniform</li>
@@ -590,7 +590,7 @@
                         </ul>
                     </div>
                     <div class="violation-box">
-                        <h3>Major Violations</h3>
+                        <h3>MAJOR VIOLATIONS</h3>
                         <ul>
                             <li>Cheating</li>
                             <li>Forgery & Plagiarism</li>
@@ -636,7 +636,7 @@
     </div>
     <div class="accordion">
     <div class="accordion-header" onclick="toggleAccordion(this)">
-        Code of Conduct and Disciplinary Procedures
+        CODE OF CONDUCT AND DISCIPLINARY PROCEDURES
         <i class="fas fa-chevron-down"></i>
     </div>
     <div class="accordion-content">
@@ -715,7 +715,7 @@
 </div>
 <div class="accordion">
     <div class="accordion-header" onclick="toggleAccordion(this)">
-        Anti-Bullying Act of 2013 (RA 10627)
+        ANTI-BULLYING ACT OF 2013 (RA 10627)
         <i class="fas fa-chevron-down"></i>
     </div>
     <div class="accordion-content">
