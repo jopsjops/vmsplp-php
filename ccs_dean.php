@@ -226,7 +226,7 @@
 
 
         .logout {
-            margin-top: 300px;
+            transform: translateY(320px);
             padding: 10px;
             text-align: center;
         }

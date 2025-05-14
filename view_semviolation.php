@@ -226,9 +226,11 @@
 
 
     .logout {
-        transform: translateY(70px);
-        padding: 10px;
+        position: absolute;  /* Use absolute to anchor within the sidebar */
+        bottom: 70px;         /* Same visual offset as translateY(70px) */
+        width: 100%;          /* Optional: full width of sidebar */
         text-align: center;
+        padding: 10px;
     }
 
     .logout a {

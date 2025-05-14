@@ -226,9 +226,11 @@
 
 
         .logout {
-            margin-top: 180px;
-            padding: 10px;
+            position: absolute;  /* Use absolute to anchor within the sidebar */
+            bottom: 70px;         /* Same visual offset as translateY(70px) */
+            width: 100%;          /* Optional: full width of sidebar */
             text-align: center;
+            padding: 10px;
         }
 
         .logout a {
@@ -722,37 +724,44 @@ button {
                 </div>
             </div>
             <ul>
-                <li>
-                    <a href="dashboarddb.php">
-                        <i class='bx bxs-dashboard'></i>
-                        <div>Dashboard</div>
-                    </a>
-                </li>
-                <li class="active">
-                    <a href="students_page.php">
-                        <i class='bx bxs-group'></i>
-                        <div>Students</div>
-                    </a>
-                </li>
-                <li>
-                    <a href="prediction.php">
-                        <i class='fas fa-chart-line'></i>
-                        <div>Predictions</div>
-                    </a>
-                </li>
-                <li class="archive">
-                    <a href="archive.php">
-                        <i class='bx bxs-archive'></i>
-                        <div>Archive</div>
-                    </a>
-                </li>
-                <li class="tables">
-                    <a href="view_semviolation.php">
-                        <i class='bx bx-table'></i>
-                        <div>View Tables</div>
-                    </a>
-                </li>
-            </ul>
+            <li>
+                <a href="dashboarddb.php">
+                    <i class='bx bxs-dashboard'></i>
+                    <div>Dashboard</div>
+                </a>
+            </li>
+            <li class="active">
+                <a href="students_page.php">
+                    <i class='bx bxs-group'></i>
+                    <div>Students</div>
+                </a>
+            </li>
+            <li>
+                <a href="prediction.php">
+                    <i class='fas fa-chart-line'></i>
+                    <div>Data Analysis</div>
+                </a>
+            </li>
+            <li class="archive">
+                <a href="archive.php">
+                    <i class='bx bxs-archive'></i>
+                    <div>Archive</div>
+                </a>
+            </li>
+            <li class="tables">
+                <a href="view_semviolation.php">
+                    <i class='bx bx-table'></i>
+                    <div>View Tables</div>
+                </a>
+            </li>
+            <li>
+                <a href="reference_page.php">
+                    <i class='bx bx-book-open'></i>
+                    <div>Reference</div>
+                </a>
+            </li>
+        </ul>
+        
             <div class="logout">
                 <a href="logout.php" onclick="return confirmLogout()">
                     <i class='bx bx-log-out'></i>
