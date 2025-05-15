@@ -56,7 +56,7 @@ if (isset($_POST['id']) && !empty($_POST['id'])) {
 
     if ($stmt->execute()) {
         echo "<script>
-                alert('Record updated successfully. $uploadStatus');
+                alert('Record updated successfully');
                 window.location.href = 'students_page.php';
               </script>";
     } else {

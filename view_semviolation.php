@@ -8,7 +8,7 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="icon" type="image/png" sizes="32x32" href="img/plp.png">
-    <title>View Tables</title>
+    <title>Admin</title>
 </head>
 <style>
     * {
@@ -277,45 +277,46 @@
 
     /* Table styling */
     table {
-        width: 80%;
+        width: 90%;
+        max-width: 1000px;
+        margin: 20px auto;
         border-collapse: collapse;
-        margin-top: 20px;
-        margin-left: 150px;
-        font-size: 13px;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        overflow: hidden;
+        font-size: 15px;
         color: #333;
     }
 
-    table thead {
-        background-color: #059212;
-        color: #fff;
+    table, th, td {
+        border: 1px solid #e0e0e0;
     }
 
-    table th,
-    table td {
-        padding: 10px;
-        border: 1px solid #ddd;
-        text-align: left;
+    th, td {
+        padding: 10px 15px;
+        text-align: center;
     }
 
-    table tbody tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
-
-    table tbody tr:nth-child(odd) {
-        background-color: #ffffff;
-    }
-
-    table th {
+    th {
+        background-color: #f7f7f7;
+        color: #333;
         font-weight: bold;
-        background-color: #059212;
-        color: #fff;
+        text-transform: uppercase;
     }
 
-    table td {
-        padding: 12px;
-        text-align: left;
-        color: #555;
+    tr:nth-child(even) {
+        background-color: #fafafa;
     }
+
+    tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    td {
+        color: #333;
+    }
+
 
     .table-selection {
         margin-top: 20px;
@@ -437,7 +438,7 @@
                     <select id="tableName" name="tableName" required>
                         <?php
                         // Connect to MySQL
-                        include 'semviolationsdb.php';
+                        include 'dbconnection.php';
                         $conn = new mysqli($servername, $username, $password);
 
                         // Check connection
@@ -446,7 +447,7 @@
                         }
 
                         // Fetch tables
-                        $sql = "SHOW TABLES FROM $dbname";
+                        $sql = "SHOW TABLES FROM $targetDb";
                         $result = $conn->query($sql);
 
                         if ($result->num_rows > 0) {
@@ -465,40 +466,48 @@
             </div>
 
             <?php
-            if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['tableName'])) {
-                $selectedTable = $_POST['tableName'];
-                $conn = new mysqli($servername, $username, $password, $dbname);
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['tableName'])) {
+    $selectedTable = $_POST['tableName'];
+    $conn = new mysqli($servername, $username, $password, $targetDb);
 
-                if ($conn->connect_error) {
-                    die("Connection failed: " . $conn->connect_error);
-                }
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
 
-                $sql = "SELECT * FROM $selectedTable";
-                $result = $conn->query($sql);
+    $sql = "SELECT * FROM $selectedTable";
+    $result = $conn->query($sql);
 
-                if ($result->num_rows > 0) {
-                    echo "<table>";
-                    echo "<thead><tr>";
-                    $fields = $result->fetch_fields();
-                    foreach ($fields as $field) {
-                        echo "<th>" . htmlspecialchars($field->name) . "</th>";
-                    }
-                    echo "</tr></thead><tbody>";
+    if ($result->num_rows > 0) {
+        echo "<table>";
+        echo "<thead><tr>";
+        $fields = $result->fetch_fields();
 
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<tr>";
-                        foreach ($row as $value) {
-                            echo "<td>" . htmlspecialchars($value) . "</td>";
-                        }
-                        echo "</tr>";
-                    }
-                    echo "</tbody></table>";
-                } else {
-                    echo "<p>No data found in the selected table.</p>";
-                }
-                $conn->close();
+        // Store the field names that should be displayed
+        $displayFields = [];
+        foreach ($fields as $field) {
+            if ($field->name !== 'id' && $field->name !== 'Proof' && $field->name !== 'Date') {
+                $displayFields[] = $field->name;
+                echo "<th>" . htmlspecialchars($field->name) . "</th>";
             }
-            ?>
+        }
+        echo "</tr></thead><tbody>";
+
+        while ($row = $result->fetch_assoc()) {
+            echo "<tr>";
+            foreach ($displayFields as $fieldName) {
+                echo "<td>" . htmlspecialchars($row[$fieldName]) . "</td>";
+            }
+            echo "</tr>";
+        }
+        echo "</tbody></table>";
+    } else {
+        echo "<p>No data found in the selected table.</p>";
+    }
+
+    $conn->close();
+}
+?>
+
         </div>
     </div>
 
