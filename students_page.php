@@ -270,11 +270,10 @@
             margin-left: 200px;
             padding: 20px;
             transition: margin-left 0.3s, width 0.3s;
-            /* Smooth transition */
             display: flex;
             gap: 20px;
             flex-wrap: wrap;
-            /* Allow content to wrap on smaller screens */
+            
         }
 
         .main h1 {
