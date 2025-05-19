@@ -621,7 +621,7 @@
 
                     // Fetch data from the database
                     $sql = "SELECT id, Student_ID, Student_Name, Department, Program, Violation, Offense, Status, Personnel, Accomplished, Sanction, Proof
-                             FROM archive_info WHERE Department = 'CIHM' ORDER BY Date DESC";
+                             FROM archive_info WHERE Department = 'CIHM' ORDER BY Accomplished DESC";
 
                     $result = $conn->query($sql);
                     ?>
@@ -667,7 +667,7 @@
                                     </tr>";
                                 }
                             } else {
-                                echo "<tr><td colspan='9'>No records found</td></tr>";
+                                echo "<tr><td colspan='10'>No records found</td></tr>";
                             }
                             ?>
                                 <tr id="noRecords" style="display:none;">
