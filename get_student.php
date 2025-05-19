@@ -119,12 +119,7 @@ $conn->close();
     </select>
 
     <label for="Status">Status:</label>
-    <select name="Status" required>
-        <option value="Pending" <?php if ($data['Status'] === 'Pending')
-            echo 'selected'; ?>>Pending</option>
-        <option value="Settled" <?php if ($data['Status'] === 'Settled')
-            echo 'selected'; ?>>Settled</option>
-    </select>
+    <input type="text" name="Status" value="<?php echo htmlspecialchars($data['Status']); ?>" required>
 
     <label for="Personnel">Personnel:</label>
     <input type="text" name="Personnel" value="<?php echo htmlspecialchars($data['Personnel']); ?>" required>

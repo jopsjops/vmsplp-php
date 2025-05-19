@@ -33,8 +33,8 @@ while ($row = $result->fetch_assoc()) {
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'eunicekhater@gmail.com';           // <-- your Gmail
-        $mail->Password = 'qonrdmejkaimrzqo';              // <-- your App Password from Gmail
+        $mail->Username = 'eunicekhater@gmail.com';           //your Gmail
+        $mail->Password = 'qonrdmejkaimrzqo';              //App Password from Gmail
         $mail->SMTPSecure = 'tls';
         $mail->Port = 587;
 

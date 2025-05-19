@@ -1339,7 +1339,7 @@
                     course.appendChild(opt);
                 });
             } else if (selectedProgram === 'COED') {
-                const coedOptions = ['BEED', 'BSED'];
+                const coedOptions = ['BEED', 'BSED - Math', , 'BSED - English'];
                 coedOptions.forEach(option => {
                     const opt = document.createElement('option');
                     opt.value = option;
