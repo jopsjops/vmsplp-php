@@ -605,7 +605,7 @@
                                 <th>Date Accomplished</th>
                                 <th>Sanction</th>
                                 <th>Proof</th>
-                                <th>Actions</th>               
+                                          
                             </tr>
                         </thead>
                         <tbody>
@@ -624,14 +624,6 @@
 
                                         <td>" . htmlspecialchars($row['Sanction']) . "</td>
                                         <td><img src='proof/" . htmlspecialchars($row['Proof']) . "' alt='Proof Image' width='80' height='80'></td>
-                                        <td>
-                                            <button class='edit' onclick='editRow(" . $row['id'] . ")'>
-                                                <i class='fas fa-pencil-alt'></i>
-                                            </button>
-                                            <button class='archive' onclick='transferRow(" . $row['id'] . ")'>
-                                                <i class='fa-solid fa-folder-plus'></i>
-                                            </button>
-                                        </td>
                                     </tr>";
                                 }
                             } else {
