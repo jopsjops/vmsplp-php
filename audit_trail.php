@@ -60,6 +60,7 @@
 
         .logo h2 {
             color: #059212;
+            transform: translateY(-6px);
         }
 
         .logo a {
@@ -352,8 +353,27 @@
         }
 
         .sorting-section i.fa-list {
-            color: #059212;
             font-size: 16px;
+        }
+
+        #eventDateFilter {
+            padding: 6px 10px;
+            font-size: 14px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        #eventDateFilter:hover,
+        #eventDateFilter:focus {
+            border-color: #007bff;
+        }
+
+        label i.fa-calendar-days {
+            color: #555;
+            font-size: 16px;
+            vertical-align: middle;
         }
 
 
@@ -379,14 +399,9 @@
                         <option value="<?= htmlspecialchars($user) ?>"><?= htmlspecialchars($user) ?></option>
                         <?php endforeach; ?>
                     </select>
-                    </label>
-                    <label>
-                    <select id="eventFilter">
-                        <option value="all">Event Type: All</option>
-                        <?php foreach ($eventTypes as $event): ?>
-                        <option value="<?= htmlspecialchars($event) ?>"><?= htmlspecialchars($event) ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                </label>    
+                <label>
+                    <input type="date" id="eventDateFilter" name="eventDateFilter" />
                 </label>
             </div>
         </div>
@@ -483,29 +498,51 @@
                 <table id="violationTable">
                     <thead>
                         <tr>
-                            <th>Date & Time</th>
+                            <th>Timestamp</th>
                             <th>User</th>
                             <th>Message</th>
                             <th>Event Type</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (!empty($logs)): ?>
-                            <?php foreach ($logs as $log): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($log['timestamp']) ?></td>
-                                <td><?= htmlspecialchars($log['username']) ?></td>
-                                <td><?= htmlspecialchars($log['message']) ?></td>
-                                <td><?= htmlspecialchars($log['event_type']) ?></td>
-                            
-                            </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr><td colspan="5">No audit records found.</td></tr>
-                        <?php endif; ?>
+                        <?php
+                        if (!empty($logs)) {
+                            // Sort logs by timestamp descending (latest first)
+                            usort($logs, function ($a, $b) {
+                                return strtotime($b['timestamp']) - strtotime($a['timestamp']);
+                            });
+
+                            // Take the first 10 logs (latest ones)
+                            $latestLogs = array_slice($logs, 0, 10);
+
+                            $rowCount = count($latestLogs);
+                            foreach ($latestLogs as $log) {
+                                echo '<tr>';
+                                echo '<td>' . htmlspecialchars($log['timestamp']) . '</td>';
+                                echo '<td>' . htmlspecialchars($log['username']) . '</td>';
+                                echo '<td>' . htmlspecialchars($log['message']) . '</td>';
+                                echo '<td>' . htmlspecialchars($log['event_type']) . '</td>';
+                                echo '</tr>';
+                            }
+
+                            // Fill remaining rows with N/A if less than 10
+                            for ($i = $rowCount; $i < 10; $i++) {
+                                echo '<tr>';
+                                echo '<td colspan="4" style="text-align: center; color: #999;">N/A</td>';
+                                echo '</tr>';
+                            }
+                        } else {
+                            // No logs found
+                            echo '<tr><td colspan="4" style="text-align: center; color: #999;">No audit records found.</td></tr>';
+                            for ($i = 1; $i < 10; $i++) {
+                                echo '<tr>';
+                                echo '<td colspan="4" style="text-align: center; color: #999;">N/A</td>';
+                                echo '</tr>';
+                            }
+                        }
+                        ?>
                     </tbody>
                 </table>
-
             </div>
         </div>
     </div>
@@ -518,27 +555,69 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             const userFilter = document.getElementById('userFilter');
-            const eventFilter = document.getElementById('eventFilter');
+            const eventDateFilter = document.getElementById('eventDateFilter');
             const rows = document.querySelectorAll('#violationTable tbody tr');
 
             function filterTable() {
-            const selectedUser = userFilter.value;
-            const selectedEvent = eventFilter.value;
+                const selectedUser = userFilter.value.trim().toLowerCase();
+                const selectedDate = eventDateFilter.value;
+                let matchCount = 0;
 
-            rows.forEach(row => {
-                const user = row.children[1].textContent;
-                const event = row.children[3].textContent;
+                rows.forEach(row => {
+                    const user = row.children[1].textContent.trim().toLowerCase();
+                    const dateCell = row.cells[0]?.textContent?.trim().split(' ')[0]; // get date part only
 
-                const showRow =
-                (selectedUser === 'all' || user === selectedUser) &&
-                (selectedEvent === 'all' || event === selectedEvent);
+                    // Check user match
+                    const userMatch = (selectedUser === 'all') || (user === selectedUser);
+                    // Check date match (if no date selected, treat as match)
+                    const dateMatch = !selectedDate || selectedDate === dateCell;
 
-                row.style.display = showRow ? '' : 'none';
-            });
+                    if (userMatch && dateMatch) {
+                        row.style.display = '';
+                        matchCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                // Remove any previous "no logs" message
+                const oldMessage = document.getElementById('noLogsRow');
+                if (oldMessage) oldMessage.remove();
+
+                // If no rows matched, insert a "no logs" row
+                if (matchCount === 0) {
+                    const tbody = document.querySelector('#violationTable tbody');
+                    const newRow = document.createElement('tr');
+                    newRow.id = 'noLogsRow';
+                    newRow.innerHTML = '<td colspan="4" style="text-align: center; color: #999;">No logs found on this date.</td>';
+                    tbody.appendChild(newRow);
+                }
             }
 
+            // Run filter on both user and date change
             userFilter.addEventListener('change', filterTable);
-            eventFilter.addEventListener('change', filterTable);
+            eventDateFilter.addEventListener('change', filterTable);
+
+            // Optionally, run filter initially in case default filters are set
+            filterTable();
+        });
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const dateInput = document.getElementById('eventDateFilter');
+
+            function setTodayDate() {
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                const formattedToday = `${yyyy}-${mm}-${dd}`;
+
+                dateInput.value = formattedToday;   // Set today's date as default
+                dateInput.max = formattedToday;     // Lock future dates
+            }
+
+            setTodayDate();
         });
     </script>
 </body>

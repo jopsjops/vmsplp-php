@@ -426,7 +426,7 @@ button {
         }
 
 
-        button.add {
+        button.print-pdf {
             width: 50px;              
             height: 50px;            
             border-radius: 50%;       
@@ -443,42 +443,6 @@ button {
             right: 20px;              
             z-index: 1000;            
         }
-
-        button.print-pdf {
-            width: 50px;              /* Set the width of the circle */
-            height: 50px;             /* Set the height to be the same as the width */
-            border-radius: 50%;       /* This makes the button round */
-            background-color: #333; /* Background color of the button */
-            color: white;             /* Icon color */
-            border: none;             /* Remove border */
-            display: flex;            /* Center icon inside the button */
-            justify-content: center;  /* Horizontally center the icon */
-            align-items: center;      /* Vertically center the icon */
-            cursor: pointer;          /* Add a pointer on hover */
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
-            position: fixed;          /* Make the button fixed to the viewport */
-            bottom: 90px;             /* Distance from the bottom of the viewport */
-            right: 20px;              /* Distance from the right of the viewport */
-            z-index: 1000;            /* Ensure it stays on top of other elements */
-        }
-
-        button.send {
-    width: 50px;              /* Set the width of the circle */
-    height: 50px;             /* Set the height to match the width */
-    border-radius: 50%;       /* Make the button round */
-    background-color: #333;   /* Background color */
-    color: white;             /* Icon color */
-    border: none;             /* Remove default border */
-    display: flex;            /* Center icon horizontally */
-    justify-content: center;  /* Center icon horizontally */
-    align-items: center;      /* Center icon vertically */
-    cursor: pointer;          /* Pointer cursor on hover */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Shadow effect */
-    position: fixed;          /* Fixed position on screen */
-    bottom: 160px;            /* Adjust position above print and add buttons */
-    right: 20px;              /* Align to the right like others */
-    z-index: 1000;            /* Keep above other elements */
-}
 
 
 
@@ -881,123 +845,14 @@ button {
                     <button id="printPdfButton" class="print-pdf" onclick="printTableToPDF()">
                         <i class='bx bx-printer'></i>
                     </button>
-                    <button class="add" id="addButton" onclick="document.getElementById('addModal').style.display='block'">
-                        <i class='bx bxs-add-to-queue'></i>
-                    </button>
-
-                    <button class="send" id="sendEmailButton" onclick="sendEmailToAllStudents()">
-                    <i class='bx bx-mail-send'></i>
-                </button>
+                    
 
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="addModal">
-            <div id="modalContent">
-                <span class="close" onclick="document.getElementById('addModal').style.display='none'">&times;</span>
-                <form id="addForm" action="add_record.php" method="post">
-                    <label for="studentId">Student ID:</label>
-                    <input type="text" id="studentId" name="studentId" required>
-
-                    <label for="name">Student Name:</label>
-                    <input type="text" id="name" name="name" required>
-
-                    <label for="program">Department</label>
-                        <select id="program" name="program" required>
-                            <option value="">-- Select --</option>
-                            <option value="CCS">CCS</option>
-                            <option value="CAS">CAS</option>
-                            <option value="CBA">CBA</option>
-                            <option value="CON">CON</option>
-                            <option value="COE">COE</option>
-                            <option value="COED">COED</option>
-                            <option value="CIHM">CIHM</option>
-                        </select>
-
-                    <label for="course">Program</label>
-                        <select id="course" name="course" required>
-                            <option value="">-- Select --</option>
-                        </select>
-
-
-
-                    <label for="violation">Violation:</label>
-                    <select id="violation" name="violation" required>
-                    <optgroup label="Major Offense Violations">
-                            <option value="Cheating">Cheating</option>
-                            <option value="Forgery & Plagiarism">Forgery & Plagiarism</option>
-                            <option value="False Representation">False Representation</option>
-                            <option value="Defamation">Defamation</option>
-                            <option value="Substance Influence">Substance Influence</option>
-                            <option value="Unauthorized Entry">Unauthorized Entry</option>
-                            <option value="Theft">Theft</option>
-                            <option value="Drug Possession/Use">Drug Possession/Use</option>
-                            <option value="Insubordination">Insubordination</option>
-                            <option value="Physical Injury">Physical Injury</option>
-                            <option value="Threats & Bullying">Threats & Bullying</option>
-                            <option value="Gambling">Gambling</option>
-                            <option value="Hazing">Hazing</option>
-                            <option value="Unauthorized Name Use">Unauthorized Name Use</option>
-                            <option value="Financial Misconduct">Financial Misconduct</option>
-                            <option value="Unauthorized Sales">Unauthorized Sales</option>
-                            <option value="Extortion">Extortion</option>
-                            <option value="Vandalism">Vandalism</option>
-                            <option value="Degrading Treatment">Degrading Treatment</option>
-                            <option value="Deadly Weapons">Deadly Weapons</option>
-                            <option value="Abusive Behavior">Abusive Behavior</option>
-                        </optgroup>
-                        <optgroup label="Minor Offense Violations">
-                            <option value="Policy Violation">Policy Violation</option>
-                            <option value="Violating dress protocol">Violating dress protocol</option>
-                            <option value="Incomplete uniform">Incomplete uniform</option>
-                            <option value="Littering">Littering</option>
-                            <option value="Loitering in hallways">Loitering in hallways</option>
-                            <option value="Class disturbance">Class disturbance</option>
-                            <option value="Shouting">Shouting</option>
-                            <option value="Eating in class">Eating in class</option>
-                            <option value="Public affection">Public affection</option>
-                            <option value="Kissing">Kissing</option>
-                            <option value="Suggestive poses">Suggestive poses</option>
-                            <option value="Inappropriate touching">Inappropriate touching</option>
-                            <option value="No ID card">No ID card</option>
-                            <option value="Using others' ID">Using others' ID</option>
-                            <option value="Caps indoors">Caps indoors</option>
-                            <option value="Noise in quiet areas">Noise in quiet areas</option>
-                            <option value="Discourtesy">Discourtesy</option>
-                            <option value="Malicious calls">Malicious calls</option>
-                            <option value="Refusing ID check">Refusing ID check</option>
-                            <option value="Blocking passageways">Blocking passageways</option>
-                            <option value="Unauthorized charging">Unauthorized charging</option>
-                            <option value="Academic non-compliance">Academic non-compliance</option>
-                        </optgroup>
-                    </select>
-
-                    <label for="offense">Offense:</label>
-                    <input type="text" id="offense" name="offense" readonly required>
-
-
-                    <label for="status">Status:</label>
-                    <input type="text" id="status" name="status" required>
-
-                    <label for="personnel">Personnel:</label>
-                    <input type="text" id="personnel" name="personnel" required>
-
-                    <label for="sanction">Sanction:</label>
-                    <input type="text" id="sanction" name="sanction" readonly required>
-
-
-                    <label for="date">Date:</label>
-                    <input type="date" id="date" name="date" required>
-
-                    <label for="time">Time:</label>
-                    <input type="time" id="time" name="time" required>
-
-                    <button type="submit" class="submit-btn">Submit</button>
-                </form>
-            </div>
-        </div>
+   
 
         <!-- Archive Modal -->
         <div id="archiveModal" class="modal" style="display:none;">
