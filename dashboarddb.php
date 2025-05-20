@@ -263,7 +263,7 @@ json_encode($departmentCounts);
 
         .logout {
             position: absolute;  /* Use absolute to anchor within the sidebar */
-            bottom: 70px;         /* Same visual offset as translateY(70px) */
+            bottom: 25px;         /* Same visual offset as translateY(70px) */
             width: 100%;          /* Optional: full width of sidebar */
             text-align: center;
             padding: 10px;
@@ -571,6 +571,12 @@ json_encode($departmentCounts);
                         <div>Reference</div>
                     </a>
                 </li>
+                <li>
+                <a href="audit_trail.php">
+                    <i class='bx bx-history'></i>
+                    <div>Audit Trail</div>
+                </a>
+            </li>
             </ul>
             <div class="logout">
                 <a href="logout.php" onclick="return confirmLogout()">

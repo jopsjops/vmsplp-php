@@ -1,7 +1,11 @@
 <?php
+session_start();
 include 'dbconnection.php';
 
-// Get the 'id' from the URL
+// Get username from session (adjust if session key differs)
+$username = isset($_SESSION['username']) ? $_SESSION['username'] : 'unknown';
+
+// Get the 'id' from the POST
 if (isset($_POST['id']) && !empty($_POST['id'])) {
     $id = $_POST['id'];
     $studentId = $_POST['Student_ID'];
@@ -16,31 +20,24 @@ if (isset($_POST['id']) && !empty($_POST['id'])) {
     $date = $_POST['Date'];
     $time = $_POST['Time']; 
 
-
     // Handle image upload
     $sanctionProofPath = '';
-    $uploadStatus = ''; // Default value for upload status
+    $uploadStatus = '';
     if (isset($_FILES['Sanction_Proof']) && $_FILES['Sanction_Proof']['error'] == 0) {
         $fileTmpPath = $_FILES['Sanction_Proof']['tmp_name'];
         $fileName = $_FILES['Sanction_Proof']['name'];
         $fileSize = $_FILES['Sanction_Proof']['size'];
         $fileType = $_FILES['Sanction_Proof']['type'];
 
-        // Generate unique file name based on date and time
         $newFileName = date('Y-m-d_H-i-s') . '_' . $fileName;
-        
-        // Define the folder path to store the images
         $uploadFolder = 'sanctionsproof/' . htmlspecialchars($studentName) . '/';
         if (!is_dir($uploadFolder)) {
-            mkdir($uploadFolder, 0777, true); // Create directory if it doesn't exist
+            mkdir($uploadFolder, 0777, true);
         }
-
-        // Define the full path to store the file
         $dest_path = $uploadFolder . $newFileName;
 
-        // Move the uploaded file to the destination folder
         if (move_uploaded_file($fileTmpPath, $dest_path)) {
-            $sanctionProofPath = $dest_path; // Store the file path
+            $sanctionProofPath = $dest_path;
             $uploadStatus = 'File uploaded successfully!';
         } else {
             $uploadStatus = 'Error uploading the file!';
@@ -49,12 +46,44 @@ if (isset($_POST['id']) && !empty($_POST['id'])) {
         $uploadStatus = 'No file uploaded or error with file upload!';
     }
 
-    // Update query using the unique id to target the exact record
+    // Optional: Fetch old data before update (to compare changes)
+    $oldDataSql = "SELECT * FROM student_info WHERE id = ?";
+    $oldStmt = $conn->prepare($oldDataSql);
+    $oldStmt->bind_param("i", $id);
+    $oldStmt->execute();
+    $oldResult = $oldStmt->get_result();
+    $oldData = $oldResult->fetch_assoc();
+    $oldStmt->close();
+
+    // Update query
     $sql = "UPDATE student_info SET Student_ID=?, Student_Name=?, Department=?, Program=?, Violation=?, Offense=?, Status=?, Personnel=?, Sanction=?, Date=?, Time=? WHERE id=?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("sssssssssssi", $studentId, $studentName, $department, $program, $violation, $offense, $status, $personnel, $sanction, $date, $time, $id);
 
     if ($stmt->execute()) {
+        // Prepare audit trail message — list changed fields for clarity
+        $changes = [];
+        if ($oldData['Student_ID'] !== $studentId) $changes[] = "Student_ID: '{$oldData['Student_ID']}' → '$studentId'";
+        if ($oldData['Student_Name'] !== $studentName) $changes[] = "Student_Name: '{$oldData['Student_Name']}' → '$studentName'";
+        if ($oldData['Department'] !== $department) $changes[] = "Department: '{$oldData['Department']}' → '$department'";
+        if ($oldData['Program'] !== $program) $changes[] = "Program: '{$oldData['Program']}' → '$program'";
+        if ($oldData['Violation'] !== $violation) $changes[] = "Violation changed";
+        if ($oldData['Offense'] !== $offense) $changes[] = "Offense changed";
+        if ($oldData['Status'] !== $status) $changes[] = "Status: '{$oldData['Status']}' → '$status'";
+        if ($oldData['Personnel'] !== $personnel) $changes[] = "Personnel: '{$oldData['Personnel']}' → '$personnel'";
+        if ($oldData['Sanction'] !== $sanction) $changes[] = "Sanction: '{$oldData['Sanction']}' → '$sanction'";
+        if ($oldData['Date'] !== $date) $changes[] = "Date: '{$oldData['Date']}' → '$date'";
+        if ($oldData['Time'] !== $time) $changes[] = "Time: '{$oldData['Time']}' → '$time'";
+
+        $message = count($changes) > 0 ? "Updated student record Student ID: $studentId. Changes: " . implode(", ", $changes) : "Updated student record ID $id with no changes detected.";
+
+        // Insert audit trail record
+        $audit_sql = "INSERT INTO audit_trail (username, action, message, event_type, timestamp) VALUES (?, 'update', ?, 'Student Record Update', NOW())";
+        $audit_stmt = $conn->prepare($audit_sql);
+        $audit_stmt->bind_param("ss", $username, $message);
+        $audit_stmt->execute();
+        $audit_stmt->close();
+
         echo "<script>
                 alert('Record updated successfully');
                 window.location.href = 'students_page.php';

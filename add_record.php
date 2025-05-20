@@ -1,5 +1,10 @@
 <?php
+session_start(); // make sure session is started to get username
+
 include 'dbconnection.php';
+
+// Get current logged-in username for audit
+$username = isset($_SESSION['username']) ? $_SESSION['username'] : 'unknown';
 
 // Get the form data
 $student_id = $_POST['studentId'];
@@ -46,16 +51,26 @@ if ($result->num_rows > 0) {
     $stmt_insert = $conn->prepare($sql_insert);
     $stmt_insert->bind_param("sssssssssss", $student_id, $student_name, $department, $program, $violation, $offense, $status, $personnel, $date, $time, $sanction);
 
-   if ($stmt_insert->execute()) {
-    echo "<script>
-        alert('Record has been added successfully!');
-        window.location.href = 'students_page.php';
-    </script>";
-    exit();
-} else {
-    echo "Error inserting record: " . $stmt_insert->error;
-}
+    if ($stmt_insert->execute()) {
+        // Audit insert action only here
+        $action = "insert";
+        $event_type = "Student Record Insert";
+        $message = "Added new student record for Student_ID: $student_id, Name: $student_name";
 
+        $audit_sql = "INSERT INTO audit_trail (username, action, message, event_type, timestamp) VALUES (?, ?, ?, ?, NOW())";
+        $audit_stmt = $conn->prepare($audit_sql);
+        $audit_stmt->bind_param("ssss", $username, $action, $message, $event_type);
+        $audit_stmt->execute();
+        $audit_stmt->close();
+
+        echo "<script>
+            alert('Record has been added successfully!');
+            window.location.href = 'students_page.php';
+        </script>";
+        exit();
+    } else {
+        echo "Error inserting record: " . $stmt_insert->error;
+    }
 
     $stmt_insert->close();
 }

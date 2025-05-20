@@ -29,8 +29,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['username'] = $user['username'];
             $_SESSION['college'] = $user['college'];
 
+            // ✅ Log to audit_trail
+            $log_stmt = $conn->prepare("INSERT INTO audit_trail (username, action, message, event_type) VALUES (?, ?, ?, ?)");
+            $action = "login";
+            $message = "User logged in.";
+            $event_type = "Authentication";
+            $log_stmt->bind_param("ssss", $user['username'], $action, $message, $event_type);
+            $log_stmt->execute();
+            $log_stmt->close();
+
             // Redirect based on user role
-          // Show welcome alert, then redirect using JavaScript
             $redirectPage = ($user['college'] === 'ADMIN') ? 'dashboarddb.php' : strtolower($user['college']) . '_dean.php';
 
             echo "<script>
@@ -52,6 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 $conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html>

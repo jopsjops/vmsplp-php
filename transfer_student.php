@@ -1,6 +1,9 @@
 <?php
+session_start();
 ob_clean();
 include 'dbconnection.php';
+
+$username = isset($_SESSION['username']) ? $_SESSION['username'] : 'unknown';
 
 $studentId = $_POST['student_id'];
 $accomplished = $_POST['date_accomplished'];
@@ -63,7 +66,6 @@ if (!empty($studentId) && !empty($accomplished)) {
                 $student['Personnel'],
                 $accomplished,
                 $proofFileName
-                
             );
 
             if ($insertStmt->execute()) {
@@ -72,6 +74,17 @@ if (!empty($studentId) && !empty($accomplished)) {
                 $deleteStmt = $conn->prepare($deleteQuery);
                 $deleteStmt->bind_param("s", $studentId);
                 $deleteStmt->execute();
+
+                // Insert audit trail record for archiving
+                $action = "archive";
+                $event_type = "Student Record Archive";
+                $message = "Archived student record Student_ID: {$student['Student_ID']}, Name: {$student['Student_Name']}";
+
+                $audit_sql = "INSERT INTO audit_trail (username, action, message, event_type, timestamp) VALUES (?, ?, ?, ?, NOW())";
+                $audit_stmt = $conn->prepare($audit_sql);
+                $audit_stmt->bind_param("ssss", $username, $action, $message, $event_type);
+                $audit_stmt->execute();
+                $audit_stmt->close();
 
                 $conn->commit();
 
