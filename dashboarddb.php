@@ -576,7 +576,7 @@ json_encode($departmentCounts);
                     <i class='bx bx-history'></i>
                     <div>Audit Trail</div>
                 </a>
-            </li>
+                </li>
             </ul>
             <div class="logout">
                 <a href="logout.php" onclick="return confirmLogout()">

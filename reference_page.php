@@ -145,7 +145,7 @@
 
         .logout {
             position: absolute;  /* Use absolute to anchor within the sidebar */
-            bottom: 70px;         /* Same visual offset as translateY(70px) */
+            bottom: 25px;         /* Same visual offset as translateY(70px) */
             width: 100%;          /* Optional: full width of sidebar */
             text-align: center;
             padding: 10px;
@@ -485,13 +485,49 @@
                 <h4>Admin</h4>
             </div>
         </div>
-        <ul>
-            <li><a href="dashboarddb.php"><i class='bx bxs-dashboard'></i>Dashboard</a></li>
-            <li><a href="students_page.php"><i class='bx bxs-group'></i>Students</a></li>
-            <li><a href="prediction.php"><i class='fas fa-chart-line'></i>Data Analysis</a></li>
-            <li><a href="archive.php"><i class='bx bxs-archive'></i>Archive</a></li>
-            <li><a href="view_semviolation.php"><i class='bx bx-table'></i>View Tables</a></li>
-            <li class="active"><a href="reference_page.php"><i class='bx bx-book-open'></i>Reference</a></li>
+       <ul>
+            <li>
+                <a href="dashboarddb.php">
+                    <i class='bx bxs-dashboard'></i>
+                    <div>Dashboard</div>
+                </a>
+            </li>
+            <li>
+                <a href="students_page.php">
+                    <i class='bx bxs-group'></i>
+                    <div>Students</div>
+                </a>
+            </li>
+            <li>
+                <a href="prediction.php">
+                    <i class='fas fa-chart-line'></i>
+                    <div>Data Analysis</div>
+                </a>
+            </li>
+            <li class="archive">
+                <a href="archive.php">
+                    <i class='bx bxs-archive'></i>
+                    <div>Archive</div>
+                </a>
+            </li>
+            <li class="tables">
+                <a href="view_semviolation.php">
+                    <i class='bx bx-table'></i>
+                    <div>View Tables</div>
+                </a>
+            </li>
+            <li class="active">
+                <a href="reference_page.php">
+                    <i class='bx bx-book-open'></i>
+                    <div>Reference</div>
+                </a>
+            </li>
+            <li>
+                <a href="audit_trail.php">
+                    <i class='bx bx-history'></i>
+                    <div>Audit Trail</div>
+                </a>
+            </li>
         </ul>
         <div class="logout">
             <a href="logout.php" onclick="return confirm('Are you sure you want to logout?')">
