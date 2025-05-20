@@ -581,7 +581,7 @@
         <div class="sidebar">
             <div class="profile">
                 <div class="profile-logo">
-                    <img src="img/new_con.png" alt="Logo">
+                    <img src="img/new_cihm.png" alt="Logo">
                 </div>
                 <div class="profile-info">
                     <span>Welcome,</span>
