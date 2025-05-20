@@ -14,27 +14,22 @@
     <?php
     include 'dbconnection.php';
 
-    // Get distinct users and event types
-    $users = [];
-    $eventTypes = [];
-
-    $userResult = $conn->query("SELECT DISTINCT username FROM audit_trail ORDER BY username");
-    while ($row = $userResult->fetch_assoc()) {
-        $users[] = $row['username'];
-    }
-
-    $eventResult = $conn->query("SELECT DISTINCT event_type FROM audit_trail ORDER BY event_type");
-    while ($row = $eventResult->fetch_assoc()) {
-        $eventTypes[] = $row['event_type'];
-    }
-
-    // Get all logs
-    $logsResult = $conn->query("SELECT username, action, message, event_type, timestamp FROM audit_trail ORDER BY timestamp DESC");
+    // Get the 10 latest logs
+    $logsResult = $conn->query("SELECT username, action, message, event_type, timestamp FROM audit_trail ORDER BY timestamp DESC LIMIT 10");
     $logs = $logsResult ? $logsResult->fetch_all(MYSQLI_ASSOC) : [];
 
-    $conn->close();
+    // Extract unique users from the 10 latest logs
+    $users = [];
+    foreach ($logs as $log) {
+        $username = $log['username'];
+        if (!in_array($username, $users)) {
+            $users[] = $username;
+        }
+    }
 
+    $conn->close();
     ?>
+
 
     <style>
         * {
@@ -507,15 +502,27 @@
                     <tbody>
                         <?php
                         if (!empty($logs)) {
-                            // Sort logs by timestamp descending (latest first)
-                            usort($logs, function ($a, $b) {
+                            $selectedUser = isset($_GET['user']) ? trim($_GET['user']) : 'all'; // Or get from form input
+
+                            // Filter logs by user if not 'all'
+                            if ($selectedUser !== 'all') {
+                                $filteredLogs = array_filter($logs, function($log) use ($selectedUser) {
+                                    return strtolower($log['username']) === strtolower($selectedUser);
+                                });
+                            } else {
+                                $filteredLogs = $logs;
+                            }
+
+                            // Sort filtered logs by timestamp descending
+                            usort($filteredLogs, function ($a, $b) {
                                 return strtotime($b['timestamp']) - strtotime($a['timestamp']);
                             });
 
-                            // Take the first 10 logs (latest ones)
-                            $latestLogs = array_slice($logs, 0, 10);
-
+                            // Take first 10 filtered logs
+                            $latestLogs = array_slice($filteredLogs, 0, 10);
                             $rowCount = count($latestLogs);
+
+                            // Display logs
                             foreach ($latestLogs as $log) {
                                 echo '<tr>';
                                 echo '<td>' . htmlspecialchars($log['timestamp']) . '</td>';
@@ -525,19 +532,23 @@
                                 echo '</tr>';
                             }
 
-                            // Fill remaining rows with N/A if less than 10
+                            // Fill remaining rows if less than 10
                             for ($i = $rowCount; $i < 10; $i++) {
-                                echo '<tr>';
-                                echo '<td colspan="4" style="text-align: center; color: #999;">N/A</td>';
-                                echo '</tr>';
+                                echo '<tr><td colspan="4" style="text-align: center; color: #999;">N/A</td></tr>';
+                            }
+
+                            // If no rows at all after filtering
+                            if ($rowCount === 0) {
+                                echo '<tr><td colspan="4" style="text-align: center; color: #999;">No logs found for this user.</td></tr>';
+                                for ($i = 1; $i < 10; $i++) {
+                                    echo '<tr><td colspan="4" style="text-align: center; color: #999;">N/A</td></tr>';
+                                }
                             }
                         } else {
-                            // No logs found
+                            // No logs at all
                             echo '<tr><td colspan="4" style="text-align: center; color: #999;">No audit records found.</td></tr>';
                             for ($i = 1; $i < 10; $i++) {
-                                echo '<tr>';
-                                echo '<td colspan="4" style="text-align: center; color: #999;">N/A</td>';
-                                echo '</tr>';
+                                echo '<tr><td colspan="4" style="text-align: center; color: #999;">N/A</td></tr>';
                             }
                         }
                         ?>
