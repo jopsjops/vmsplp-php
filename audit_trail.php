@@ -12,22 +12,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <?php
-    include 'dbconnection.php';
+        include 'dbconnection.php'; // Ensure this connects to violationsdb
 
-    // Get the 10 latest logs
-    $logsResult = $conn->query("SELECT username, action, message, event_type, timestamp FROM audit_trail ORDER BY timestamp DESC LIMIT 10");
-    $logs = $logsResult ? $logsResult->fetch_all(MYSQLI_ASSOC) : [];
+        // Get distinct users and event types
+        $users = [];
 
-    // Extract unique users from the 10 latest logs
-    $users = [];
-    foreach ($logs as $log) {
-        $username = $log['username'];
-        if (!in_array($username, $users)) {
-            $users[] = $username;
+        $userResult = $conn->query("SELECT DISTINCT username FROM audit_trail ORDER BY username");
+        while ($row = $userResult->fetch_assoc()) {
+            $users[] = $row['username'];
         }
-    }
 
-    $conn->close();
+
+        // Get all logs
+        $logsResult = $conn->query("SELECT username, action, message, event_type, timestamp FROM audit_trail ORDER BY timestamp DESC");
+        $logs = $logsResult ? $logsResult->fetch_all(MYSQLI_ASSOC) : [];
+
+        $conn->close();
     ?>
 
 
@@ -372,6 +372,59 @@
         }
 
 
+        .pagination-btn {
+            display: inline-block;
+            margin: 5px 6px;
+            padding: 6px 12px;
+            border: 1px solid #006400;
+            border-radius: 5px;
+            color: #006400;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.2s ease;
+        }
+
+        .pagination-btn i {
+            vertical-align: middle;
+            font-size: 18px;
+        }
+
+        .pagination-btn:hover {
+            background-color: #006400;
+            color: white;
+        }
+
+        .pagination-current {
+            background-color: #006400;
+            color: white;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .pagination-disabled {
+            color: #aaa;
+            border-color: #aaa;
+            cursor: not-allowed;
+            pointer-events: none;
+            background-color: #f1f1f1;
+        }
+
+
+        .pagination-ellipsis {
+            display: inline-block;
+            padding: 6px 12px;
+            color: #666;
+            font-weight: bold;
+        }
+
+        .pagination-btn.disabled {
+            color: #999;
+            border-color: #999;
+            pointer-events: none;
+            cursor: default;
+        }
+
+
 
         
     </style>
@@ -467,29 +520,6 @@
         <h1>AUDIT TRAIL</h1>
         <div class="main-content">
             <div class="table-container">
-                <?php
-                    include 'dbconnection.php'; // Ensure this connects to violationsdb
-
-                    // Get distinct users and event types
-                    $users = [];
-                    $eventTypes = [];
-
-                    $userResult = $conn->query("SELECT DISTINCT username FROM audit_trail ORDER BY username");
-                    while ($row = $userResult->fetch_assoc()) {
-                        $users[] = $row['username'];
-                    }
-
-                    $eventResult = $conn->query("SELECT DISTINCT event_type FROM audit_trail ORDER BY event_type");
-                    while ($row = $eventResult->fetch_assoc()) {
-                        $eventTypes[] = $row['event_type'];
-                    }
-
-                    // Get all logs
-                    $logsResult = $conn->query("SELECT username, action, message, event_type, timestamp FROM audit_trail ORDER BY timestamp DESC");
-                    $logs = $logsResult ? $logsResult->fetch_all(MYSQLI_ASSOC) : [];
-
-                    $conn->close();
-                ?>
                 <table id="violationTable">
                     <thead>
                         <tr>
@@ -501,57 +531,125 @@
                     </thead>
                     <tbody>
                         <?php
-                        if (!empty($logs)) {
-                            $selectedUser = isset($_GET['user']) ? trim($_GET['user']) : 'all'; // Or get from form input
+if (!empty($logs)) {
+    $selectedUser = isset($_GET['user']) ? trim($_GET['user']) : 'all';
+    $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+    $logsPerPage = 10;
 
-                            // Filter logs by user if not 'all'
-                            if ($selectedUser !== 'all') {
-                                $filteredLogs = array_filter($logs, function($log) use ($selectedUser) {
-                                    return strtolower($log['username']) === strtolower($selectedUser);
-                                });
-                            } else {
-                                $filteredLogs = $logs;
-                            }
+    // Filter logs by user
+    if ($selectedUser !== 'all') {
+        $filteredLogs = array_filter($logs, function($log) use ($selectedUser) {
+            return strtolower($log['username']) === strtolower($selectedUser);
+        });
+    } else {
+        $filteredLogs = $logs;
+    }
 
-                            // Sort filtered logs by timestamp descending
-                            usort($filteredLogs, function ($a, $b) {
-                                return strtotime($b['timestamp']) - strtotime($a['timestamp']);
-                            });
+    // Sort logs by timestamp (newest first)
+    usort($filteredLogs, function ($a, $b) {
+        return strtotime($b['timestamp']) - strtotime($a['timestamp']);
+    });
 
-                            // Take first 10 filtered logs
-                            $latestLogs = array_slice($filteredLogs, 0, 10);
-                            $rowCount = count($latestLogs);
+    $totalLogs = count($filteredLogs);
+    $totalPages = max(1, ceil($totalLogs / $logsPerPage));
+    $offset = ($currentPage - 1) * $logsPerPage;
+    $latestLogs = array_slice($filteredLogs, $offset, $logsPerPage);
+    $rowCount = count($latestLogs);
 
-                            // Display logs
-                            foreach ($latestLogs as $log) {
-                                echo '<tr>';
-                                echo '<td>' . htmlspecialchars($log['timestamp']) . '</td>';
-                                echo '<td>' . htmlspecialchars($log['username']) . '</td>';
-                                echo '<td>' . htmlspecialchars($log['message']) . '</td>';
-                                echo '<td>' . htmlspecialchars($log['event_type']) . '</td>';
-                                echo '</tr>';
-                            }
+    // Display log rows
+    foreach ($latestLogs as $log) {
+        echo '<tr>';
+        echo '<td>' . htmlspecialchars($log['timestamp']) . '</td>';
+        echo '<td>' . htmlspecialchars($log['username']) . '</td>';
+        echo '<td>' . htmlspecialchars($log['message']) . '</td>';
+        echo '<td>' . htmlspecialchars($log['event_type']) . '</td>';
+        echo '</tr>';
+    }
 
-                            // Fill remaining rows if less than 10
-                            for ($i = $rowCount; $i < 10; $i++) {
-                                echo '<tr><td colspan="4" style="text-align: center; color: #999;">N/A</td></tr>';
-                            }
+    // Fill remaining rows if less than 10
+    for ($i = $rowCount; $i < $logsPerPage; $i++) {
+        echo '<tr><td colspan="4" style="text-align: center; color: #999;">N/A</td></tr>';
+    }
 
-                            // If no rows at all after filtering
-                            if ($rowCount === 0) {
-                                echo '<tr><td colspan="4" style="text-align: center; color: #999;">No logs found for this user.</td></tr>';
-                                for ($i = 1; $i < 10; $i++) {
-                                    echo '<tr><td colspan="4" style="text-align: center; color: #999;">N/A</td></tr>';
-                                }
-                            }
-                        } else {
-                            // No logs at all
-                            echo '<tr><td colspan="4" style="text-align: center; color: #999;">No audit records found.</td></tr>';
-                            for ($i = 1; $i < 10; $i++) {
-                                echo '<tr><td colspan="4" style="text-align: center; color: #999;">N/A</td></tr>';
-                            }
-                        }
-                        ?>
+    // If no logs found for the user
+    if ($rowCount === 0) {
+        echo '<tr><td colspan="4" style="text-align: center; color: #999;">No logs found for this user.</td></tr>';
+        for ($i = 1; $i < $logsPerPage; $i++) {
+            echo '<tr><td colspan="4" style="text-align: center; color: #999;">N/A</td></tr>';
+        }
+    }
+
+    // Pagination controls
+    echo '<tr><td colspan="4" style="text-align: center;">';
+
+    // Previous Button (always visible, disabled if no prev)
+    if ($currentPage > 1) {
+        echo '<a href="?user=' . urlencode($selectedUser) . '&page=' . ($currentPage - 1) . '" class="pagination-btn">';
+        echo '<i class="bx bx-left-arrow-alt"></i> Previous</a>';
+    } else {
+        echo '<span class="pagination-btn disabled"><i class="bx bx-left-arrow-alt"></i> Previous</span>';
+    }
+
+    // Function to output page button or span
+    function pageBtn($page, $currentPage, $selectedUser) {
+        if ($page == $currentPage) {
+            return '<span class="pagination-btn pagination-current">' . $page . '</span>';
+        } else {
+            return '<a href="?user=' . urlencode($selectedUser) . '&page=' . $page . '" class="pagination-btn">' . $page . '</a>';
+        }
+    }
+
+    // Show max 5 pages with ellipses
+    if ($totalPages <= 5) {
+        // Show all pages if <= 5
+        for ($i = 1; $i <= $totalPages; $i++) {
+            echo pageBtn($i, $currentPage, $selectedUser);
+        }
+    } else {
+        // Always show first page
+        echo pageBtn(1, $currentPage, $selectedUser);
+
+        // Determine range of pages around current page
+        $start = max(2, $currentPage - 1);
+        $end = min($totalPages - 1, $currentPage + 1);
+
+        // Ellipsis after first page if needed
+        if ($start > 2) {
+            echo '<span class="pagination-ellipsis">...</span>';
+        }
+
+        // Pages in the middle
+        for ($i = $start; $i <= $end; $i++) {
+            echo pageBtn($i, $currentPage, $selectedUser);
+        }
+
+        // Ellipsis before last page if needed
+        if ($end < $totalPages - 1) {
+            echo '<span class="pagination-ellipsis">...</span>';
+        }
+
+        // Always show last page
+        echo pageBtn($totalPages, $currentPage, $selectedUser);
+    }
+
+    // Next Button (always visible, disabled if no next)
+    if ($currentPage < $totalPages) {
+        echo '<a href="?user=' . urlencode($selectedUser) . '&page=' . ($currentPage + 1) . '" class="pagination-btn">';
+        echo 'Next <i class="bx bx-right-arrow-alt"></i></a>';
+    } else {
+        echo '<span class="pagination-btn disabled">Next <i class="bx bx-right-arrow-alt"></i></span>';
+    }
+
+    echo '</td></tr>';
+} else {
+    // No logs at all
+    echo '<tr><td colspan="4" style="text-align: center; color: #999;">No audit records found.</td></tr>';
+    for ($i = 1; $i < 10; $i++) {
+        echo '<tr><td colspan="4" style="text-align: center; color: #999;">N/A</td></tr>';
+    }
+}
+?>
+
                     </tbody>
                 </table>
             </div>
