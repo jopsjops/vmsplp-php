@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = file_get_contents('php://input');
     $data = json_decode($input, true);
 
-    // Check required fields (status and sanction are calculated)
+    // Check required fields
     if (isset($data['studentId'], $data['studentName'], $data['department'], $data['program'], $data['violation'], $data['offense'], $data['personnelName'], $data['date'], $data['time'], $data['email'])) {
         
         $studentId = $data['studentId'];
@@ -30,35 +30,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $time = $data['time'];
         $email = $data['email'];
 
-        // Get current violation count
-        $stmt = $conn->prepare("SELECT COUNT(*) AS violation_count FROM student_info WHERE Student_ID = ?");
-        $stmt->bind_param("s", $studentId);
+        // Get total violation count from both student_info and archive_info
+        $stmt = $conn->prepare("
+            SELECT COUNT(*) AS violation_count FROM (
+                SELECT Student_ID FROM student_info WHERE Student_ID = ?
+                UNION ALL
+                SELECT Student_ID FROM archive_info WHERE Student_ID = ?
+            ) AS combined
+        ");
+        $stmt->bind_param("ss", $studentId, $studentId);
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
         $statusCount = intval($row['violation_count']) + 1;
-        $status = $statusCount . " Violation" . ($statusCount > 1 ? "s" : "");
         $stmt->close();
 
-        // Escalate minor offense to major if student has 2 or more previous violations
-        if ($offense === 'Minor' && $status >= 3) {
+        $status = $statusCount . " Violation" . ($statusCount > 1 ? "s" : "");
+
+        // Escalate Minor to Major if 3 or more total violations
+        if ($offense === 'Minor' && $statusCount >= 3) {
             $offense = 'Major';
         }
 
-        // Determine sanction
+        // Determine sanction based on offense and count
         $sanction = '';
         if ($offense === 'Major') {
-            if ($status === 1) {
+            if ($statusCount === 1) {
                 $sanction = 'Suspension for 60 days';
-            } else if ($status === 2) {
+            } else if ($statusCount === 2) {
                 $sanction = 'Dismissal';
-            } else if ($status >= 3) {
+            } else if ($statusCount >= 3) {
                 $sanction = 'Expulsion';
             }
         } else if ($offense === 'Minor') {
-            if ($status === 1) {
+            if ($statusCount === 1) {
                 $sanction = 'Non-Compliance Slip + Apology Letter';
-            } else if ($status === 2) {
+            } else if ($statusCount === 2) {
                 $sanction = 'Community Service + Counseling';
             }
         }
