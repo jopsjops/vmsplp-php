@@ -594,8 +594,9 @@ json_encode($departmentCounts);
                             <!-- Gauge Chart -->
                             <canvas class="gauge"
                                 data-count="<?php echo $count; ?>"
-                                data-color="<?php echo $gaugeColors[$dept] ?? '#059212'; ?>">
+                                data-color="<?php echo $gaugeColors[$dept]; ?>">
                             </canvas>
+
 
                             <!-- Department Logo -->
                             <div class="logo-overlay">
