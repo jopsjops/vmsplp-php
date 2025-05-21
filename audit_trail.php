@@ -531,125 +531,124 @@
                     </thead>
                     <tbody>
                         <?php
-if (!empty($logs)) {
-    $selectedUser = isset($_GET['user']) ? trim($_GET['user']) : 'all';
-    $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-    $logsPerPage = 10;
+                        if (!empty($logs)) {
+                            $selectedUser = isset($_GET['user']) ? trim($_GET['user']) : 'all';
+                            $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+                            $logsPerPage = 10;
 
-    // Filter logs by user
-    if ($selectedUser !== 'all') {
-        $filteredLogs = array_filter($logs, function($log) use ($selectedUser) {
-            return strtolower($log['username']) === strtolower($selectedUser);
-        });
-    } else {
-        $filteredLogs = $logs;
-    }
+                            // Filter logs by user
+                            if ($selectedUser !== 'all') {
+                                $filteredLogs = array_filter($logs, function($log) use ($selectedUser) {
+                                    return strtolower($log['username']) === strtolower($selectedUser);
+                                });
+                            } else {
+                                $filteredLogs = $logs;
+                            }
 
-    // Sort logs by timestamp (newest first)
-    usort($filteredLogs, function ($a, $b) {
-        return strtotime($b['timestamp']) - strtotime($a['timestamp']);
-    });
+                            // Sort logs by timestamp (newest first)
+                            usort($filteredLogs, function ($a, $b) {
+                                return strtotime($b['timestamp']) - strtotime($a['timestamp']);
+                            });
 
-    $totalLogs = count($filteredLogs);
-    $totalPages = max(1, ceil($totalLogs / $logsPerPage));
-    $offset = ($currentPage - 1) * $logsPerPage;
-    $latestLogs = array_slice($filteredLogs, $offset, $logsPerPage);
-    $rowCount = count($latestLogs);
+                            $totalLogs = count($filteredLogs);
+                            $totalPages = max(1, ceil($totalLogs / $logsPerPage));
+                            $offset = ($currentPage - 1) * $logsPerPage;
+                            $latestLogs = array_slice($filteredLogs, $offset, $logsPerPage);
+                            $rowCount = count($latestLogs);
 
-    // Display log rows
-    foreach ($latestLogs as $log) {
-        echo '<tr>';
-        echo '<td>' . htmlspecialchars($log['timestamp']) . '</td>';
-        echo '<td>' . htmlspecialchars($log['username']) . '</td>';
-        echo '<td>' . htmlspecialchars($log['message']) . '</td>';
-        echo '<td>' . htmlspecialchars($log['event_type']) . '</td>';
-        echo '</tr>';
-    }
+                            // Display log rows
+                            foreach ($latestLogs as $log) {
+                                echo '<tr>';
+                                echo '<td>' . htmlspecialchars($log['timestamp']) . '</td>';
+                                echo '<td>' . htmlspecialchars($log['username']) . '</td>';
+                                echo '<td>' . htmlspecialchars($log['message']) . '</td>';
+                                echo '<td>' . htmlspecialchars($log['event_type']) . '</td>';
+                                echo '</tr>';
+                            }
 
-    // Fill remaining rows if less than 10
-    for ($i = $rowCount; $i < $logsPerPage; $i++) {
-        echo '<tr><td colspan="4" style="text-align: center; color: #999;">N/A</td></tr>';
-    }
+                            // Fill remaining rows if less than 10
+                            for ($i = $rowCount; $i < $logsPerPage; $i++) {
+                                echo '<tr><td colspan="4" style="text-align: center; color: #999;">N/A</td></tr>';
+                            }
 
-    // If no logs found for the user
-    if ($rowCount === 0) {
-        echo '<tr><td colspan="4" style="text-align: center; color: #999;">No logs found for this user.</td></tr>';
-        for ($i = 1; $i < $logsPerPage; $i++) {
-            echo '<tr><td colspan="4" style="text-align: center; color: #999;">N/A</td></tr>';
-        }
-    }
+                            // If no logs found for the user
+                            if ($rowCount === 0) {
+                                echo '<tr><td colspan="4" style="text-align: center; color: #999;">No logs found for this user.</td></tr>';
+                                for ($i = 1; $i < $logsPerPage; $i++) {
+                                    echo '<tr><td colspan="4" style="text-align: center; color: #999;">N/A</td></tr>';
+                                }
+                            }
 
-    // Pagination controls
-    echo '<tr><td colspan="4" style="text-align: center;">';
+                            // Pagination controls
+                            echo '<tr><td colspan="4" style="text-align: center;">';
 
-    // Previous Button (always visible, disabled if no prev)
-    if ($currentPage > 1) {
-        echo '<a href="?user=' . urlencode($selectedUser) . '&page=' . ($currentPage - 1) . '" class="pagination-btn">';
-        echo '<i class="bx bx-left-arrow-alt"></i> Previous</a>';
-    } else {
-        echo '<span class="pagination-btn disabled"><i class="bx bx-left-arrow-alt"></i> Previous</span>';
-    }
+                            // Previous Button (always visible, disabled if no prev)
+                            if ($currentPage > 1) {
+                                echo '<a href="?user=' . urlencode($selectedUser) . '&page=' . ($currentPage - 1) . '" class="pagination-btn">';
+                                echo '<i class="bx bx-left-arrow-alt"></i> Previous</a>';
+                            } else {
+                                echo '<span class="pagination-btn disabled"><i class="bx bx-left-arrow-alt"></i> Previous</span>';
+                            }
 
-    // Function to output page button or span
-    function pageBtn($page, $currentPage, $selectedUser) {
-        if ($page == $currentPage) {
-            return '<span class="pagination-btn pagination-current">' . $page . '</span>';
-        } else {
-            return '<a href="?user=' . urlencode($selectedUser) . '&page=' . $page . '" class="pagination-btn">' . $page . '</a>';
-        }
-    }
+                            // Function to output page button or span
+                            function pageBtn($page, $currentPage, $selectedUser) {
+                                if ($page == $currentPage) {
+                                    return '<span class="pagination-btn pagination-current">' . $page . '</span>';
+                                } else {
+                                    return '<a href="?user=' . urlencode($selectedUser) . '&page=' . $page . '" class="pagination-btn">' . $page . '</a>';
+                                }
+                            }
 
-    // Show max 5 pages with ellipses
-    if ($totalPages <= 5) {
-        // Show all pages if <= 5
-        for ($i = 1; $i <= $totalPages; $i++) {
-            echo pageBtn($i, $currentPage, $selectedUser);
-        }
-    } else {
-        // Always show first page
-        echo pageBtn(1, $currentPage, $selectedUser);
+                            // Show max 5 pages with ellipses
+                            if ($totalPages <= 5) {
+                                // Show all pages if <= 5
+                                for ($i = 1; $i <= $totalPages; $i++) {
+                                    echo pageBtn($i, $currentPage, $selectedUser);
+                                }
+                            } else {
+                                // Always show first page
+                                echo pageBtn(1, $currentPage, $selectedUser);
 
-        // Determine range of pages around current page
-        $start = max(2, $currentPage - 1);
-        $end = min($totalPages - 1, $currentPage + 1);
+                                // Determine range of pages around current page
+                                $start = max(2, $currentPage - 1);
+                                $end = min($totalPages - 1, $currentPage + 1);
 
-        // Ellipsis after first page if needed
-        if ($start > 2) {
-            echo '<span class="pagination-ellipsis">...</span>';
-        }
+                                // Ellipsis after first page if needed
+                                if ($start > 2) {
+                                    echo '<span class="pagination-ellipsis">...</span>';
+                                }
 
-        // Pages in the middle
-        for ($i = $start; $i <= $end; $i++) {
-            echo pageBtn($i, $currentPage, $selectedUser);
-        }
+                                // Pages in the middle
+                                for ($i = $start; $i <= $end; $i++) {
+                                    echo pageBtn($i, $currentPage, $selectedUser);
+                                }
 
-        // Ellipsis before last page if needed
-        if ($end < $totalPages - 1) {
-            echo '<span class="pagination-ellipsis">...</span>';
-        }
+                                // Ellipsis before last page if needed
+                                if ($end < $totalPages - 1) {
+                                    echo '<span class="pagination-ellipsis">...</span>';
+                                }
 
-        // Always show last page
-        echo pageBtn($totalPages, $currentPage, $selectedUser);
-    }
+                                // Always show last page
+                                echo pageBtn($totalPages, $currentPage, $selectedUser);
+                            }
 
-    // Next Button (always visible, disabled if no next)
-    if ($currentPage < $totalPages) {
-        echo '<a href="?user=' . urlencode($selectedUser) . '&page=' . ($currentPage + 1) . '" class="pagination-btn">';
-        echo 'Next <i class="bx bx-right-arrow-alt"></i></a>';
-    } else {
-        echo '<span class="pagination-btn disabled">Next <i class="bx bx-right-arrow-alt"></i></span>';
-    }
+                            // Next Button (always visible, disabled if no next)
+                            if ($currentPage < $totalPages) {
+                                echo '<a href="?user=' . urlencode($selectedUser) . '&page=' . ($currentPage + 1) . '" class="pagination-btn">';
+                                echo 'Next <i class="bx bx-right-arrow-alt"></i></a>';
+                            } else {
+                                echo '<span class="pagination-btn disabled">Next <i class="bx bx-right-arrow-alt"></i></span>';
+                            }
 
-    echo '</td></tr>';
-} else {
-    // No logs at all
-    echo '<tr><td colspan="4" style="text-align: center; color: #999;">No audit records found.</td></tr>';
-    for ($i = 1; $i < 10; $i++) {
-        echo '<tr><td colspan="4" style="text-align: center; color: #999;">N/A</td></tr>';
-    }
-}
-?>
-
+                            echo '</td></tr>';
+                        } else {
+                            // No logs at all
+                            echo '<tr><td colspan="4" style="text-align: center; color: #999;">No audit records found.</td></tr>';
+                            for ($i = 1; $i < 10; $i++) {
+                                echo '<tr><td colspan="4" style="text-align: center; color: #999;">N/A</td></tr>';
+                            }
+                        }
+                        ?>
                     </tbody>
                 </table>
             </div>
@@ -667,21 +666,14 @@ if (!empty($logs)) {
             const eventDateFilter = document.getElementById('eventDateFilter');
             const rows = document.querySelectorAll('#violationTable tbody tr');
 
-            function filterTable() {
+            function filterByUser() {
                 const selectedUser = userFilter.value.trim().toLowerCase();
-                const selectedDate = eventDateFilter.value;
                 let matchCount = 0;
 
                 rows.forEach(row => {
                     const user = row.children[1].textContent.trim().toLowerCase();
-                    const dateCell = row.cells[0]?.textContent?.trim().split(' ')[0]; // get date part only
 
-                    // Check user match
-                    const userMatch = (selectedUser === 'all') || (user === selectedUser);
-                    // Check date match (if no date selected, treat as match)
-                    const dateMatch = !selectedDate || selectedDate === dateCell;
-
-                    if (userMatch && dateMatch) {
+                    if (selectedUser === 'all' || user === selectedUser) {
                         row.style.display = '';
                         matchCount++;
                     } else {
@@ -689,27 +681,52 @@ if (!empty($logs)) {
                     }
                 });
 
-                // Remove any previous "no logs" message
+                showOrHideNoLogsMessage(matchCount, 'user');
+            }
+
+            function filterByDate() {
+                const selectedDate = eventDateFilter.value;
+                let matchCount = 0;
+
+                rows.forEach(row => {
+                    const dateCell = row.cells[0]?.textContent?.trim().split(' ')[0]; // Get only date part
+
+                    if (!selectedDate || selectedDate === dateCell) {
+                        row.style.display = '';
+                        matchCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                showOrHideNoLogsMessage(matchCount, 'date');
+            }
+
+            function showOrHideNoLogsMessage(count, type) {
                 const oldMessage = document.getElementById('noLogsRow');
                 if (oldMessage) oldMessage.remove();
 
-                // If no rows matched, insert a "no logs" row
-                if (matchCount === 0) {
+                if (count === 0) {
                     const tbody = document.querySelector('#violationTable tbody');
                     const newRow = document.createElement('tr');
                     newRow.id = 'noLogsRow';
-                    newRow.innerHTML = '<td colspan="4" style="text-align: center; color: #999;">No logs found on this date.</td>';
+
+                    const message = type === 'user' 
+                        ? 'No logs found for this user.' 
+                        : 'No logs found on this date.';
+
+                    newRow.innerHTML = `<td colspan="4" style="text-align: center; color: #999;">${message}</td>`;
                     tbody.appendChild(newRow);
                 }
             }
 
-            // Run filter on both user and date change
-            userFilter.addEventListener('change', filterTable);
-            eventDateFilter.addEventListener('change', filterTable);
+            // Attach event listeners separately
+            userFilter.addEventListener('change', filterByUser);
+            eventDateFilter.addEventListener('change', filterByDate);
 
-            // Optionally, run filter initially in case default filters are set
-            filterTable();
+            
         });
+
 
 
         document.addEventListener('DOMContentLoaded', function () {
