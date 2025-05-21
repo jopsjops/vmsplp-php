@@ -886,7 +886,6 @@
                 <select id="sortDropdown">
                     <option value="">Select Type</option>
                     <option value="name">Name (Alphabetical)</option>
-                    <option value="department">Department (Alphabetical)</option>
                     <option value="date">Date</option>
                     <option value="violation">Violation</option>
                 </select>
